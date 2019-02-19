@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@+id/menuFragment">
+
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu">
+        <action
+            android:id="@+id/action_menuFragment_to_tripHeadFragment"
+            app:destination="@id/tripHeadFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_menuFragment_to_houseKeepingFragment"
+            app:destination="@id/houseKeepingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHeadFragment"
+        android:label="fragment_trip_head"
+        tools:layout="@layout/fragment_trip_head">
+        <action
+            android:id="@+id/action_tripHeadFragment_to_tripSumFragment"
+            app:destination="@id/tripSumFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripSumFragment"
+        android:label="TripSumFragment"
+        tools:layout="@layout/fragment_trip_sum">
+        <action
+            android:id="@+id/action_tripSumFragment_to_tripDetailFragment"
+            app:destination="@id/tripDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_tripSumFragment_to_tripConfFragment"
+            app:destination="@id/tripConfFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="slaughter"
+            app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripDetailFragment"
+        android:label="TripDetailFragment"
+        tools:layout="@layout/fragment_trip_detail" />
+    <fragment
+        android:id="@+id/tripConfFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripConfFragment"
+        android:label="TripConfFragment"
+        tools:layout="@layout/fragment_trip_conf" />
+    <fragment
+        android:id="@+id/houseKeepingFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.HouseKeepingFragment"
+        android:label="HouseKeepingFragment"
+        tools:layout="@layout/fragment_house_keeping"/>
+</navigation>

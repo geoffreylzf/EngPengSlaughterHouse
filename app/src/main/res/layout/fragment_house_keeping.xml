@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp">
+
+    <FrameLayout
+        android:id="@+id/fl_company"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_location"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <FrameLayout
+        android:id="@+id/fl_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_company"
+        app:layout_constraintBottom_toTopOf="@id/cb_local"/>
+
+    <CheckBox
+        android:id="@+id/cb_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/local2"
+        app:layout_constraintBottom_toTopOf="@id/btn_resync_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_location" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_resync_all"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="1"
+        android:text="@string/re_sync_all"
+        app:icon="@drawable/ic_baseline_refresh_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_update_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cb_local" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_update_all"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:text="@string/update_all"
+        app:icon="@drawable/ic_baseline_update_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_resync_all"
+        app:layout_constraintTop_toTopOf="@id/btn_resync_all"
+        app:layout_constraintBottom_toBottomOf="@id/btn_resync_all"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

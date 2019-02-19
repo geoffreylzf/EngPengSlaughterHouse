@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">EpSlaughterHouse</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="trip">Trip</string>
+    <string name="company">Company</string>
+    <string name="location">Location</string>
+    <string name="document_date">Document Date</string>
+    <string name="document_number">Document Number</string>
+    <string name="truck_code">Truck Code</string>
+    <string name="grade_kfc">KFC</string>
+    <string name="grade_a">Grade A</string>
+    <string name="grade_b">Grade B</string>
+    <string name="type">Type</string>
+    <string name="start">Start</string>
+    <string name="EMPTY_STRING">\u0020</string>
+    <string name="weight_kg">Weight(KG)</string>
+    <string name="mortality_weight_kg">Mortality Weight(KG)</string>
+    <string name="mortality_quantity">Mortality Quantity</string>
+    <string name="quantity">Quantity</string>
+    <string name="cage">Cage</string>
+    <string name="cover">Cover</string>
+    <string name="total">Total</string>
+    <string name="next">Next</string>
+    <string name="SHORT_NUMBER">#</string>
+    <string name="weight_scale">Weight Scale</string>
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="total_weight">Total Weight</string>
+    <string name="total_quantity">Total Quantity</string>
+    <string name="total_cover">Total Cover</string>
+    <string name="total_cage">Total Cage</string>
+    <string name="error">Error</string>
+    <string name="last_synchronize">Last Synchronize</string>
+
+    <string name="local2">Local (Connect Office Wi-Fi)</string>
+    <string name="re_sync_all">Re-sync All</string>
+    <string name="update_all">Update All</string>
+    <string name="house_keeping">House Keeping</string>
+
+
+    <string name="error_dialog_title">Error</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_title_company">Please Select Company</string>
+    <string name="dialog_title_location">Please Select Location</string>
+    <string name="dialog_title_no_company">Empty Company Listing</string>
+</resources>
