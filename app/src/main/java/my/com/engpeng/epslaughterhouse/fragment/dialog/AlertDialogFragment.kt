@@ -10,9 +10,9 @@ import my.com.engpeng.epslaughterhouse.R
 class AlertDialogFragment : DialogFragment() {
 
     companion object {
-        val TAG = this::class.qualifiedName
-        val B_KEY_TITLE = "B_KEY_TITLE"
-        val B_KEY_MESSAGE = "B_KEY_MESSAGE"
+        private val TAG = this::class.qualifiedName
+        const val B_KEY_TITLE = "B_KEY_TITLE"
+        const val B_KEY_MESSAGE = "B_KEY_MESSAGE"
 
         fun show(fm: FragmentManager, title: String, message: String) {
             AlertDialogFragment().apply {
@@ -28,7 +28,7 @@ class AlertDialogFragment : DialogFragment() {
         return AlertDialog.Builder(requireActivity())
                 .setTitle(arguments!!.getString(B_KEY_TITLE))
                 .setMessage(arguments!!.getString(B_KEY_MESSAGE))
-                .setPositiveButton(R.string.dialog_button_ok) { _, _ -> dismiss() }
+                .setPositiveButton(R.string.dialog_positive_button_text) { _, _ -> dismiss() }
                 .create()
     }
 }

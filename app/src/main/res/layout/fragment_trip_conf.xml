@@ -155,6 +155,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_ttl_weight"
+                android:textAlignment="center"
                 style="@style/DisplayOnlyEditTextStyle"
                 android:text="@string/EMPTY_STRING" />
 
@@ -174,6 +175,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_ttl_qty"
+                android:textAlignment="center"
                 style="@style/DisplayOnlyEditTextStyle"
                 android:text="@string/EMPTY_STRING" />
 
@@ -193,6 +195,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_ttl_cage"
+                android:textAlignment="center"
                 style="@style/DisplayOnlyEditTextStyle"
                 android:text="@string/EMPTY_STRING" />
 
@@ -211,6 +214,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_ttl_cover"
+                android:textAlignment="center"
                 style="@style/DisplayOnlyEditTextStyle"
                 android:text="@string/EMPTY_STRING" />
 
@@ -283,8 +287,8 @@
         android:id="@+id/cl_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_save"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -319,6 +323,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_hint"
+        style="@style/SwipeTextViewStyle"
+        android:layout_marginBottom="8dp"
+        android:text="@string/hint_swipe_to_delete"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"

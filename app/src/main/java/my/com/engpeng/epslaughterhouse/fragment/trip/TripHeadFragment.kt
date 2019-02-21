@@ -2,18 +2,20 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_head.*
 import my.com.engpeng.epslaughterhouse.R
+import my.com.engpeng.epslaughterhouse.activity.ScanActivity
 import my.com.engpeng.epslaughterhouse.di.AppModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
@@ -21,6 +23,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
+import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import java.util.*
 
 /**
@@ -34,7 +37,7 @@ class TripHeadFragment : Fragment() {
     private lateinit var calendarDocDate: Calendar
     private var isScanning: Boolean = false
 
-    private var slaughter: Slaughter = Slaughter()
+    private var slaughter = Slaughter()
 
     private val companySubject = PublishSubject.create<Long>()
     private var companyDis: Disposable? = null
@@ -89,7 +92,11 @@ class TripHeadFragment : Fragment() {
         }
 
         btn_start.setOnClickListener {
-            start(it)
+            start()
+        }
+
+        fab_scan.setOnClickListener {
+            startActivity(Intent(context, ScanActivity::class.java))
         }
     }
 
@@ -121,9 +128,7 @@ class TripHeadFragment : Fragment() {
                 }
     }
 
-    private fun start(view: View) {
-        var message = ""
-
+    private fun start() {
         slaughter.run {
             docNo = et_doc_no.text.toString()
             truckCode = et_truck_code.text.toString()
@@ -138,6 +143,7 @@ class TripHeadFragment : Fragment() {
             }
         }
 
+        var message = ""
         slaughter.run check@{
             if (companyId == null) {
                 message = "Please select company"
@@ -165,7 +171,9 @@ class TripHeadFragment : Fragment() {
             AlertDialogFragment.show(fragmentManager!!, getString(R.string.error_dialog_title), message)
             return
         }
-        view.findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripSumFragment(slaughter))
+
+        activity?.hideKeyboard()
+        findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripSumFragment(slaughter))
     }
 
     private fun showCompanyDialog() {
@@ -193,4 +201,6 @@ class TripHeadFragment : Fragment() {
         companyDis?.dispose()
         locationDis?.dispose()
     }
+
+
 }

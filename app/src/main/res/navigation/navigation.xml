@@ -52,7 +52,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="slaughter"
             app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
@@ -67,10 +67,15 @@
         android:id="@+id/tripConfFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripConfFragment"
         android:label="TripConfFragment"
-        tools:layout="@layout/fragment_trip_conf" />
+        tools:layout="@layout/fragment_trip_conf">
+        <argument
+            android:name="slaughter"
+            app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/houseKeepingFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.HouseKeepingFragment"
         android:label="HouseKeepingFragment"
-        tools:layout="@layout/fragment_house_keeping"/>
+        tools:layout="@layout/fragment_house_keeping" />
 </navigation>

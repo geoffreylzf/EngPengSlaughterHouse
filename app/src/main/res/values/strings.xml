@@ -28,6 +28,7 @@
     <string name="number_three">3</string>
     <string name="number_four">4</string>
     <string name="number_five">5</string>
+    <string name="number_six">6</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="total_weight">Total Weight</string>
@@ -44,8 +45,12 @@
 
 
     <string name="error_dialog_title">Error</string>
-    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_positive_button_text">OK</string>
+    <string name="dialog_negative_button_text">Cancel</string>
     <string name="dialog_title_company">Please Select Company</string>
     <string name="dialog_title_location">Please Select Location</string>
     <string name="dialog_title_no_company">Empty Company Listing</string>
+    <string name="dialog_title_mortality">Please enter mortality</string>
+
+    <string name="hint_swipe_to_delete">Swipe to delete</string>
 </resources>
