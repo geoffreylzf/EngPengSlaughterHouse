@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_location.*
@@ -35,9 +37,9 @@ class LocationDialogFragment : DialogFragment() {
     }
 
     private val appDb by lazy { AppModule.provideDb(requireContext()) }
-    private var disposable: Disposable? = null
-    private var disposable2: Disposable? = null
+
     private var companyId: Long? = null
+    private var compositeDisposable = CompositeDisposable()
 
     private val selectSubject = PublishSubject.create<Location>()
     val selectEvent: Observable<Location> = selectSubject
@@ -48,8 +50,12 @@ class LocationDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_dialog_location, container, false)
+    }
 
-        disposable = appDb.locationDao().getAllByCompanyId(companyId!!)
+    override fun onResume() {
+        super.onResume()
+        appDb.locationDao().getAllByCompanyId(companyId!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -57,27 +63,24 @@ class LocationDialogFragment : DialogFragment() {
                         //rv.height = dialog.hei
                         rv.layoutManager = LinearLayoutManager(context)
                         rv.adapter = LocationDialogAdapter(it).apply {
-                            disposable2 = clickEvent
-                                    .subscribeOn(Schedulers.io())
+                            clickEvent.subscribeOn(Schedulers.io())
                                     .delay(200, TimeUnit.MILLISECONDS)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe { location ->
                                         selectSubject.onNext(location)
+                                        selectSubject.onComplete()
                                         dismiss()
-                                    }
+                                    }.addTo(compositeDisposable)
                         }
                     } else {
                         tv_title.setText(R.string.dialog_title_no_company)
                     }
-                }
-
-        return inflater.inflate(R.layout.fragment_dialog_location, container, false)
+                }.addTo(compositeDisposable)
     }
 
     override fun onStop() {
         super.onStop()
-        disposable?.dispose()
-        disposable2?.dispose()
+        compositeDisposable.clear()
     }
 
 }

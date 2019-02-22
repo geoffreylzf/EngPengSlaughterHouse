@@ -83,10 +83,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:hint="@string/document_number"
+        app:layout_constraintBottom_toBottomOf="@id/til_doc_date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/gl_50"
-        app:layout_constraintTop_toTopOf="@id/til_doc_date"
-        app:layout_constraintBottom_toBottomOf="@id/til_doc_date">
+        app:layout_constraintTop_toTopOf="@id/til_doc_date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_doc_no"
@@ -98,12 +98,56 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
+        android:id="@+id/tv_doc_type"
+        style="@style/LabelTextViewStyle"
+        android:text="@string/document_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_doc_date" />
+
+    <RadioGroup
+        android:id="@+id/rg_doc_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_doc_type">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_doc_type_ift"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/doc_type_ift" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/rb_doc_type_pl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/doc_type_pl" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+    </RadioGroup>
+
+    <TextView
         android:id="@+id/tv_type"
         style="@style/LabelTextViewStyle"
         android:text="@string/type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_doc_date" />
+        app:layout_constraintTop_toBottomOf="@id/rg_doc_type" />
 
     <RadioGroup
         android:id="@+id/rg_type"
@@ -184,9 +228,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         app:fabCustomSize="64dp"
-        app:tint="@color/colorWhite"
-        app:srcCompat="@drawable/ic_baseline_settings_overscan_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:srcCompat="@drawable/ic_baseline_settings_overscan_24px"
+        app:tint="@color/colorWhite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

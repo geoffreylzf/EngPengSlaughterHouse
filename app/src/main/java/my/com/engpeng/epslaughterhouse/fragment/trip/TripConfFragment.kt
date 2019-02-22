@@ -49,17 +49,19 @@ class TripConfFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObservable()
         setupView()
         setupRv()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupObservable()
     }
 
     private fun setupView() {
         slaughter = TripConfFragmentArgs.fromBundle(arguments!!).slaughter!!
 
         slaughter.run {
-            companySubject.onNext(companyId!!)
-            locationSubject.onNext(locationId!!)
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
             et_doc_no.setText(docNo)
             et_type.setText(type)
@@ -169,10 +171,14 @@ class TripConfFragment : Fragment() {
                         et_location.setText(locationName)
                     }
                 }
+
+        slaughter.run {
+            companySubject.onNext(companyId!!)
+            locationSubject.onNext(locationId!!) }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         companyDis?.dispose()
         locationDis?.dispose()
         delTempDis?.dispose()

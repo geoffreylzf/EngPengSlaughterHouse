@@ -59,3 +59,7 @@ fun View.requestFocusWithKeyboard(activity: Activity?) {
 fun Double?.format2Decimal(): String {
     return String.format("%.2f", this)
 }
+
+enum class DocType {
+    IFT, PL
+}

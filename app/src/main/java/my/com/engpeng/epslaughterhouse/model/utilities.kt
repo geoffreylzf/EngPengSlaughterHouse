@@ -9,3 +9,8 @@ data class TempSlaughterDetailTtl(
 data class TempSlaughterMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
+
+
+data class CompanyQr(
+        val id: Long,
+        val isQr: Boolean)
