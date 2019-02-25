@@ -63,3 +63,8 @@ fun Double?.format2Decimal(): String {
 enum class DocType {
     IFT, PL
 }
+
+const val BT_WT_PREFIX_GROSS = "G.W.:"
+const val BT_WT_PREFIX_TARE = "T.W.:"
+const val BT_WT_PREFIX_NETT = "N.W.:"
+const val BT_WT_PREFIX_KG = "kg"

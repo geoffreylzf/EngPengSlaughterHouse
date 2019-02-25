@@ -1,4 +1,4 @@
-package my.com.engpeng.epslaughterhouse.activity
+package my.com.engpeng.epslaughterhouse.camera
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

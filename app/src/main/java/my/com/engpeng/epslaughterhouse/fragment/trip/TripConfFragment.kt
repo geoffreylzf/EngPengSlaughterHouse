@@ -1,7 +1,6 @@
 package my.com.engpeng.epslaughterhouse.fragment.trip
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_conf.*
@@ -24,6 +25,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.MortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
+import java.util.concurrent.TimeUnit
 
 class TripConfFragment : Fragment() {
 
@@ -32,11 +34,9 @@ class TripConfFragment : Fragment() {
     private var rvAdapter = TempSlaughterMortalityAdapter()
 
     private val companySubject = PublishSubject.create<Long>()
-    private var companyDis: Disposable? = null
     private val locationSubject = PublishSubject.create<Long>()
-    private var locationDis: Disposable? = null
-    private var delTempDis: Disposable? = null
-    private var addTempMorDis: Disposable? = null
+
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -106,11 +106,10 @@ class TripConfFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-                        delTempDis = Single
-                                .fromCallable { appDb.tempSlaughterMortalityDao().deleteById(tempId) }
+                        Single.fromCallable { appDb.tempSlaughterMortalityDao().deleteById(tempId) }
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
+                                .subscribe().addTo(compositeDisposable)
                     }
 
                     override fun onNegativeButtonClicked() {
@@ -139,7 +138,7 @@ class TripConfFragment : Fragment() {
     }
 
     private fun showMortalityDialog() {
-        addTempMorDis = MortalityDialogFragment
+        MortalityDialogFragment
                 .getInstance(fragmentManager!!)
                 .doneEvent
                 .subscribeOn(Schedulers.io())
@@ -148,11 +147,12 @@ class TripConfFragment : Fragment() {
                             .insert(it)
                             .subscribeOn(Schedulers.io())
                 }
-                .subscribe ()
+                .subscribe()
+                .addTo(compositeDisposable)
     }
 
     private fun setupObservable() {
-        companyDis = companySubject.subscribeOn(Schedulers.io())
+        companySubject.subscribeOn(Schedulers.io())
                 .flatMap { appDb.companyDao().getById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -160,9 +160,9 @@ class TripConfFragment : Fragment() {
                         slaughter.companyId = id
                         et_company.setText(companyName)
                     }
-                }
+                }.addTo(compositeDisposable)
 
-        locationDis = locationSubject.subscribeOn(Schedulers.io())
+        locationSubject.subscribeOn(Schedulers.io())
                 .flatMap { appDb.locationDao().getById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -170,18 +170,20 @@ class TripConfFragment : Fragment() {
                         slaughter.locationId = id
                         et_location.setText(locationName)
                     }
-                }
+                }.addTo(compositeDisposable)
 
-        slaughter.run {
-            companySubject.onNext(companyId!!)
-            locationSubject.onNext(locationId!!) }
+        Observable.just(slaughter).subscribeOn(Schedulers.io())
+                .delay(100, TimeUnit.MILLISECONDS)
+                .subscribe{
+                    it.run {
+                        companySubject.onNext(companyId!!)
+                        locationSubject.onNext(locationId!!)
+                    }
+                }.addTo(compositeDisposable)
     }
 
     override fun onPause() {
         super.onPause()
-        companyDis?.dispose()
-        locationDis?.dispose()
-        delTempDis?.dispose()
-        addTempMorDis?.dispose()
+        compositeDisposable.clear()
     }
 }

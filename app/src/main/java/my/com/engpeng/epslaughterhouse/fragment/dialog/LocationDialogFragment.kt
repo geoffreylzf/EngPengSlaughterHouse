@@ -1,7 +1,6 @@
 package my.com.engpeng.epslaughterhouse.fragment.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -100,9 +98,8 @@ class LocationDialogAdapter(private val locationList: List<Location>)
 
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         locationList[position].let { location ->
-            holder.itemView.apply {
+            holder.itemView.run {
                 clicks().map { location }.subscribe(clickSubject)
-            }.run {
                 li_tv_location_code.text = location.locationCode
                 li_tv_location_name.text = location.locationName
             }

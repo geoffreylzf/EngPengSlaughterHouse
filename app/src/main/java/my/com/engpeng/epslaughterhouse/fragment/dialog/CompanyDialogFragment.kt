@@ -95,9 +95,8 @@ class CompanyDialogAdapter(
 
     override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
         companyList[position].let { company ->
-            holder.itemView.apply {
+            holder.itemView.run {
                 clicks().map { company }.subscribe(clickSubject)
-            }.run {
                 li_tv_company_code.text = company.companyCode
                 li_tv_company_name.text = company.companyName
             }

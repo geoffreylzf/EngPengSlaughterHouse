@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/menuFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.MenuFragment"
-        android:label="fragment_menu"
+        android:label="Slaughter House Application"
         tools:layout="@layout/fragment_menu">
         <action
             android:id="@+id/action_menuFragment_to_tripHeadFragment"
@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/tripHeadFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHeadFragment"
-        android:label="fragment_trip_head"
+        android:label="New Trip"
         tools:layout="@layout/fragment_trip_head">
         <action
             android:id="@+id/action_tripHeadFragment_to_tripSumFragment"
@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/tripSumFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripSumFragment"
-        android:label="TripSumFragment"
+        android:label="Trip Summary"
         tools:layout="@layout/fragment_trip_sum">
         <action
             android:id="@+id/action_tripSumFragment_to_tripDetailFragment"
@@ -61,12 +61,12 @@
     <fragment
         android:id="@+id/tripDetailFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripDetailFragment"
-        android:label="TripDetailFragment"
+        android:label="Trip Detail"
         tools:layout="@layout/fragment_trip_detail" />
     <fragment
         android:id="@+id/tripConfFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripConfFragment"
-        android:label="TripConfFragment"
+        android:label="Trip Confirmation"
         tools:layout="@layout/fragment_trip_conf">
         <argument
             android:name="slaughter"
@@ -76,6 +76,6 @@
     <fragment
         android:id="@+id/houseKeepingFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.HouseKeepingFragment"
-        android:label="HouseKeepingFragment"
+        android:label="House Keeping"
         tools:layout="@layout/fragment_house_keeping" />
 </navigation>

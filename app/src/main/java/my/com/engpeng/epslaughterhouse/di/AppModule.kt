@@ -1,12 +1,15 @@
 package my.com.engpeng.epslaughterhouse.di
 
-import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import my.com.engpeng.epslaughterhouse.BuildConfig
 import my.com.engpeng.epslaughterhouse.api.ApiService
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+
+const val PREFERENCE_FILE_KEY = BuildConfig.APPLICATION_ID
 
 class AppModule {
     companion object {
@@ -21,6 +24,10 @@ class AppModule {
 
         fun provideDb(context: Context): AppDb {
             return AppDb.getInstance(context)
+        }
+
+        fun providePreferences(context: Context): SharedPreferences {
+            return context.getSharedPreferences(PREFERENCE_FILE_KEY, Context.MODE_PRIVATE);
         }
     }
 }

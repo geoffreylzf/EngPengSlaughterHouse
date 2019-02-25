@@ -17,8 +17,9 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_head.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.activity.ScanActivity
-import my.com.engpeng.epslaughterhouse.activity.ScanBus
+import my.com.engpeng.epslaughterhouse.camera.CameraPermission
+import my.com.engpeng.epslaughterhouse.camera.ScanActivity
+import my.com.engpeng.epslaughterhouse.camera.ScanBus
 import my.com.engpeng.epslaughterhouse.di.AppModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
@@ -103,7 +104,11 @@ class TripHeadFragment : Fragment() {
         }
 
         fab_scan.setOnClickListener {
-            startActivity(Intent(context, ScanActivity::class.java))
+            if(CameraPermission.check(requireActivity())){
+                startActivity(Intent(context, ScanActivity::class.java))
+            }else{
+                CameraPermission.request(requireActivity())
+            }
         }
     }
 

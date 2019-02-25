@@ -2,6 +2,7 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,19 +11,22 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import app.akexorcist.bluetotohspp.library.BluetoothSPP
+import app.akexorcist.bluetotohspp.library.BluetoothState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
 import my.com.engpeng.epslaughterhouse.di.AppModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
+import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
+import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetail
-import my.com.engpeng.epslaughterhouse.util.hideKeyboard
-import my.com.engpeng.epslaughterhouse.util.requestFocusWithKeyboard
-import my.com.engpeng.epslaughterhouse.util.vibrate
+import my.com.engpeng.epslaughterhouse.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -30,15 +34,19 @@ import java.util.concurrent.TimeUnit
  * A simple [Fragment] subclass.
  *
  */
+
+
 class TripDetailFragment : Fragment() {
 
     private val appDb by lazy { AppModule.provideDb(requireContext()) }
 
-    private var tempSlaughterDetail = TempSlaughterDetail()
-    private var rvAdapter = TempSlaughterDetailAdapter(true)
+    private val tempSlaughterDetail = TempSlaughterDetail()
+    private val rvAdapter = TempSlaughterDetailAdapter(true)
+    private val compositeDisposable = CompositeDisposable()
 
-    private var disposable: Disposable? = null
-    private var disposable2: Disposable? = null
+    private val bt = BluetoothSPP(context)
+    private var btName = ""
+    private var btAddress = ""
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +59,11 @@ class TripDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupRv()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startWeighingBluetooth()
     }
 
     private fun setupView() {
@@ -75,6 +88,87 @@ class TripDetailFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
+
+        btn_bt_start.setOnClickListener { startWeighingService() }
+
+        btn_weight_scale.setOnClickListener {
+            et_weight.setText(btn_weight_scale.text)
+        }
+
+        btn_bt.setOnClickListener {
+            BluetoothDialogFragment.show(fragmentManager!!,
+                    bt.pairedDeviceName.toList(),
+                    bt.pairedDeviceAddress.toList(),
+                    object : BluetoothDialogFragment.Listener {
+                        override fun onSelect(bluetooth: Bluetooth) {
+                            SharedPreferencesUtils.saveWeighingBluetooth(context!!, bluetooth)
+                            startWeighingBluetooth()
+                        }
+                    })
+        }
+    }
+
+    private fun startWeighingBluetooth() {
+
+        if (!bt.isBluetoothAvailable) {
+            tv_bt_status.text = getString(R.string.bt_status, "Not Available")
+            return
+        }
+        if (!bt.isBluetoothEnabled) {
+            tv_bt_status.text = getString(R.string.bt_status, "Not Enable")
+            return
+        }
+
+        SharedPreferencesUtils.getWeighingBluetooth(context!!).run {
+            btName = name
+            btAddress = address
+        }
+
+        tv_bt_status.text = getString(R.string.bt_status, "Not Connected")
+        tv_bt_name.text = getString(R.string.bt_name, btName)
+        tv_bt_address.text = getString(R.string.bt_address, btAddress)
+
+        if (btName.isNotEmpty() && btAddress.isNotEmpty()) {
+            btn_bt_start.isEnabled = true
+        }
+
+        bt.setBluetoothConnectionListener(object : BluetoothSPP.BluetoothConnectionListener {
+            override fun onDeviceDisconnected() {
+                tv_bt_status?.text = getString(R.string.bt_status, "Not Connected")
+                btn_weight_scale?.visibility = View.INVISIBLE
+            }
+
+            override fun onDeviceConnectionFailed() {
+                tv_bt_status?.text = getString(R.string.bt_status, "Connection Failed")
+                btn_weight_scale?.visibility = View.INVISIBLE
+            }
+
+            override fun onDeviceConnected(name: String, address: String) {
+                tv_bt_status?.text = getString(R.string.bt_status, "Connected To $address")
+                btn_weight_scale?.visibility = View.VISIBLE
+            }
+        })
+
+        bt.setOnDataReceivedListener { _, message ->
+            message.run {
+                if (contains(BT_WT_PREFIX_NETT)) {
+                    btn_weight_scale?.text = replace(BT_WT_PREFIX_NETT, "")
+                            .replace(BT_WT_PREFIX_KG, "")
+                            .trim()
+                            .toDoubleOrNull()
+                            .format2Decimal()
+                }
+            }
+        }
+
+        if (!bt.isServiceAvailable) {
+            bt.setupService()
+            bt.setDeviceTarget(BluetoothState.DEVICE_OTHER)
+        }
+    }
+
+    private fun startWeighingService() {
+        bt.connect(btAddress)
     }
 
     private fun setupRv() {
@@ -141,7 +235,7 @@ class TripDetailFragment : Fragment() {
             return
         }
 
-        disposable = appDb.tempSlaughterDetailDao()
+        appDb.tempSlaughterDetailDao()
                 .insert(tempSlaughterDetail)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -149,21 +243,21 @@ class TripDetailFragment : Fragment() {
                     activity?.vibrate()
                     et_weight.text?.clear()
                     et_weight.requestFocusWithKeyboard(activity)
-                }, {})
+                }, {}).addTo(compositeDisposable)
     }
 
     override fun onStop() {
         super.onStop()
-        disposable?.dispose()
-        disposable2?.dispose()
+        compositeDisposable.clear()
+        bt.stopService()
     }
 
     private fun backToSummary() {
         activity?.hideKeyboard()
-        disposable2 = Observable.timer(100, TimeUnit.MILLISECONDS)
+        Observable.timer(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     findNavController().popBackStack()
-                }
+                }.addTo(compositeDisposable)
     }
 }

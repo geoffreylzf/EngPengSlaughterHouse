@@ -14,3 +14,8 @@ data class TempSlaughterMortalityTtl(
 data class CompanyQr(
         val id: Long,
         val isQr: Boolean)
+
+
+data class Bluetooth(
+        val name: String,
+        val address: String)

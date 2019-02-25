@@ -40,17 +40,23 @@
     <string name="total_cage">Total Cage</string>
     <string name="error">Error</string>
     <string name="last_synchronize">Last Synchronize</string>
+    <string name="name">Name</string>
+    <string name="address">Address</string>
 
     <string name="local2">Local (Connect Office Wi-Fi)</string>
     <string name="re_sync_all">Re-sync All</string>
     <string name="update_all">Update All</string>
     <string name="house_keeping">House Keeping</string>
 
+    <string name="bt_status">Status : %1$s</string>
+    <string name="bt_name">Name : %1$s</string>
+    <string name="bt_address">Address : %1$s</string>
 
     <string name="error_dialog_title">Error</string>
     <string name="dialog_positive_button_text">OK</string>
     <string name="dialog_negative_button_text">Cancel</string>
     <string name="dialog_title_company">Please Select Company</string>
+    <string name="dialog_title_bluetooth_device">Please Select Bluetooth Device</string>
     <string name="dialog_title_location">Please Select Location</string>
     <string name="dialog_title_no_company">Empty Company Listing</string>
     <string name="dialog_title_mortality">Please enter mortality</string>
