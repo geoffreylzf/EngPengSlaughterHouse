@@ -3,8 +3,9 @@ package my.com.engpeng.epslaughterhouse.db
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import io.reactivex.Maybe
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortality
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortalityTtl
+import my.com.engpeng.epslaughterhouse.model.SlaughterMortalityTtl
 
 @Dao
 abstract class TempSlaughterMortalityDao : BaseDao<TempSlaughterMortality>() {
@@ -27,5 +28,8 @@ abstract class TempSlaughterMortalityDao : BaseDao<TempSlaughterMortality>() {
             SUM(qty) AS ttlQty
         FROM temp_slaughter_mortalities
         """)
-    abstract fun getLiveTotal(): LiveData<TempSlaughterMortalityTtl>
+    abstract fun getLiveTotal(): LiveData<SlaughterMortalityTtl>
+
+    @Query("SELECT * FROM temp_slaughter_mortalities")
+    abstract fun getAll(): Maybe<List<TempSlaughterMortality>>
 }

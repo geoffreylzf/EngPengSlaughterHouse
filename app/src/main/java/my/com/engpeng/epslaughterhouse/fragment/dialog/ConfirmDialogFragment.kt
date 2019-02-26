@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import my.com.engpeng.epslaughterhouse.R
 
-class ConfirmDialogFragment() : DialogFragment() {
+class ConfirmDialogFragment : DialogFragment() {
 
     companion object {
         private val TAG = this::class.qualifiedName

@@ -23,11 +23,11 @@ import kotlinx.android.synthetic.main.fragment_trip_sum.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
 import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
-import java.util.concurrent.TimeUnit
 
 class TripSumFragment : Fragment() {
 
@@ -35,9 +35,6 @@ class TripSumFragment : Fragment() {
 
     private lateinit var slaughter: Slaughter
     private var rvAdapter = TempSlaughterDetailAdapter(false)
-
-    private val companySubject = PublishSubject.create<Long>()
-    private val locationSubject = PublishSubject.create<Long>()
 
     private var compositeDisposable = CompositeDisposable()
 
@@ -54,22 +51,12 @@ class TripSumFragment : Fragment() {
         setupRv()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupView()
-        setupRv()
-    }
-
     private fun setupView() {
-        fab_add.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_tripSumFragment_to_tripDetailFragment))
-        btn_next.setOnClickListener {
-            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(slaughter))
-        }
         slaughter = TripSumFragmentArgs.fromBundle(arguments!!).slaughter!!
 
         slaughter.run {
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
-            et_doc_no.setText(docNo)
+            et_doc_no.setText("${docType}-${docNo}")
             et_type.setText(type)
             et_truck_code.setText(truckCode)
 
@@ -78,7 +65,6 @@ class TripSumFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         it.run {
-                            slaughter.companyId = id
                             et_company.setText(companyName)
                         }
                     }.addTo(compositeDisposable)
@@ -88,7 +74,6 @@ class TripSumFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         it.run {
-                            slaughter.locationId = id
                             et_location.setText(locationName)
                         }
                     }.addTo(compositeDisposable)
@@ -137,6 +122,24 @@ class TripSumFragment : Fragment() {
                 })
             }
         }).attachToRecyclerView(rv)
+
+        fab_add.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_tripSumFragment_to_tripDetailFragment))
+
+        btn_next.setOnClickListener {
+            appDb.tempSlaughterDetailDao().getCount()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (it != 0) {
+                            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(slaughter))
+                        } else {
+                            AlertDialogFragment.show(fragmentManager!!,
+                                    "Error",
+                                    "Please enter detail")
+                        }
+                    }
+                    .addTo(compositeDisposable)
+        }
     }
 
     private fun setupRv() {

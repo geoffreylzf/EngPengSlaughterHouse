@@ -33,6 +33,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_tripHeadFragment_to_tripHistoryFragment"
+            app:destination="@id/tripHistoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/tripSumFragment"
@@ -78,4 +85,22 @@
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.HouseKeepingFragment"
         android:label="House Keeping"
         tools:layout="@layout/fragment_house_keeping" />
+    <fragment
+        android:id="@+id/tripHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHistoryFragment"
+        android:label="Trip History"
+        tools:layout="@layout/fragment_trip_history" >
+        <action
+            android:id="@+id/action_tripHistoryFragment_to_tripHistoryDetailFragment"
+            app:destination="@id/tripHistoryDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHistoryDetailFragment"
+        android:label="Trip History Detail"
+        tools:layout="@layout/fragment_trip_history_detail">
+        <argument
+            android:name="slaughterId"
+            app:argType="long" />
+    </fragment>
 </navigation>

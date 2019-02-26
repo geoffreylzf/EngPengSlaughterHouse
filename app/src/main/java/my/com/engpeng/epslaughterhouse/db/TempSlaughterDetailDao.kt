@@ -3,8 +3,9 @@ package my.com.engpeng.epslaughterhouse.db
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import io.reactivex.Maybe
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetail
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetailTtl
+import my.com.engpeng.epslaughterhouse.model.SlaughterDetailTtl
 
 @Dao
 abstract class TempSlaughterDetailDao : BaseDao<TempSlaughterDetail>() {
@@ -29,5 +30,11 @@ abstract class TempSlaughterDetailDao : BaseDao<TempSlaughterDetail>() {
             SUM(cover) AS ttlCover
         FROM temp_slaughter_details
         """)
-    abstract fun getLiveTotal(): LiveData<TempSlaughterDetailTtl>
+    abstract fun getLiveTotal(): LiveData<SlaughterDetailTtl>
+
+    @Query("SELECT COUNT(*) FROM temp_slaughter_details")
+    abstract fun getCount(): Maybe<Int>
+
+    @Query("SELECT * FROM temp_slaughter_details")
+    abstract fun getAll(): Maybe<List<TempSlaughterDetail>>
 }

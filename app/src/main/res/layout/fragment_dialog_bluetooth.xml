@@ -25,7 +25,6 @@
         android:text="@string/name"
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toTopOf="@id/v_divider"
         app:layout_constraintEnd_toStartOf="@id/tv_title_address"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />

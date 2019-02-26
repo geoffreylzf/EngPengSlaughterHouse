@@ -22,10 +22,6 @@ class MenuFragment : Fragment() {
 
     private val TAG = MenuFragment::class.qualifiedName
 
-    private var disposable: Disposable? = null
-    private val apiService by lazy { AppModule.provideApiService() }
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }

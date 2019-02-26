@@ -16,11 +16,11 @@ import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortality
 import my.com.engpeng.epslaughterhouse.util.*
 
-class MortalityDialogFragment : DialogFragment() {
+class EnterMortalityDialogFragment : DialogFragment() {
     companion object {
         val TAG = this::class.qualifiedName
-        fun getInstance(fm: FragmentManager): MortalityDialogFragment {
-            return MortalityDialogFragment().apply {
+        fun getInstance(fm: FragmentManager): EnterMortalityDialogFragment {
+            return EnterMortalityDialogFragment().apply {
                 show(fm, TAG)
             }
         }

@@ -12,6 +12,7 @@ import my.com.engpeng.epslaughterhouse.model.*
             Location::class,
             Slaughter::class,
             SlaughterDetail::class,
+            SlaughterMortality::class,
             TempSlaughterDetail::class,
             TempSlaughterMortality::class,
             TableLog::class],
@@ -34,6 +35,9 @@ abstract class AppDb : RoomDatabase() {
 
     abstract fun companyDao(): CompanyDao
     abstract fun locationDao(): LocationDao
+    abstract fun slaughterDao(): SlaughterDao
+    abstract fun slaughterDetailDao(): SlaughterDetailDao
+    abstract fun slaughterMortalityDao(): SlaughterMortalityDao
     abstract fun tempSlaughterDetailDao(): TempSlaughterDetailDao
     abstract fun tempSlaughterMortalityDao(): TempSlaughterMortalityDao
     abstract fun tableLogDao(): TableLogDao

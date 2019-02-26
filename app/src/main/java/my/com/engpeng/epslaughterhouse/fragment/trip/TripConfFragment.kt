@@ -21,11 +21,14 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
 import my.com.engpeng.epslaughterhouse.di.AppModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
-import my.com.engpeng.epslaughterhouse.fragment.dialog.MortalityDialogFragment
+import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
+import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
+import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import java.util.concurrent.TimeUnit
+
 
 class TripConfFragment : Fragment() {
 
@@ -63,7 +66,7 @@ class TripConfFragment : Fragment() {
 
         slaughter.run {
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
-            et_doc_no.setText(docNo)
+            et_doc_no.setText("${docType}-${docNo}")
             et_type.setText(type)
             et_truck_code.setText(truckCode)
         }
@@ -122,6 +125,20 @@ class TripConfFragment : Fragment() {
         fab_add.setOnClickListener {
             showMortalityDialog()
         }
+
+        btn_save.setOnClickListener {
+            ConfirmDialogFragment.show(fragmentManager!!,
+                    "Confirm this trip ?",
+                    "Edit is not allowed after save",
+                    "Confirm", object : ConfirmDialogFragment.Listener {
+                override fun onPositiveButtonClicked() {
+                    save()
+                }
+
+                override fun onNegativeButtonClicked() {}
+            })
+
+        }
     }
 
     private fun setupRv() {
@@ -138,7 +155,7 @@ class TripConfFragment : Fragment() {
     }
 
     private fun showMortalityDialog() {
-        MortalityDialogFragment
+        EnterMortalityDialogFragment
                 .getInstance(fragmentManager!!)
                 .doneEvent
                 .subscribeOn(Schedulers.io())
@@ -174,7 +191,7 @@ class TripConfFragment : Fragment() {
 
         Observable.just(slaughter).subscribeOn(Schedulers.io())
                 .delay(100, TimeUnit.MILLISECONDS)
-                .subscribe{
+                .subscribe {
                     it.run {
                         companySubject.onNext(companyId!!)
                         locationSubject.onNext(locationId!!)
@@ -185,5 +202,35 @@ class TripConfFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         compositeDisposable.clear()
+    }
+
+    private fun save() {
+        appDb.slaughterDao().insert(slaughter)
+                .subscribeOn(Schedulers.io())
+                .flatMapMaybe { slaughterId ->
+                    appDb.tempSlaughterDetailDao().getAll().map { tempList ->
+                        SlaughterDetail.transformFromTempWithSlaughterId(slaughterId, tempList)
+                    }.doOnSuccess {
+                        appDb.slaughterDetailDao().insert(it)
+                    }.map {
+                        slaughterId
+                    }
+                }
+                .flatMap { slaughterId ->
+                    appDb.tempSlaughterMortalityDao().getAll().map { tempList ->
+                        SlaughterMortality.transformFromTempWithSlaughterId(slaughterId, tempList)
+                    }.doOnSuccess {
+                        appDb.slaughterMortalityDao().insert(it)
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                }, {
+
+                }, {
+                    //TODO go to print, clear temp data
+                })
+                .addTo(compositeDisposable)
     }
 }

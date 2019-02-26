@@ -60,6 +60,13 @@
     <string name="dialog_title_location">Please Select Location</string>
     <string name="dialog_title_no_company">Empty Company Listing</string>
     <string name="dialog_title_mortality">Please enter mortality</string>
+    <string name="dialog_title_mortality_detail">Mortality Detail</string>
 
     <string name="hint_swipe_to_delete">Swipe to delete</string>
+    <string name="history">History</string>
+    <string name="doc_no">Doc No</string>
+    <string name="date">Date</string>
+    <string name="truck">Truck</string>
+    <string name="upload">Upload</string>
+    <string name="mortality">Mortality</string>
 </resources>

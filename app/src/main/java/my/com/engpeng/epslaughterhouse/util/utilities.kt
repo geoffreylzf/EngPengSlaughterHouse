@@ -60,6 +60,14 @@ fun Double?.format2Decimal(): String {
     return String.format("%.2f", this)
 }
 
+fun Int.formatYesNo(): String {
+    return when (this) {
+        0 -> "No"
+        1 -> "Yes"
+        else -> "?"
+    }
+}
+
 enum class DocType {
     IFT, PL
 }

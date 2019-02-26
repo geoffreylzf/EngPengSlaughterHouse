@@ -246,8 +246,8 @@ class TripDetailFragment : Fragment() {
                 }, {}).addTo(compositeDisposable)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         compositeDisposable.clear()
         bt.stopService()
     }

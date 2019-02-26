@@ -4,14 +4,11 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -40,23 +37,18 @@ class TripHeadFragment : Fragment() {
 
     private val appDb by lazy { AppModule.provideDb(requireContext()) }
 
-    private lateinit var calendarDocDate: Calendar
-
+    private var calendarDocDate = Calendar.getInstance()
     private var slaughter = Slaughter()
-
     private val companySubject = PublishSubject.create<CompanyQr>()
     private val locationSubject = PublishSubject.create<Long>()
-
-    private var comDlgDis: Disposable? = null
-    private var locDlgDis: Disposable? = null
-
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        calendarDocDate = Calendar.getInstance()
+        setHasOptionsMenu(true)
+        calendarDocDate
         return inflater.inflate(R.layout.fragment_trip_head, container, false)
     }
 
@@ -68,6 +60,21 @@ class TripHeadFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupObservable()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.trip_head, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.tripHistoryFragment -> {
+                findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripHistoryFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupView() {
@@ -104,9 +111,9 @@ class TripHeadFragment : Fragment() {
         }
 
         fab_scan.setOnClickListener {
-            if(CameraPermission.check(requireActivity())){
+            if (CameraPermission.check(requireActivity())) {
                 startActivity(Intent(context, ScanActivity::class.java))
-            }else{
+            } else {
                 CameraPermission.request(requireActivity())
             }
         }
@@ -246,27 +253,25 @@ class TripHeadFragment : Fragment() {
     }
 
     private fun showCompanyDialog() {
-        comDlgDis = CompanyDialogFragment
+        CompanyDialogFragment
                 .getInstance(fragmentManager!!)
                 .selectEvent
                 .subscribe {
                     companySubject.onNext(CompanyQr(it.id!!, false))
-                }
+                }.addTo(compositeDisposable)
     }
 
     private fun showLocationDialog(companyId: Long) {
-        locDlgDis = LocationDialogFragment
+        LocationDialogFragment
                 .getInstance(fragmentManager!!, companyId)
                 .selectEvent
                 .subscribe {
                     locationSubject.onNext(it.id!!)
-                }
+                }.addTo(compositeDisposable)
     }
 
     override fun onPause() {
         super.onPause()
-        //comDlgDis?.dispose() DO NOT DISPOSE BECAUSE IT WILL COMPLETE
-        //locDlgDis?.dispose() DO NOT DISPOSE BECAUSE IT WILL COMPLETE
         compositeDisposable.clear()
     }
 }
