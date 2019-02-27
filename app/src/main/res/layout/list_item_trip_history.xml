@@ -10,7 +10,7 @@
         style="@style/TableBodyTextViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/li_tv_company"
-        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintHorizontal_weight="0.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,7 +19,7 @@
         style="@style/TableBodyTextViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/li_tv_location"
-        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintHorizontal_weight="0.8"
         app:layout_constraintStart_toEndOf="@id/li_tv_no"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@
         style="@style/TableBodyTextViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/li_tv_doc_date"
-        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintHorizontal_weight="0.8"
         app:layout_constraintStart_toEndOf="@id/li_tv_company"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +37,7 @@
         style="@style/TableBodyTextViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/li_tv_doc_no"
-        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintHorizontal_weight="0.8"
         app:layout_constraintStart_toEndOf="@id/li_tv_location"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +46,7 @@
         style="@style/TableBodyTextViewStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/li_tv_type"
-        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintHorizontal_weight="0.8"
         app:layout_constraintStart_toEndOf="@id/li_tv_doc_date"
         app:layout_constraintTop_toTopOf="parent" />
 

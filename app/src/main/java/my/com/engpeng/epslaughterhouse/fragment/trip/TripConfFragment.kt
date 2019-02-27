@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_trip_conf.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
 import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
@@ -221,15 +224,30 @@ class TripConfFragment : Fragment() {
                         SlaughterMortality.transformFromTempWithSlaughterId(slaughterId, tempList)
                     }.doOnSuccess {
                         appDb.slaughterMortalityDao().insert(it)
+                    }.map {
+                        slaughterId
+                    }
+                }
+                .flatMap { slaughterId ->
+                    Maybe.fromCallable {
+                        appDb.tempSlaughterDetailDao().deleteAll()
+                    }.map {
+                        slaughterId
+                    }
+                }
+                .flatMap { slaughterId ->
+                    Maybe.fromCallable {
+                        appDb.tempSlaughterMortalityDao().deleteAll()
+                    }.map {
+                        slaughterId
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-
+                    //TODO clear temp data
+                    findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(it))
                 }, {
-
-                }, {
-                    //TODO go to print, clear temp data
+                    AlertDialogFragment.show(fragmentManager!!, "Error", it.message + "")
                 })
                 .addTo(compositeDisposable)
     }

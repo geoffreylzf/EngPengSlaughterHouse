@@ -13,6 +13,7 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         scannerView = ZXingScannerView(this)
+        title = "Scan QR"
         setContentView(scannerView)
     }
 

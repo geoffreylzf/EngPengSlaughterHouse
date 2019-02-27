@@ -28,5 +28,29 @@ class SharedPreferencesUtils {
                     }
             return Bluetooth(name!!, address!!)
         }
+
+        private const val P_KEY_PRINTER_NAME = "P_KEY_PRINTER_NAME"
+        private const val P_KEY_PRINTER_ADDRESS = "P_KEY_PRINTER_ADDRESS"
+
+        fun savePrinterBluetooth(context: Context, wb: Bluetooth) {
+            AppModule.providePreferences(context)
+                    .edit()
+                    .apply {
+                        putString(P_KEY_PRINTER_NAME, wb.name)
+                        putString(P_KEY_PRINTER_ADDRESS, wb.address)
+                    }
+                    .apply()
+        }
+
+        fun getPrinterBluetooth(context: Context): Bluetooth {
+            var name: String?
+            var address: String?
+            AppModule.providePreferences(context)
+                    .apply {
+                        name = getString(P_KEY_PRINTER_NAME, "")
+                        address = getString(P_KEY_PRINTER_ADDRESS, "")
+                    }
+            return Bluetooth(name!!, address!!)
+        }
     }
 }

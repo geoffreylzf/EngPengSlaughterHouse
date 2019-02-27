@@ -2,8 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/mi_history"
+        android:id="@+id/mi_print"
         android:orderInCategory="100"
-        android:title="@string/history"
+        android:title="@string/print"
+        android:icon="@drawable/ic_baseline_print_white_24px"
         app:showAsAction="ifRoom" />
 </menu>

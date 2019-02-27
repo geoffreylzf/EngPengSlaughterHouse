@@ -2,11 +2,10 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,12 +31,28 @@ class TripHistoryDetailFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_trip_history_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.trip_history_detail, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.mi_print -> {
+                findNavController().navigate(TripHistoryDetailFragmentDirections.actionTripHistoryDetailFragmentToTripPrintFragment(slaughterId))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupView() {
@@ -89,6 +104,11 @@ class TripHistoryDetailFragment : Fragment() {
                         HistoryMortalityDialogFragment.show(fragmentManager!!, it)
                     }.addTo(compositeDisposable)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        compositeDisposable.clear()
     }
 }
 

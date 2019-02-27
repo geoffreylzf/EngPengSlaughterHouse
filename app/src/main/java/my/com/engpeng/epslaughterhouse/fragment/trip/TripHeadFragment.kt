@@ -48,7 +48,6 @@ class TripHeadFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        calendarDocDate
         return inflater.inflate(R.layout.fragment_trip_head, container, false)
     }
 
@@ -69,7 +68,7 @@ class TripHeadFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.tripHistoryFragment -> {
+            R.id.mi_history -> {
                 findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripHistoryFragment())
                 true
             }

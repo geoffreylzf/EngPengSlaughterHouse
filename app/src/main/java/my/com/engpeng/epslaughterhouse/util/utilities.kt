@@ -15,8 +15,8 @@ import java.util.*
 class Sdf {
     companion object {
         @SuppressLint("ConstantLocale")
-        private val sdfDisplay = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
 
+        private val sdfDisplay = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
         fun formatDisplay(date: Date): String {
             return sdfDisplay.format(date)
         }
@@ -24,6 +24,11 @@ class Sdf {
         private val sdfSave = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         fun formatSave(date: Date): String {
             return sdfSave.format(date)
+        }
+
+        private val sdfTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        fun formatTime(date: Date): String {
+            return sdfTime.format(date)
         }
 
         fun formatDisplayFromSave(str: String): String {

@@ -19,7 +19,11 @@
             app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_menuFragment_to_houseKeepingFragment"
-            app:destination="@id/houseKeepingFragment" />
+            app:destination="@id/houseKeepingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/tripHeadFragment"
@@ -79,6 +83,14 @@
             android:name="slaughter"
             app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_tripConfFragment_to_tripPrintFragment"
+            app:destination="@id/tripPrintFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/menuFragment" />
     </fragment>
     <fragment
         android:id="@+id/houseKeepingFragment"
@@ -92,13 +104,33 @@
         tools:layout="@layout/fragment_trip_history" >
         <action
             android:id="@+id/action_tripHistoryFragment_to_tripHistoryDetailFragment"
-            app:destination="@id/tripHistoryDetailFragment" />
+            app:destination="@id/tripHistoryDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/tripHistoryDetailFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHistoryDetailFragment"
         android:label="Trip History Detail"
         tools:layout="@layout/fragment_trip_history_detail">
+        <argument
+            android:name="slaughterId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_tripHistoryDetailFragment_to_tripPrintFragment"
+            app:destination="@id/tripPrintFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripPrintFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripPrintFragment"
+        android:label="Print Preview"
+        tools:layout="@layout/fragment_trip_print" >
         <argument
             android:name="slaughterId"
             app:argType="long" />
