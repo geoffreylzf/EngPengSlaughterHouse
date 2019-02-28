@@ -1,21 +1,52 @@
 package my.com.engpeng.epslaughterhouse
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setSupportActionBar(main_tb)
+
+        appBarConfiguration = AppBarConfiguration(
+                setOf(R.id.splashFragment, R.id.menuFragment),
+                main_dl)
+
         val navController = this.findNavController(R.id.main_fm_navigation)
-        NavigationUI.setupActionBarWithNavController(this, navController)
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        navController.addOnDestinationChangedListener { _, nd, _ ->
+            if (nd.id == R.id.menuFragment) {
+                main_dl.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            } else {
+                main_dl.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+
+            if (nd.id == R.id.loginFragment) {
+                main_tb.visibility = View.GONE
+            } else {
+                main_tb.visibility = View.VISIBLE
+            }
+        }
+
+        main_nv_start?.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.main_fm_navigation)
-        return navController.navigateUp()
+        return findNavController(R.id.main_fm_navigation).navigateUp(appBarConfiguration)
     }
 }

@@ -2,13 +2,13 @@ package my.com.engpeng.epslaughterhouse.fragment.main
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_house_keeping.*
 import my.com.engpeng.epslaughterhouse.R
@@ -27,7 +27,7 @@ class HouseKeepingFragment : Fragment() {
     private val appDb by lazy { AppModule.provideDb(requireContext()) }
     private val apiService by lazy { AppModule.provideApiService() }
 
-    private var disposable: Disposable? = null
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -58,13 +58,13 @@ class HouseKeepingFragment : Fragment() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        disposable?.dispose()
+    override fun onPause() {
+        super.onPause()
+        compositeDisposable.clear()
     }
 
     private fun retrieveHouseKeeping() {
-        disposable = apiService.getCompanyList()
+        apiService.getCompanyList()
                 .subscribeOn(Schedulers.io())
                 .doOnNext { response ->
                     appDb.companyDao().run {
@@ -89,14 +89,11 @@ class HouseKeepingFragment : Fragment() {
                                     "Error Retrieve House Keeping",
                                     "Error : " + error.message)
                         },
-                        { AlertDialogFragment.show(fragmentManager!!,
-                                "Retrieve House Keeping",
-                                "Retrieve Complete") }
-                )
-    }
-
-    override fun onStop() {
-        super.onStop()
-        disposable?.dispose()
+                        {
+                            AlertDialogFragment.show(fragmentManager!!,
+                                    "Retrieve House Keeping",
+                                    "Retrieve Complete")
+                        }
+                ).addTo(compositeDisposable)
     }
 }

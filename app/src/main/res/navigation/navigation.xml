@@ -3,11 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@+id/menuFragment">
+    app:startDestination="@id/splashFragment">
+
 
     <fragment
+        android:id="@+id/splashFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.SplashFragment"
+        android:label="Splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_menuFragment"
+            app:destination="@id/menuFragment"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
         android:id="@+id/menuFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.MenuFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.MenuFragment"
         android:label="Slaughter House Application"
         tools:layout="@layout/fragment_menu">
         <action
