@@ -244,7 +244,6 @@ class TripConfFragment : Fragment() {
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    //TODO clear temp data
                     findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(it))
                 }, {
                     AlertDialogFragment.show(fragmentManager!!, "Error", it.message + "")

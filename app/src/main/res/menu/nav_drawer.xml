@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/primary">
-        <item
-            android:id="@+id/mi_house_keeping"
-            android:icon="@drawable/ic_baseline_play_arrow_24px"
-            android:title="@string/house_keeping" />
-        <item
-            android:id="@+id/mi_upload"
-            android:icon="@drawable/ic_baseline_play_arrow_24px"
-            android:title="@string/upload" />
-    </group>
+    <item android:title="@string/database">
+        <menu>
+            <group android:id="@+id/primary">
+                <item
+                    android:id="@+id/mi_house_keeping"
+                    android:icon="@drawable/ic_baseline_view_quilt_24px"
+                    android:title="@string/house_keeping" />
+                <item
+                    android:id="@+id/mi_history"
+                    android:icon="@drawable/ic_baseline_history_24px"
+                    android:title="@string/history" />
+                <item
+                    android:id="@+id/mi_upload"
+                    android:icon="@drawable/ic_outline_cloud_upload_24px"
+                    android:title="@string/upload" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="@string/session">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/mi_logout"
+                    android:icon="@drawable/ic_baseline_exit_to_app_24px"
+                    android:title="@string/logout" />
+            </group>
+        </menu>
+    </item>
 </menu>

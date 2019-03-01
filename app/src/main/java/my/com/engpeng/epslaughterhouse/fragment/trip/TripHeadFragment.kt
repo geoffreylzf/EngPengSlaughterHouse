@@ -184,7 +184,7 @@ class TripHeadFragment : Fragment() {
                             }
                             et_truck_code.setText(truckCode)
                         } else {
-                            AlertDialogFragment.show(fragmentManager!!, getString(R.string.error_dialog_title), "Invalid QR code")
+                            AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), "Invalid QR code")
                         }
                     }
                     ScanBus.reset()
@@ -243,7 +243,7 @@ class TripHeadFragment : Fragment() {
         }
 
         if (message.isNotEmpty()) {
-            AlertDialogFragment.show(fragmentManager!!, getString(R.string.error_dialog_title), message)
+            AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), message)
             return
         }
 

@@ -35,8 +35,8 @@ class HkTableInfoFragment<D : BaseDao<E>, E : BaseEntity> : Fragment() {
                 Observer { tableLog ->
                     tableLog?.run {
                         tv_last_sync.text = "Last Synchronize : $lastSyncDate"
-                        tv_progress.text = "$insert/$total(${insert.toDouble() / total.toDouble()})"
-                        pb_progress.progress = insert / total
+                        tv_progress.text = "$insert/$total (${insert.toDouble() * 100 / total.toDouble()}%)"
+                        pb_progress.progress = insert / total * 100
                     }
                 }
         )

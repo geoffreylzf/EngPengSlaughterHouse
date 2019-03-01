@@ -48,6 +48,7 @@
         android:layout_height="60dp"
         android:src="@drawable/ic_baseline_refresh_24px"
         android:tint="@color/colorWhite"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/pb_progress"

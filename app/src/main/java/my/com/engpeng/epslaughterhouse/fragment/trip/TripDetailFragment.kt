@@ -2,7 +2,6 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -231,7 +230,7 @@ class TripDetailFragment : Fragment() {
         }
 
         if (message.isNotEmpty()) {
-            AlertDialogFragment.show(fragmentManager!!, getString(R.string.error_dialog_title), message)
+            AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), message)
             return
         }
 

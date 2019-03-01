@@ -65,7 +65,7 @@ class EnterMortalityDialogFragment : DialogFragment() {
             }
 
             if (message.isNotEmpty()) {
-                AlertDialogFragment.show(fragmentManager!!, getString(R.string.error_dialog_title), message)
+                AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), message)
             }else{
                 doneSubject.onNext(temp)
                 activity?.vibrate()

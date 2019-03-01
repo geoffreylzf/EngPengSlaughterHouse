@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_menu.*
 import my.com.engpeng.epslaughterhouse.R
 
@@ -38,5 +40,9 @@ class MenuFragment : Fragment() {
         btn_house_keeping.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.action_menuFragment_to_houseKeepingFragment)
         )
+
+        btn_test_api.setOnClickListener {
+
+        }
     }
 }

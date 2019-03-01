@@ -2,8 +2,9 @@
 <resources>
     <color name="colorPrimary">#689F38</color>
     <color name="colorPrimaryDark">#558B2F</color>
+    <color name="colorPrimaryLight">#9CCC65</color>
     <color name="colorPrimaryXLight">#F1F8E9</color>
-    <color name="colorAccent">#EEFF41</color>
+    <color name="colorAccent">#00BFA5</color>
 
     <color name="iconGrey">#808080</color>
     <color name="labelGrey">#696969</color>
@@ -15,4 +16,6 @@
 
     <color name="colorDivider">#1e000000</color>
     <color name="colorBlueGrey700">#455A64</color>
+    <color name="colorTranslucent10">#1AFFFFFF</color>
+    <color name="colorTransparent">@android:color/transparent</color>
 </resources>

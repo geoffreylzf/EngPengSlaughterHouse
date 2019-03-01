@@ -8,6 +8,7 @@ import my.com.engpeng.epslaughterhouse.model.Location
 import retrofit2.http.*
 
 interface ApiService {
+
     @GET("index.php?r=apiMobileSlaughterHouse/getHouseKeeping&type=company")
     fun getCompanyList(): Observable<ApiResponse<List<Company>>>
 
@@ -20,6 +21,6 @@ interface ApiService {
     @POST("index.php?r=apiMobileAuth/login")
     fun login(
             @Header("Authorization") credentials: String,
-            @Field("email") email: String):
-            Observable<ApiResponse<Auth>>
+            @Field("email") email: String?
+    ): Observable<ApiResponse<Auth>>
 }

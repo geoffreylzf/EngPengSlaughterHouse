@@ -9,6 +9,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,6 +18,7 @@ class Sdf {
         @SuppressLint("ConstantLocale")
 
         private val sdfDisplay = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+
         fun formatDisplay(date: Date): String {
             return sdfDisplay.format(date)
         }
@@ -33,6 +35,11 @@ class Sdf {
 
         fun formatDisplayFromSave(str: String): String {
             return sdfDisplay.format(sdfSave.parse(str).time)
+        }
+
+        private val sdfDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        fun getCurrentDateTime(): String {
+            return sdfDateTime.format(Calendar.getInstance().time)
         }
     }
 }
@@ -51,6 +58,10 @@ fun Activity.hideKeyboard() {
         val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
+}
+
+fun Context.toast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 fun View.requestFocusWithKeyboard(activity: Activity?) {
@@ -77,6 +88,7 @@ enum class DocType {
     IFT, PL
 }
 
+const val RC_GOOGLE_SIGN_IN = 8888
 const val BT_WT_PREFIX_GROSS = "G.W.:"
 const val BT_WT_PREFIX_TARE = "T.W.:"
 const val BT_WT_PREFIX_NETT = "N.W.:"

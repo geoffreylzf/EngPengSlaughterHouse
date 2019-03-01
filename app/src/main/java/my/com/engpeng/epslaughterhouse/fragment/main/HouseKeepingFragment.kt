@@ -17,6 +17,8 @@ import my.com.engpeng.epslaughterhouse.di.AppModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Company
 import my.com.engpeng.epslaughterhouse.model.Location
+import my.com.engpeng.epslaughterhouse.model.TableLog
+import my.com.engpeng.epslaughterhouse.util.Sdf
 
 class HouseKeepingFragment : Fragment() {
 
@@ -25,7 +27,7 @@ class HouseKeepingFragment : Fragment() {
     }
 
     private val appDb by lazy { AppModule.provideDb(requireContext()) }
-    private val apiService by lazy { AppModule.provideApiService() }
+    private val apiModule by lazy { AppModule.provideApiModule(context!!) }
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -55,7 +57,6 @@ class HouseKeepingFragment : Fragment() {
         btn_resync_all.setOnClickListener {
             retrieveHouseKeeping()
         }
-
     }
 
     override fun onPause() {
@@ -64,35 +65,51 @@ class HouseKeepingFragment : Fragment() {
     }
 
     private fun retrieveHouseKeeping() {
-        apiService.getCompanyList()
+        apiModule.provideApiService(cb_local.isChecked).getCompanyList()
                 .subscribeOn(Schedulers.io())
                 .doOnNext { response ->
-                    appDb.companyDao().run {
-                        deleteAll()
-                        insert(response.result)
+                    if (response.isSuccess()) {
+                        appDb.companyDao().run {
+                            deleteAll()
+                            insert(response.result)
+                        }
+
+                    } else {
+                        throw Exception(getString(R.string.dialog_error_msg_retrieve_company))
                     }
+
+                }
+                .flatMapSingle {
+                    appDb.tableLogDao().insert(TableLog(Company.TABLE_NAME, Sdf.getCurrentDateTime(), it.result.size, it.result.size))
                 }
                 .flatMap {
-                    apiService.getLocationList()
+                    apiModule.provideApiService(cb_local.isChecked).getLocationList()
                 }
                 .doOnNext { response ->
-                    appDb.locationDao().run {
-                        deleteAll()
-                        insert(response.result)
+                    if (response.isSuccess()) {
+                        appDb.locationDao().run {
+                            deleteAll()
+                            insert(response.result)
+                        }
+                    } else {
+                        throw Exception(getString(R.string.dialog_error_msg_retrieve_location))
                     }
+                }
+                .flatMapSingle {
+                    appDb.tableLogDao().insert(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), it.result.size, it.result.size))
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {},
                         { error ->
                             AlertDialogFragment.show(fragmentManager!!,
-                                    "Error Retrieve House Keeping",
-                                    "Error : " + error.message)
+                                    getString(R.string.dialog_title_error),
+                                    getString(R.string.error_desc, error.message))
                         },
                         {
                             AlertDialogFragment.show(fragmentManager!!,
-                                    "Retrieve House Keeping",
-                                    "Retrieve Complete")
+                                    getString(R.string.dialog_title_success),
+                                    getString(R.string.dialog_success_msg_retrieve))
                         }
                 ).addTo(compositeDisposable)
     }

@@ -3,7 +3,6 @@ package my.com.engpeng.epslaughterhouse.db
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import io.reactivex.Maybe
 import io.reactivex.Single
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.model.SlaughterDisplay
@@ -44,4 +43,11 @@ abstract class SlaughterDao : BaseDao<Slaughter>() {
         LEFT JOIN locations l ON s.location_id = l.id
         WHERE s.id=:id """)
     abstract fun getDpById(id: Long): Single<SlaughterDisplay>
+
+    @Query("""
+        SELECT
+        COUNT(*)
+        FROM slaughters s
+        WHERE is_upload = :upload""")
+    abstract fun getCountByUpload(upload: Int): Single<Int>
 }
