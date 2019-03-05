@@ -18,20 +18,20 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_sum.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
+import org.koin.android.ext.android.inject
 
 class TripSumFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private lateinit var slaughter: Slaughter
     private var rvAdapter = TempSlaughterDetailAdapter(false)

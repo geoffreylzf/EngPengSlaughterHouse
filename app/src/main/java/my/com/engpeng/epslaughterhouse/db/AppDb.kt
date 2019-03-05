@@ -20,19 +20,6 @@ import my.com.engpeng.epslaughterhouse.model.*
         exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
-    companion object {
-        var INSTANCE: AppDb? = null
-        fun getInstance(context: Context): AppDb {
-            if (INSTANCE == null) {
-                synchronized(AppDb::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "engpeng.db").build()
-                }
-            }
-            return INSTANCE!!
-        }
-    }
-
-
     abstract fun companyDao(): CompanyDao
     abstract fun locationDao(): LocationDao
     abstract fun slaughterDao(): SlaughterDao

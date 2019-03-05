@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.util.SharedPreferencesUtils
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
+import org.koin.android.ext.android.inject
 
 class SplashFragment : Fragment() {
+
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -19,7 +22,7 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (SharedPreferencesUtils.getUser(context!!).isValid()) {
+        if (sharedPreferencesModule.getUser().isValid()) {
             findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToMenuFragment())
         } else {
             findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())

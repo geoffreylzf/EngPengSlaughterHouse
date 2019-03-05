@@ -16,14 +16,15 @@ import kotlinx.android.synthetic.main.fragment_trip_history_detail.*
 import kotlinx.android.synthetic.main.list_item_slaughter_detail.view.*
 
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.HistoryMortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
+import org.koin.android.ext.android.inject
 
 class TripHistoryDetailFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private var slaughterId: Long = 0
 

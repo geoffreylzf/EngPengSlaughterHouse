@@ -21,7 +21,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_conf.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
@@ -30,12 +30,13 @@ import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
 import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
+import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
 
 
 class TripConfFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
     private lateinit var slaughter: Slaughter
     private var rvAdapter = TempSlaughterMortalityAdapter()
 

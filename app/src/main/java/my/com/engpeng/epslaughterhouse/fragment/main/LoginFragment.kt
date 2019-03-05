@@ -3,7 +3,6 @@ package my.com.engpeng.epslaughterhouse.fragment.main
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +20,14 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.di.ApiModule
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.User
 import my.com.engpeng.epslaughterhouse.util.RC_GOOGLE_SIGN_IN
-import my.com.engpeng.epslaughterhouse.util.SharedPreferencesUtils
 import my.com.engpeng.epslaughterhouse.util.UiUtils
 import my.com.engpeng.epslaughterhouse.util.toast
+import org.koin.android.ext.android.inject
 
 class LoginFragment : Fragment() {
 
@@ -35,7 +35,8 @@ class LoginFragment : Fragment() {
     private lateinit var dlProgress: Dialog
     private var email: String? = null
 
-    private val apiModule by lazy { AppModule.provideApiModule(context!!) }
+    private val apiModule: ApiModule by inject()
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -72,7 +73,7 @@ class LoginFragment : Fragment() {
                             .subscribe({
                                 dlProgress.hide()
                                 if (it.isSuccess() && it.result.success) {
-                                    SharedPreferencesUtils.saveUser(context!!, user)
+                                    sharedPreferencesModule.saveUser(user)
                                     findNavController().navigate(R.id.action_loginFragment_to_menuFragment)
                                 } else {
                                     AlertDialogFragment.show(fragmentManager!!,

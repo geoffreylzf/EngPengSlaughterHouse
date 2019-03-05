@@ -12,13 +12,15 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_house_keeping.*
 import my.com.engpeng.epslaughterhouse.R
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.db.BaseDao
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Company
 import my.com.engpeng.epslaughterhouse.model.Location
 import my.com.engpeng.epslaughterhouse.model.TableLog
 import my.com.engpeng.epslaughterhouse.util.Sdf
+import org.koin.android.ext.android.inject
 
 class HouseKeepingFragment : Fragment() {
 
@@ -26,8 +28,8 @@ class HouseKeepingFragment : Fragment() {
         val TAG = HouseKeepingFragment::class.qualifiedName
     }
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
-    private val apiModule by lazy { AppModule.provideApiModule(context!!) }
+    private val appDb: AppDb by inject()
+    private val apiModule: ApiModule by inject()
 
     private val compositeDisposable = CompositeDisposable()
 

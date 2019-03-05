@@ -18,8 +18,9 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_company.*
 import kotlinx.android.synthetic.main.list_item_company.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Company
+import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
 
 class CompanyDialogFragment : DialogFragment() {
@@ -33,7 +34,7 @@ class CompanyDialogFragment : DialogFragment() {
         }
     }
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private val selectSubject = PublishSubject.create<Company>()
     val selectEvent: Observable<Company> = selectSubject

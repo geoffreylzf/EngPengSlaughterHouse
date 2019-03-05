@@ -18,8 +18,9 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_location.*
 import kotlinx.android.synthetic.main.list_item_location.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Location
+import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
 
 class LocationDialogFragment : DialogFragment() {
@@ -34,7 +35,7 @@ class LocationDialogFragment : DialogFragment() {
         }
     }
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private var companyId: Long? = null
     private var compositeDisposable = CompositeDisposable()

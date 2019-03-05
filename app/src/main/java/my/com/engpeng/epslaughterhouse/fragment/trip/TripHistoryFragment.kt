@@ -20,15 +20,16 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_history.*
 import kotlinx.android.synthetic.main.list_item_trip_history.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.model.SlaughterDisplay
 import my.com.engpeng.epslaughterhouse.util.formatYesNo
+import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
 
 class TripHistoryFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private var rvAdapter = TripHistoryAdapter()
 

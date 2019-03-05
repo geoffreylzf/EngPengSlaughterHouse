@@ -20,12 +20,14 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetail
 import my.com.engpeng.epslaughterhouse.util.*
+import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
 
 
@@ -37,7 +39,8 @@ import java.util.concurrent.TimeUnit
 
 class TripDetailFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     private val tempSlaughterDetail = TempSlaughterDetail()
     private val rvAdapter = TempSlaughterDetailAdapter(true)
@@ -100,7 +103,7 @@ class TripDetailFragment : Fragment() {
                     bt.pairedDeviceAddress.toList(),
                     object : BluetoothDialogFragment.Listener {
                         override fun onSelect(bluetooth: Bluetooth) {
-                            SharedPreferencesUtils.saveWeighingBluetooth(context!!, bluetooth)
+                            sharedPreferencesModule.saveWeighingBluetooth(bluetooth)
                             startWeighingBluetooth()
                         }
                     })
@@ -118,7 +121,7 @@ class TripDetailFragment : Fragment() {
             return
         }
 
-        SharedPreferencesUtils.getWeighingBluetooth(context!!).run {
+        sharedPreferencesModule.getWeighingBluetooth().run {
             btName = name
             btAddress = address
         }
@@ -150,9 +153,8 @@ class TripDetailFragment : Fragment() {
 
         bt.setOnDataReceivedListener { _, message ->
             message.run {
-                if (contains(BT_WT_PREFIX_NETT)) {
-                    btn_weight_scale?.text = replace(BT_WT_PREFIX_NETT, "")
-                            .replace(BT_WT_PREFIX_KG, "")
+                if (contains(BT_WT_PREFIX_KG)) {
+                    btn_weight_scale?.text = replace(BT_WT_PREFIX_KG, "")
                             .trim()
                             .toDoubleOrNull()
                             .format2Decimal()

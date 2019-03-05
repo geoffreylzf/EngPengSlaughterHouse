@@ -12,11 +12,16 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_mortality.*
 import my.com.engpeng.epslaughterhouse.R
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortality
 import my.com.engpeng.epslaughterhouse.util.*
+import org.koin.android.ext.android.inject
 
 class EnterMortalityDialogFragment : DialogFragment() {
+
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
+
     companion object {
         val TAG = this::class.qualifiedName
         fun getInstance(fm: FragmentManager): EnterMortalityDialogFragment {
@@ -90,7 +95,7 @@ class EnterMortalityDialogFragment : DialogFragment() {
                     bt.pairedDeviceAddress.toList(),
                     object : BluetoothDialogFragment.Listener {
                         override fun onSelect(bluetooth: Bluetooth) {
-                            SharedPreferencesUtils.saveWeighingBluetooth(context!!, bluetooth)
+                            sharedPreferencesModule.saveWeighingBluetooth(bluetooth)
                             startWeighingBluetooth()
                         }
                     })
@@ -114,7 +119,7 @@ class EnterMortalityDialogFragment : DialogFragment() {
             return
         }
 
-        SharedPreferencesUtils.getWeighingBluetooth(context!!).run {
+        sharedPreferencesModule.getWeighingBluetooth().run {
             btName = name
             btAddress = address
         }

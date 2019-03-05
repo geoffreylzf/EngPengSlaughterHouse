@@ -14,21 +14,25 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.main.MenuFragmentDirections
-import my.com.engpeng.epslaughterhouse.util.SharedPreferencesUtils
+import org.koin.android.ext.android.inject
+
 
 class MainActivity : AppCompatActivity() {
 
-    private val appDb by lazy { AppModule.provideDb(this) }
+    private val appDb: AppDb by inject()
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
     private val compositeDisposable = CompositeDisposable()
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Log.e("MenuFragment", (networkApi != null).toString()) //TODO
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -94,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                                 getString(R.string.dialog_confirm_msg_logout),
                                 getString(R.string.logout), object : ConfirmDialogFragment.Listener {
                             override fun onPositiveButtonClicked() {
-                                SharedPreferencesUtils.removeUser(this@MainActivity)
+                                sharedPreferencesModule.removeUser()
                                 //TODO direct retrieve house keeping
                                 findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToLoginFragment())
                             }

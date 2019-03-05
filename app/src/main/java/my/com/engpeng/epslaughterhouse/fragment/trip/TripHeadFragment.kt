@@ -17,7 +17,7 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.camera.CameraPermission
 import my.com.engpeng.epslaughterhouse.camera.ScanActivity
 import my.com.engpeng.epslaughterhouse.camera.ScanBus
-import my.com.engpeng.epslaughterhouse.di.AppModule
+import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
@@ -26,6 +26,7 @@ import my.com.engpeng.epslaughterhouse.model.CompanyQr
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
+import org.koin.android.ext.android.inject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit
  */
 class TripHeadFragment : Fragment() {
 
-    private val appDb by lazy { AppModule.provideDb(requireContext()) }
+    private val appDb: AppDb by inject()
 
     private var calendarDocDate = Calendar.getInstance()
     private var slaughter = Slaughter()
