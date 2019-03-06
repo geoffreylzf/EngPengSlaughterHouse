@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,7 +23,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
-import my.com.engpeng.epslaughterhouse.model.CompanyQr
+import my.com.engpeng.epslaughterhouse.model.CompanyOption
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
@@ -40,14 +41,15 @@ class TripHeadFragment : Fragment() {
 
     private var calendarDocDate = Calendar.getInstance()
     private var slaughter = Slaughter()
-    private val companySubject = PublishSubject.create<CompanyQr>()
+    private val companySubject = PublishSubject.create<CompanyOption>()
     private val locationSubject = PublishSubject.create<Long>()
     private var compositeDisposable = CompositeDisposable()
 
+    private val vm: TripHeadViewModel by lazy { ViewModelProviders.of(this).get(TripHeadViewModel::class.java) }
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+            savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_trip_head, container, false)
     }
@@ -55,6 +57,12 @@ class TripHeadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        vm.liveIsQrScan.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                true -> freezeEntry()
+                false -> unfreezeEntry()
+            }
+        })
     }
 
     override fun onResume() {
@@ -104,6 +112,7 @@ class TripHeadFragment : Fragment() {
                         et_doc_date.setText(Sdf.formatDisplay(calendarDocDate.time))
                         slaughter.docDate = Sdf.formatSave(calendarDocDate.time)
                     })
+
         }
 
         btn_start.setOnClickListener {
@@ -117,6 +126,10 @@ class TripHeadFragment : Fragment() {
                 CameraPermission.request(requireActivity())
             }
         }
+
+        fab_refresh.setOnClickListener {
+            vm.setIsQrScan(false)
+        }
     }
 
     private fun setupObservable() {
@@ -124,31 +137,38 @@ class TripHeadFragment : Fragment() {
         companySubject.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-                    if (!it.isQr) {
+                    if (!it.isShowLocation) {
                         slaughter.locationId = null
                         et_location.text?.clear()
                         showLocationDialog(it.id)
                     }
                 }
                 .observeOn(Schedulers.io())
-                .flatMap { appDb.companyDao().getById(it.id) }
+                .flatMapSingle { appDb.companyDao().getById(it.id) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     it.run {
                         slaughter.companyId = id
                         et_company.setText(companyName)
                     }
-                }.addTo(compositeDisposable)
+                }, {
+                    slaughter.companyId = null
+                    et_company.text?.clear()
+                }).addTo(compositeDisposable)
 
         locationSubject.subscribeOn(Schedulers.io())
-                .flatMap { appDb.locationDao().getById(it) }
+                .observeOn(Schedulers.io())
+                .flatMapSingle { appDb.locationDao().getById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     it.run {
                         slaughter.locationId = id
                         et_location.setText(locationName)
                     }
-                }.addTo(compositeDisposable)
+                }, {
+                    slaughter.locationId = null
+                    et_location.text?.clear()
+                }).addTo(compositeDisposable)
 
         ScanBus.scanSubject
                 .subscribeOn(Schedulers.io())
@@ -157,7 +177,7 @@ class TripHeadFragment : Fragment() {
                 .subscribe { scanText ->
                     if (scanText.isNotEmpty()) {
                         val arr = scanText.split("|")
-                        if (arr.size == 7) {
+                        if (arr.size == 7 || arr.size == 8) {
 
                             val companyId = arr[0].toLong()
                             val locationId = arr[1].toLong()
@@ -166,8 +186,9 @@ class TripHeadFragment : Fragment() {
                             val docType = arr[4]
                             val type = arr[5]
                             val truckCode = arr[6]
+                            val catchBtaCode = if (arr.size == 8) arr[7] else " "
 
-                            companySubject.onNext(CompanyQr(companyId, true))
+                            companySubject.onNext(CompanyOption(companyId, true))
                             locationSubject.onNext(locationId)
 
                             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate))
@@ -184,6 +205,8 @@ class TripHeadFragment : Fragment() {
                                 "B" -> rb_type_b.isChecked = true
                             }
                             et_truck_code.setText(truckCode)
+                            et_catch_bta_code.setText(catchBtaCode)
+                            vm.setIsQrScan(true)
                         } else {
                             AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), "Invalid QR code")
                         }
@@ -257,7 +280,7 @@ class TripHeadFragment : Fragment() {
                 .getInstance(fragmentManager!!)
                 .selectEvent
                 .subscribe {
-                    companySubject.onNext(CompanyQr(it.id!!, false))
+                    companySubject.onNext(CompanyOption(it.id!!, false))
                 }.addTo(compositeDisposable)
     }
 
@@ -273,5 +296,45 @@ class TripHeadFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         compositeDisposable.clear()
+    }
+
+    private fun freezeEntry() {
+        et_company.isEnabled = false
+        et_location.isEnabled = false
+        et_doc_date.isEnabled = false
+        et_doc_no.isEnabled = false
+        et_truck_code.isEnabled = false
+
+        rb_doc_type_ift.isEnabled = false
+        rb_doc_type_pl.isEnabled = false
+
+        rb_type_a.isEnabled = false
+        rb_type_b.isEnabled = false
+        rb_type_kfc.isEnabled = false
+    }
+
+    private fun unfreezeEntry() {
+        et_company.isEnabled = true
+        et_location.isEnabled = true
+        et_doc_date.isEnabled = true
+        et_doc_no.isEnabled = true
+        et_truck_code.isEnabled = true
+
+        companySubject.onNext(CompanyOption(0, true))
+        locationSubject.onNext(0)
+        et_doc_no.text?.clear()
+        et_truck_code.text?.clear()
+
+        rb_doc_type_ift.isEnabled = true
+        rb_doc_type_pl.isEnabled = true
+        rb_doc_type_ift.isChecked = false
+        rb_doc_type_pl.isChecked = false
+
+        rb_type_a.isEnabled = true
+        rb_type_b.isEnabled = true
+        rb_type_kfc.isEnabled = true
+        rb_type_a.isChecked = false
+        rb_type_b.isChecked = false
+        rb_type_kfc.isChecked = false
     }
 }

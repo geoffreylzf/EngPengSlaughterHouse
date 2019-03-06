@@ -146,7 +146,7 @@ class TripDetailFragment : Fragment() {
             }
 
             override fun onDeviceConnected(name: String, address: String) {
-                tv_bt_status?.text = getString(R.string.bt_status, "Connected To $address")
+                tv_bt_status?.text = getString(R.string.bt_status, "Connected")
                 btn_weight_scale?.visibility = View.VISIBLE
             }
         })

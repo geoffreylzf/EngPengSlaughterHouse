@@ -8,6 +8,7 @@
     <string name="document_number">Document Number</string>
     <string name="document_type">Document Type</string>
     <string name="truck_code">Truck Code</string>
+    <string name="catch_bta_code">Catch BTA Code</string>
     <string name="doc_type_ift">IFT (Inter Farm Transfer)</string>
     <string name="doc_type_pl">PL (Picking List)</string>
     <string name="grade_kfc">KFC</string>

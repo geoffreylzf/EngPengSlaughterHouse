@@ -174,7 +174,7 @@ class TripConfFragment : Fragment() {
 
     private fun setupObservable() {
         companySubject.subscribeOn(Schedulers.io())
-                .flatMap { appDb.companyDao().getById(it) }
+                .flatMapSingle { appDb.companyDao().getById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     it.run {
@@ -184,7 +184,7 @@ class TripConfFragment : Fragment() {
                 }.addTo(compositeDisposable)
 
         locationSubject.subscribeOn(Schedulers.io())
-                .flatMap { appDb.locationDao().getById(it) }
+                .flatMapSingle { appDb.locationDao().getById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     it.run {

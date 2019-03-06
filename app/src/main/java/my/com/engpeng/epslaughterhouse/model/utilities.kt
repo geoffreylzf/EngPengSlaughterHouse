@@ -12,9 +12,9 @@ data class SlaughterMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
 
-data class CompanyQr(
+data class CompanyOption(
         val id: Long,
-        val isQr: Boolean)
+        val isShowLocation: Boolean)
 
 
 data class Bluetooth(
@@ -30,6 +30,7 @@ class SlaughterDisplay(
         docType: String,
         type: String,
         truckCode: String,
+        catchBtaCode: String,
         printCount: Int?,
         isUpload: Int?,
         isDelete: Int?,
@@ -38,4 +39,4 @@ class SlaughterDisplay(
         @ColumnInfo(name = "company_name") var companyName: String?,
         @ColumnInfo(name = "location_code") var locationCode: String?,
         @ColumnInfo(name = "location_name") var locationName: String
-) : Slaughter(id, companyId, locationId, docDate, docNo, docType, type, truckCode, printCount, isUpload, isDelete, timestamp)
+) : Slaughter(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, printCount, isUpload, isDelete, timestamp)

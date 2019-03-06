@@ -61,7 +61,7 @@ class TripSumFragment : Fragment() {
             et_truck_code.setText(truckCode)
 
             Observable.just(companyId).subscribeOn(Schedulers.io())
-                    .flatMap { appDb.companyDao().getById(it) }
+                    .flatMapSingle { appDb.companyDao().getById(it) }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         it.run {
@@ -70,7 +70,7 @@ class TripSumFragment : Fragment() {
                     }.addTo(compositeDisposable)
 
             Observable.just(locationId).subscribeOn(Schedulers.io())
-                    .flatMap { appDb.locationDao().getById(it) }
+                    .flatMapSingle { appDb.locationDao().getById(it) }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         it.run {

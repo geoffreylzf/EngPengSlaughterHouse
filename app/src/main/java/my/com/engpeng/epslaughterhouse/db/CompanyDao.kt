@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import my.com.engpeng.epslaughterhouse.model.Company
 
 @Dao
@@ -20,6 +21,6 @@ abstract class CompanyDao : BaseDao<Company>() {
     abstract fun getAll(): Maybe<List<Company>>
 
     @Query("SELECT * FROM companies WHERE id = :id")
-    abstract fun getById(id: Long): Observable<Company>
+    abstract fun getById(id: Long): Single<Company>
 
 }
