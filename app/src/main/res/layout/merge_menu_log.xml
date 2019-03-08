@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/tv_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/last_history_log"
+            android:textColor="@color/colorListItemSecondaryText"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/iv_upload"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_upload"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_outline_cloud_upload_24px"
+            app:layout_constraintBottom_toTopOf="@+id/iv_upload_dt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_log" />
+
+        <TextView
+            android:id="@+id/tv_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/upload"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_upload"
+            app:layout_constraintStart_toEndOf="@id/iv_upload"
+            app:layout_constraintTop_toTopOf="@id/iv_upload" />
+
+        <ImageView
+            android:id="@+id/iv_upload_dt"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_access_time_24px"
+            app:layout_constraintBottom_toTopOf="@+id/iv_upload_msg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_upload" />
+
+        <TextView
+            android:id="@+id/tv_upload_dt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_upload_dt"
+            app:layout_constraintStart_toEndOf="@id/iv_upload_dt"
+            app:layout_constraintTop_toTopOf="@id/iv_upload_dt" />
+
+        <ImageView
+            android:id="@+id/iv_upload_msg"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_notes_24px"
+            app:layout_constraintBottom_toTopOf="@id/tv_upload_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_upload_dt" />
+
+        <TextView
+            android:id="@+id/tv_upload_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_upload_msg"
+            app:layout_constraintStart_toEndOf="@id/iv_upload_msg"
+            app:layout_constraintTop_toTopOf="@id/iv_upload_msg" />
+
+        <TextView
+            android:id="@+id/tv_upload_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toTopOf="@id/btn_upload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_upload_msg" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_upload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/upload"
+            app:layout_constraintBottom_toTopOf="@+id/cb_local"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_upload_count" />
+
+        <CheckBox
+            android:id="@+id/cb_local"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/local2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_upload" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</merge>

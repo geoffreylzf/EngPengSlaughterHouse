@@ -26,6 +26,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.User
 import my.com.engpeng.epslaughterhouse.util.RC_GOOGLE_SIGN_IN
 import my.com.engpeng.epslaughterhouse.util.UiUtils
+import my.com.engpeng.epslaughterhouse.util.appVersion
 import my.com.engpeng.epslaughterhouse.util.toast
 import org.koin.android.ext.android.inject
 
@@ -50,7 +51,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        tv_version.text = context?.appVersion()
         setupGoogleSignIn()
 
         btn_login.setOnClickListener {
@@ -74,7 +75,7 @@ class LoginFragment : Fragment() {
                                 dlProgress.hide()
                                 if (it.isSuccess() && it.result.success) {
                                     sharedPreferencesModule.saveUser(user)
-                                    findNavController().navigate(R.id.action_loginFragment_to_menuFragment)
+                                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMenuFragment())
                                 } else {
                                     AlertDialogFragment.show(fragmentManager!!,
                                             getString(R.string.login_error_desc, it.cod.toString()),

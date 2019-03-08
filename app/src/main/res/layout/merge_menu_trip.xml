@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/tv_slaughter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/slaughter_today"
+            android:textColor="@color/colorListItemSecondaryText"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/iv_trip"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_trip"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_assignment_24px"
+            app:layout_constraintBottom_toTopOf="@+id/iv_trip_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_slaughter" />
+
+        <TextView
+            android:id="@+id/tv_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/trip"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_trip"
+            app:layout_constraintStart_toEndOf="@id/iv_trip"
+            app:layout_constraintTop_toTopOf="@id/iv_trip" />
+
+        <ImageView
+            android:id="@+id/iv_trip_confirm"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_done_24px"
+            app:layout_constraintBottom_toTopOf="@+id/iv_trip_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_trip" />
+
+        <TextView
+            android:id="@+id/tv_trip_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_trip_confirm"
+            app:layout_constraintStart_toEndOf="@id/iv_trip_confirm"
+            app:layout_constraintTop_toTopOf="@id/iv_trip_confirm"/>
+
+        <ImageView
+            android:id="@+id/iv_trip_delete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_close_24px"
+            app:layout_constraintBottom_toTopOf="@+id/btn_trip"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_trip_confirm" />
+
+        <TextView
+            android:id="@+id/tv_trip_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_trip_delete"
+            app:layout_constraintStart_toEndOf="@id/iv_trip_delete"
+            app:layout_constraintTop_toTopOf="@id/iv_trip_delete" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_trip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/trip"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_trip_delete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

@@ -141,7 +141,6 @@ class TripConfFragment : Fragment() {
 
                 override fun onNegativeButtonClicked() {}
             })
-
         }
     }
 

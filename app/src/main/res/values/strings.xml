@@ -46,6 +46,7 @@
     <string name="doc_no">Doc No</string>
     <string name="date">Date</string>
     <string name="truck">Truck</string>
+    <string name="delete">Delete</string>
     <string name="upload">Upload</string>
     <string name="mortality">Mortality</string>
     <string name="print">Print</string>
@@ -59,18 +60,23 @@
     <string name="re_sync_all">Re-sync All</string>
     <string name="update_all">Update All</string>
     <string name="house_keeping">House Keeping</string>
+    <string name="last_history_log">Last History Log</string>
+    <string name="slaughter_today">Slaughter Today</string>
 
     <string name="SHORT_NUMBER">#</string>
     <string name="EMPTY_STRING">\u0020</string>
+    <string name="DEFAULT_UPLOAD">0</string>
 
     <string name="bt_status">Status : %1$s</string>
     <string name="bt_name">Name : %1$s</string>
     <string name="bt_address">Address : %1$s</string>
     <string name="login_error_desc">Login Error (%1$s)</string>
     <string name="error_desc">Error : %1$s</string>
+    <string name="upload_log_desc">%1$d record(s) uploaded</string>
 
     <string name="dialog_title_error">Error</string>
     <string name="dialog_title_success">Success</string>
+    <string name="dialog_title_delete_trip">Delete Trip?</string>
     <string name="dialog_title_company">Please Select Company</string>
     <string name="dialog_title_bluetooth_device">Please Select Bluetooth Device</string>
     <string name="dialog_title_location">Please Select Location</string>
@@ -83,11 +89,22 @@
     <string name="dialog_error_msg_got_un_upload">Got un-upload data, please upload before logout.</string>
     <string name="dialog_error_msg_retrieve_company">Error retrieve company data.</string>
     <string name="dialog_error_msg_retrieve_location">Error retrieve location data.</string>
+    <string name="dialog_error_msg_no_data_upload">No data to upload.</string>
     <string name="dialog_success_msg_retrieve">Retrieve complete.</string>
+    <string name="dialog_success_msg_upload">Upload complete.</string>
+    <string name="dialog_success_delete">Deleted…</string>
+    <string name="dialog_confirm_msg_delete_trip">Unable to undo after delete</string>
 
     <string name="dialog_positive_button_text">OK</string>
     <string name="dialog_negative_button_text">Cancel</string>
 
     <string name="hint_swipe_to_delete">Swipe to delete</string>
+
+    <string name="pending_not_yet_upload_data">Pending not yet upload data</string>
+
+    <string name="notification_main_channel_name">Primary</string>
+    <string name="notification_msg_upload_initial">Prepare upload to server…</string>
+    <string name="notification_msg_upload_complete">Upload complete.</string>
+    <string name="notification_msg_upload_error">Upload error.</string>
 
 </resources>

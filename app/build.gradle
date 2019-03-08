@@ -9,7 +9,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "my.com.engpeng.epslaughterhouse"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -39,18 +39,23 @@ dependencies {
 
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
-    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    
     implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
     implementation 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha2'
 
     implementation "org.koin:koin-android:1.0.2"
+    implementation 'org.koin:koin-android-viewmodel:1.0.2'
+
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'

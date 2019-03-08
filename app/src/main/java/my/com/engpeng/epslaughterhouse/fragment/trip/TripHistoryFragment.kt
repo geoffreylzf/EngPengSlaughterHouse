@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -88,6 +89,10 @@ class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolde
                 li_tv_doc_no.text = "${slaughter.docType}-${slaughter.docNo}"
                 li_tv_type.text = slaughter.type
                 li_tv_upload.text = slaughter.isUpload?.formatYesNo()
+
+                if (slaughter.isDelete == 1) {
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed50))
+                }
             }
         }
     }

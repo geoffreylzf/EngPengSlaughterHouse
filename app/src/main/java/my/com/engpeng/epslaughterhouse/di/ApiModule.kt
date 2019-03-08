@@ -1,11 +1,14 @@
 package my.com.engpeng.epslaughterhouse.di
 
+import com.google.gson.GsonBuilder
 import my.com.engpeng.epslaughterhouse.api.ApiService
 import my.com.engpeng.epslaughterhouse.model.ServerUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
 
@@ -24,11 +27,15 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
                         .build()
             }
             chain.proceed(request)
-        }.build()
+        }
+                //.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+                .build()
+
+
 
         apiLocalService = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
                 .baseUrl(ServerUrl.getLocal())
                 .client(client)
                 .build()
@@ -36,7 +43,7 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
 
         apiGlobalService = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
                 .baseUrl(ServerUrl.getGlobal())
                 .client(client)
                 .build()

@@ -3,9 +3,12 @@ package my.com.engpeng.epslaughterhouse.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import my.com.engpeng.epslaughterhouse.util.Sdf
 
 
 @Parcelize
@@ -25,6 +28,17 @@ open class Slaughter(@PrimaryKey var id: Long?,
                      var timestamp: String?
 ) : BaseEntity(), Parcelable {
 
+    @SerializedName("slaughter_detail_list")
+    @Ignore
+    @IgnoredOnParcel
+    var slaughterDetailList: List<SlaughterDetail>? = null
+
+    @SerializedName("slaughter_mortality_list")
+    @Ignore
+    @IgnoredOnParcel
+    var slaughterMortalityList: List<SlaughterMortality>? = null
+
+
     constructor() : this(
             null,
             null,
@@ -38,7 +52,7 @@ open class Slaughter(@PrimaryKey var id: Long?,
             0,
             0,
             0,
-            null)
+            Sdf.getCurrentDateTime())
 
     companion object {
         const val TABLE_NAME = "slaughters"

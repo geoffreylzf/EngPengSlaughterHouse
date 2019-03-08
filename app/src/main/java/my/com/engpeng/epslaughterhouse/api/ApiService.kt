@@ -1,10 +1,8 @@
 package my.com.engpeng.epslaughterhouse.api
 
 import io.reactivex.Observable
-import my.com.engpeng.epslaughterhouse.model.ApiResponse
-import my.com.engpeng.epslaughterhouse.model.Auth
-import my.com.engpeng.epslaughterhouse.model.Company
-import my.com.engpeng.epslaughterhouse.model.Location
+import io.reactivex.Single
+import my.com.engpeng.epslaughterhouse.model.*
 import retrofit2.http.*
 
 interface ApiService {
@@ -23,4 +21,10 @@ interface ApiService {
             @Header("Authorization") credentials: String,
             @Field("email") email: String?
     ): Observable<ApiResponse<Auth>>
+
+    //@FormUrlEncoded
+    @POST("index.php?r=apiMobileSlaughterHouse/upload")
+    fun upload(
+            @Body uploadBody: UploadBody
+    ): Single<ApiResponse<UploadResult>>
 }

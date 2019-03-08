@@ -65,6 +65,9 @@
             app:popExitAnim="@anim/fade_out"
             app:popUpTo="@+id/menuFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_menuFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripHeadFragment"
@@ -176,4 +179,9 @@
             android:name="slaughterId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/uploadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.UploadFragment"
+        android:label="fragment_upload"
+        tools:layout="@layout/fragment_upload" />
 </navigation>

@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.list_item_slaughter_detail.view.*
 
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
+import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.HistoryMortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
@@ -27,7 +29,7 @@ class TripHistoryDetailFragment : Fragment() {
     private val appDb: AppDb by inject()
 
     private var slaughterId: Long = 0
-
+    private var menu: Menu? = null
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -44,12 +46,17 @@ class TripHistoryDetailFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.trip_history_detail, menu)
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.mi_print -> {
                 findNavController().navigate(TripHistoryDetailFragmentDirections.actionTripHistoryDetailFragmentToTripPrintFragment(slaughterId))
+                true
+            }
+            R.id.mi_delete -> {
+                delete()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -71,6 +78,9 @@ class TripHistoryDetailFragment : Fragment() {
                                 et_doc_no.setText("${docType}-${docNo}")
                                 et_type.setText(type)
                                 et_truck_code.setText(truckCode)
+                                if (isUpload == 0) {
+                                    menu?.findItem(R.id.mi_delete)?.isVisible = true
+                                }
                             }
                         }, {}
                 ).addTo(compositeDisposable)
@@ -105,6 +115,27 @@ class TripHistoryDetailFragment : Fragment() {
                         HistoryMortalityDialogFragment.show(fragmentManager!!, it)
                     }.addTo(compositeDisposable)
         }
+    }
+
+    private fun delete() {
+        ConfirmDialogFragment.show(fragmentManager!!,
+                getString(R.string.dialog_title_delete_trip),
+                getString(R.string.dialog_confirm_msg_delete_trip),
+                getString(R.string.delete), object : ConfirmDialogFragment.Listener {
+            override fun onPositiveButtonClicked() {
+                appDb.slaughterDao().getById(slaughterId)
+                        .subscribeOn(Schedulers.io())
+                        .doOnSuccess {
+                            appDb.slaughterDao().insert(it.apply { isDelete = 1 }).subscribe().addTo(compositeDisposable)
+                        }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe{
+                            AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
+                        }.addTo(compositeDisposable)
+            }
+
+            override fun onNegativeButtonClicked() {}
+        })
     }
 
     override fun onPause() {

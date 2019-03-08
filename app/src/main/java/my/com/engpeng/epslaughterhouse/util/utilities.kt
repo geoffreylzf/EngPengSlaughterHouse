@@ -13,6 +13,19 @@ import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+const val RC_GOOGLE_SIGN_IN = 8888
+const val BT_WT_PREFIX_GROSS = "G.W.:"
+const val BT_WT_PREFIX_TARE = "T.W.:"
+const val BT_WT_PREFIX_NETT = "N.W.:"
+const val BT_WT_PREFIX_KG = "kg"
+
+const val NOTIFICATION_CHANNEL_UPLOAD_ID = "UPLOAD"
+const val NOTIFICATION_UPLOAD_ID = 5001
+
+const val I_KEY_LOCAL = "I_KEY_LOCAL"
+const val LOG_TASK_UPLOAD = "LOG_TASK_UPLOAD"
+
 class Sdf {
     companion object {
         @SuppressLint("ConstantLocale")
@@ -37,9 +50,17 @@ class Sdf {
             return sdfDisplay.format(sdfSave.parse(str).time)
         }
 
+        fun getDateFromSave(str: String): Date {
+            return sdfSave.parse(str)
+        }
+
         private val sdfDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         fun getCurrentDateTime(): String {
             return sdfDateTime.format(Calendar.getInstance().time)
+        }
+
+        fun getCurrentDate(): String {
+            return sdfSave.format(Calendar.getInstance().time)
         }
     }
 }
@@ -64,6 +85,10 @@ fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
+fun Context.appVersion(): String {
+    return "Version: ${packageManager.getPackageInfo(this.packageName, 0).versionName}"
+}
+
 fun View.requestFocusWithKeyboard(activity: Activity?) {
     this.requestFocus()
     activity?.currentFocus?.let {
@@ -83,13 +108,3 @@ fun Int.formatYesNo(): String {
         else -> "?"
     }
 }
-
-enum class DocType {
-    IFT, PL
-}
-
-const val RC_GOOGLE_SIGN_IN = 8888
-const val BT_WT_PREFIX_GROSS = "G.W.:"
-const val BT_WT_PREFIX_TARE = "T.W.:"
-const val BT_WT_PREFIX_NETT = "N.W.:"
-const val BT_WT_PREFIX_KG = "kg"

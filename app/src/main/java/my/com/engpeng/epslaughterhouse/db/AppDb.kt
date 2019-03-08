@@ -1,8 +1,6 @@
 package my.com.engpeng.epslaughterhouse.db
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import my.com.engpeng.epslaughterhouse.model.*
 
@@ -15,7 +13,8 @@ import my.com.engpeng.epslaughterhouse.model.*
             SlaughterMortality::class,
             TempSlaughterDetail::class,
             TempSlaughterMortality::class,
-            TableLog::class],
+            TableLog::class,
+            Log::class],
         version = 1,
         exportSchema = false
 )
@@ -28,4 +27,5 @@ abstract class AppDb : RoomDatabase() {
     abstract fun tempSlaughterDetailDao(): TempSlaughterDetailDao
     abstract fun tempSlaughterMortalityDao(): TempSlaughterMortalityDao
     abstract fun tableLogDao(): TableLogDao
+    abstract fun logDao(): LogDao
 }

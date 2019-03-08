@@ -6,28 +6,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_head.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.camera.CameraPermission
 import my.com.engpeng.epslaughterhouse.camera.ScanActivity
 import my.com.engpeng.epslaughterhouse.camera.ScanBus
-import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
-import my.com.engpeng.epslaughterhouse.model.CompanyOption
 import my.com.engpeng.epslaughterhouse.model.Slaughter
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
-import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -37,15 +33,11 @@ import java.util.concurrent.TimeUnit
  */
 class TripHeadFragment : Fragment() {
 
-    private val appDb: AppDb by inject()
-
     private var calendarDocDate = Calendar.getInstance()
     private var slaughter = Slaughter()
-    private val companySubject = PublishSubject.create<CompanyOption>()
-    private val locationSubject = PublishSubject.create<Long>()
     private var compositeDisposable = CompositeDisposable()
 
-    private val vm: TripHeadViewModel by lazy { ViewModelProviders.of(this).get(TripHeadViewModel::class.java) }
+    private val vm: TripHeadViewModel by viewModel()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -58,10 +50,29 @@ class TripHeadFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         vm.liveIsQrScan.observe(this, androidx.lifecycle.Observer {
-            when (it) {
-                true -> freezeEntry()
-                false -> unfreezeEntry()
+            freezeEntry(!it) //if true,
+        })
+        vm.liveCompany.observe(this, androidx.lifecycle.Observer {
+            if (it != null) {
+                slaughter.companyId = it.id
+                et_company.setText(it.companyName)
+            } else {
+                slaughter.companyId = null
+                et_company.setText("")
             }
+        })
+        vm.liveLocation.observe(this, androidx.lifecycle.Observer {
+            if (it != null) {
+                slaughter.locationId = it.id
+                et_location.setText(it.locationName)
+            } else {
+                slaughter.locationId = null
+                et_location.setText("")
+            }
+        })
+        vm.liveCalendar.observe(this, androidx.lifecycle.Observer {
+            et_doc_date.setText(Sdf.formatDisplay(it.time))
+            slaughter.docDate = Sdf.formatSave(it.time)
         })
     }
 
@@ -100,8 +111,7 @@ class TripHeadFragment : Fragment() {
             }
         }
 
-        et_doc_date.setText(Sdf.formatDisplay(calendarDocDate.time))
-        slaughter.docDate = Sdf.formatSave(calendarDocDate.time)
+        vm.setCalendar(calendarDocDate)
 
         et_doc_date.setOnClickListener {
             DatePickerDialogFragment
@@ -109,10 +119,8 @@ class TripHeadFragment : Fragment() {
                         calendarDocDate.set(Calendar.YEAR, year)
                         calendarDocDate.set(Calendar.MONTH, monthOfYear)
                         calendarDocDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                        et_doc_date.setText(Sdf.formatDisplay(calendarDocDate.time))
-                        slaughter.docDate = Sdf.formatSave(calendarDocDate.time)
+                        vm.setCalendar(calendarDocDate)
                     })
-
         }
 
         btn_start.setOnClickListener {
@@ -128,47 +136,22 @@ class TripHeadFragment : Fragment() {
         }
 
         fab_refresh.setOnClickListener {
+            vm.loadCompany(0)
+            vm.loadLocation(0)
+            calendarDocDate = Calendar.getInstance()
+            vm.setCalendar(calendarDocDate)
             vm.setIsQrScan(false)
+
+            et_doc_no.text?.clear()
+            et_truck_code.text?.clear()
+            et_catch_bta_code.setText(" ")
+
+            rg_doc_type.clearCheck()
+            rg_type.clearCheck()
         }
     }
 
     private fun setupObservable() {
-
-        companySubject.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    if (!it.isShowLocation) {
-                        slaughter.locationId = null
-                        et_location.text?.clear()
-                        showLocationDialog(it.id)
-                    }
-                }
-                .observeOn(Schedulers.io())
-                .flatMapSingle { appDb.companyDao().getById(it.id) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    it.run {
-                        slaughter.companyId = id
-                        et_company.setText(companyName)
-                    }
-                }, {
-                    slaughter.companyId = null
-                    et_company.text?.clear()
-                }).addTo(compositeDisposable)
-
-        locationSubject.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMapSingle { appDb.locationDao().getById(it) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    it.run {
-                        slaughter.locationId = id
-                        et_location.setText(locationName)
-                    }
-                }, {
-                    slaughter.locationId = null
-                    et_location.text?.clear()
-                }).addTo(compositeDisposable)
 
         ScanBus.scanSubject
                 .subscribeOn(Schedulers.io())
@@ -188,11 +171,11 @@ class TripHeadFragment : Fragment() {
                             val truckCode = arr[6]
                             val catchBtaCode = if (arr.size == 8) arr[7] else " "
 
-                            companySubject.onNext(CompanyOption(companyId, true))
-                            locationSubject.onNext(locationId)
+                            vm.loadCompany(companyId)
+                            vm.loadLocation(locationId)
 
-                            et_doc_date.setText(Sdf.formatDisplayFromSave(docDate))
-                            slaughter.docDate = docDate
+                            calendarDocDate.time = Sdf.getDateFromSave(docDate)
+                            vm.setCalendar(calendarDocDate)
 
                             et_doc_no.setText(docNo)
                             when (docType) {
@@ -227,7 +210,6 @@ class TripHeadFragment : Fragment() {
                     else -> ""
                 }
             }
-
             rg_type.checkedRadioButtonId.let {
                 type = when (it) {
                     R.id.rb_type_kfc -> "KFC"
@@ -236,6 +218,7 @@ class TripHeadFragment : Fragment() {
                     else -> ""
                 }
             }
+            catchBtaCode = et_catch_bta_code.text.toString().trim()
         }
 
         var message = ""
@@ -280,7 +263,9 @@ class TripHeadFragment : Fragment() {
                 .getInstance(fragmentManager!!)
                 .selectEvent
                 .subscribe {
-                    companySubject.onNext(CompanyOption(it.id!!, false))
+                    vm.loadCompany(it.id!!)
+                    vm.loadLocation(0)
+                    showLocationDialog(it.id!!)
                 }.addTo(compositeDisposable)
     }
 
@@ -289,7 +274,7 @@ class TripHeadFragment : Fragment() {
                 .getInstance(fragmentManager!!, companyId)
                 .selectEvent
                 .subscribe {
-                    locationSubject.onNext(it.id!!)
+                    vm.loadLocation(it.id!!)
                 }.addTo(compositeDisposable)
     }
 
@@ -298,43 +283,18 @@ class TripHeadFragment : Fragment() {
         compositeDisposable.clear()
     }
 
-    private fun freezeEntry() {
-        et_company.isEnabled = false
-        et_location.isEnabled = false
-        et_doc_date.isEnabled = false
-        et_doc_no.isEnabled = false
-        et_truck_code.isEnabled = false
+    private fun freezeEntry(b: Boolean) {
+        et_company.isEnabled = b
+        et_location.isEnabled = b
+        et_doc_date.isEnabled = b
+        et_doc_no.isEnabled = b
+        et_truck_code.isEnabled = b
 
-        rb_doc_type_ift.isEnabled = false
-        rb_doc_type_pl.isEnabled = false
+        rb_doc_type_ift.isEnabled = b
+        rb_doc_type_pl.isEnabled = b
 
-        rb_type_a.isEnabled = false
-        rb_type_b.isEnabled = false
-        rb_type_kfc.isEnabled = false
-    }
-
-    private fun unfreezeEntry() {
-        et_company.isEnabled = true
-        et_location.isEnabled = true
-        et_doc_date.isEnabled = true
-        et_doc_no.isEnabled = true
-        et_truck_code.isEnabled = true
-
-        companySubject.onNext(CompanyOption(0, true))
-        locationSubject.onNext(0)
-        et_doc_no.text?.clear()
-        et_truck_code.text?.clear()
-
-        rb_doc_type_ift.isEnabled = true
-        rb_doc_type_pl.isEnabled = true
-        rb_doc_type_ift.isChecked = false
-        rb_doc_type_pl.isChecked = false
-
-        rb_type_a.isEnabled = true
-        rb_type_b.isEnabled = true
-        rb_type_kfc.isEnabled = true
-        rb_type_a.isChecked = false
-        rb_type_b.isChecked = false
-        rb_type_kfc.isChecked = false
+        rb_type_a.isEnabled = b
+        rb_type_b.isEnabled = b
+        rb_type_kfc.isEnabled = b
     }
 }

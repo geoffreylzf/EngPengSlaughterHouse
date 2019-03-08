@@ -71,12 +71,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.mi_house_keeping -> {
                     findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToHouseKeepingFragment())
                 }
+                R.id.mi_upload -> {
+                    findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToUploadFragment())
+                }
             }
             true
         }
-
     }
-
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.main_fm_navigation).navigateUp(appBarConfiguration)
@@ -87,8 +88,7 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    //TODO if (it > 0) {
-                    if (false) {
+                    if (it > 0) {
                         AlertDialogFragment.show(supportFragmentManager,
                                 getString(R.string.error),
                                 getString(R.string.dialog_error_msg_got_un_upload))
@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
                                 getString(R.string.logout), object : ConfirmDialogFragment.Listener {
                             override fun onPositiveButtonClicked() {
                                 sharedPreferencesModule.removeUser()
-                                //TODO direct retrieve house keeping
                                 findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToLoginFragment())
                             }
 
