@@ -23,7 +23,7 @@
     <string name="cage">Cage</string>
     <string name="cover">Cover</string>
     <string name="total">Total</string>
-    <string name="next">Next</string>
+    <string name="next2">Next (Terus)</string>
     <string name="weight_scale">Weight Scale</string>
     <string name="number_one">1</string>
     <string name="number_two">2</string>
@@ -33,6 +33,7 @@
     <string name="number_six">6</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="cancel2">Cancel (Balik)</string>
     <string name="total_weight">Total Weight</string>
     <string name="total_quantity">Total Quantity</string>
     <string name="total_cover">Total Cover</string>
@@ -81,7 +82,7 @@
     <string name="dialog_title_bluetooth_device">Please Select Bluetooth Device</string>
     <string name="dialog_title_location">Please Select Location</string>
     <string name="dialog_title_no_company">Empty Company Listing</string>
-    <string name="dialog_title_mortality">Please enter mortality</string>
+    <string name="dialog_title_mortality2">Please enter mortality (Ayam mati)</string>
     <string name="dialog_title_mortality_detail">Mortality Detail</string>
     <string name="dialog_title_logout">Are you sure to logout?</string>
 

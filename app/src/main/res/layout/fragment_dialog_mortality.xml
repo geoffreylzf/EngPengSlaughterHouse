@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="@string/dialog_title_mortality"
+        android:text="@string/dialog_title_mortality2"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/btn_bt"
         app:layout_constraintEnd_toEndOf="parent"

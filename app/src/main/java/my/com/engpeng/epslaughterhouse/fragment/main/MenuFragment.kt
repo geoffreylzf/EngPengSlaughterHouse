@@ -16,6 +16,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.merge_menu_log.*
 import kotlinx.android.synthetic.main.merge_menu_trip.*
+import my.com.engpeng.epslaughterhouse.MainActivity
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
@@ -41,6 +42,7 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).setNavHeader()
         setupView()
         setupListener()
     }
@@ -59,8 +61,8 @@ class MenuFragment : Fragment() {
         })
 
         appDb.slaughterDao().getLiveCountByDate(Sdf.getCurrentDate()).observe(this, Observer {
-            tv_trip_confirm.text = it.confirmCount.toString()
-            tv_trip_delete.text = it.deleteCount.toString()
+            tv_trip_confirm.text = (it.confirmCount ?: 0).toString()
+            tv_trip_delete.text = (it.deleteCount ?: 0).toString()
         })
     }
 

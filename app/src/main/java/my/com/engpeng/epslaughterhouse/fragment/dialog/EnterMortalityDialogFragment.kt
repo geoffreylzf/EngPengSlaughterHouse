@@ -151,9 +151,8 @@ class EnterMortalityDialogFragment : DialogFragment() {
 
         bt.setOnDataReceivedListener { _, message ->
             message.run {
-                if (contains(BT_WT_PREFIX_NETT)) {
-                    btn_weight_scale?.text = replace(BT_WT_PREFIX_NETT, "")
-                            .replace(BT_WT_PREFIX_KG, "")
+                if (contains(BT_WT_PREFIX_KG)) {
+                    btn_weight_scale?.text = replace(BT_WT_PREFIX_KG, "")
                             .trim()
                             .toDoubleOrNull()
                             .format2Decimal()

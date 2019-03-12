@@ -92,6 +92,8 @@ class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolde
 
                 if (slaughter.isDelete == 1) {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed50))
+                }else{
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
                 }
             }
         }

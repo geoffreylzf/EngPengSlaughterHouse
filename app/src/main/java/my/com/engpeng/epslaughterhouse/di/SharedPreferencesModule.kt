@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import my.com.engpeng.epslaughterhouse.BuildConfig
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.User
+import java.util.*
 
 private const val P_KEY_WEIGHING_NAME = "P_KEY_WEIGHING_NAME"
 private const val P_KEY_WEIGHING_ADDRESS = "P_KEY_WEIGHING_ADDRESS"
@@ -12,6 +13,7 @@ private const val P_KEY_PRINTER_NAME = "P_KEY_PRINTER_NAME"
 private const val P_KEY_PRINTER_ADDRESS = "P_KEY_PRINTER_ADDRESS"
 private const val P_KEY_USERNAME = "P_KEY_USERNAME"
 private const val P_KEY_PASSWORD = "P_KEY_PASSWORD"
+private const val P_KEY_UNIQUE_ID = "P_KEY_UNIQUE_ID"
 
 private const val PREFERENCE_FILE_KEY = BuildConfig.APPLICATION_ID
 
@@ -62,6 +64,21 @@ class SharedPreferencesModule(context: Context) {
         return Bluetooth(name!!, address!!)
     }
 
+    fun generateSaveUniqueId() {
+        val uniqueID = UUID.randomUUID().toString()
+        sharedPreferences.edit().apply {
+            putString(P_KEY_UNIQUE_ID, uniqueID)
+        }.apply()
+    }
+
+    fun getUniqueId(): String {
+        var uniqueId: String
+        sharedPreferences
+                .apply {
+                    uniqueId = getString(P_KEY_UNIQUE_ID, "")!!
+                }
+        return uniqueId
+    }
 
     fun saveUser(u: User) {
         sharedPreferences

@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_upload.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
+import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Log
 import my.com.engpeng.epslaughterhouse.model.Slaughter
@@ -27,6 +28,7 @@ class UploadService : Service() {
 
     private val appDb: AppDb by inject()
     private val apiModule: ApiModule by inject()
+    private val sharedPreferencesModule: SharedPreferencesModule by inject()
     private var compositeDisposable = CompositeDisposable()
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
@@ -95,7 +97,7 @@ class UploadService : Service() {
 
     private fun upload(slaughterList: List<Slaughter>) {
         apiModule.provideApiService(isLocal)
-                .upload(UploadBody(slaughterList))
+                .upload(UploadBody(sharedPreferencesModule.getUniqueId(), slaughterList))
                 .doAfterSuccess {
                     for (id in it.result.slaughterIdList) {
                         appDb.slaughterDao().getById(id).subscribe { slaughter ->

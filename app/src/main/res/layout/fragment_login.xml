@@ -39,7 +39,6 @@
             android:id="@+id/et_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="geoffrey.lee"
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -62,7 +61,6 @@
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12345"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -75,6 +75,7 @@ class LoginFragment : Fragment() {
                                 dlProgress.hide()
                                 if (it.isSuccess() && it.result.success) {
                                     sharedPreferencesModule.saveUser(user)
+                                    sharedPreferencesModule.generateSaveUniqueId()
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMenuFragment())
                                 } else {
                                     AlertDialogFragment.show(fragmentManager!!,

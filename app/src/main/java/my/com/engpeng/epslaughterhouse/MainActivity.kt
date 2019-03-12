@@ -2,6 +2,7 @@ package my.com.engpeng.epslaughterhouse
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,6 +21,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.main.MenuFragmentDirections
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //Log.e("MenuFragment", (networkApi != null).toString()) //TODO
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -59,9 +60,6 @@ class MainActivity : AppCompatActivity() {
                 main_tb.visibility = View.VISIBLE
             }
         }
-
-        //main_nv_start?.setupWithNavController(navController)
-
         main_nv_start?.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.mi_logout -> {
@@ -111,6 +109,13 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         compositeDisposable.clear()
+    }
+
+    fun setNavHeader(){
+        main_nv_start?.getHeaderView(0)?.run {
+            findViewById<TextView>(R.id.tv_username)?.text = sharedPreferencesModule.getUser().username
+            findViewById<TextView>(R.id.tv_unique_id)?.text = sharedPreferencesModule.getUniqueId()
+        }
     }
 
     override fun onBackPressed() {

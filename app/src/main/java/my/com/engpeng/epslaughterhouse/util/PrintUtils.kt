@@ -146,6 +146,12 @@ class PrintUtils {
             s += formatLine("Time: " + Sdf.formatTime(Calendar.getInstance().time))
 
             s += formatLine("Ver : " + context.packageManager.getPackageInfo(context.packageName, 0).versionName)
+            if(slaughterDp.isUpload == 1){
+                s += formatLine("Uploaded : Yes")
+            }
+            if(slaughterDp.isDelete == 1){
+                s += formatLine("Deleted  : Yes")
+            }
             s += formatLine("-")
             s += formatLine("-")
             s += formatLine("-")
