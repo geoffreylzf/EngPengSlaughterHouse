@@ -28,7 +28,7 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
             }
             chain.proceed(request)
         }
-                //.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
                 .build()
 
 

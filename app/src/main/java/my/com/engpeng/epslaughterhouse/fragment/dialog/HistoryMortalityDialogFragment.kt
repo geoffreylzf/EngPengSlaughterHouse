@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_dialog_history_mortality.*
 import kotlinx.android.synthetic.main.list_item_slaughter_mortality.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 
 class HistoryMortalityDialogFragment : DialogFragment() {
@@ -20,15 +20,15 @@ class HistoryMortalityDialogFragment : DialogFragment() {
     companion object {
         val TAG = this::class.qualifiedName
         fun show(fm: FragmentManager,
-                 slaughterMortalityList: List<SlaughterMortality>): HistoryMortalityDialogFragment {
+                 tripMortalityList: List<TripMortality>): HistoryMortalityDialogFragment {
             return HistoryMortalityDialogFragment().apply {
-                this.slaughterMortalityList = slaughterMortalityList
+                this.tripMortalityList = tripMortalityList
                 show(fm, TAG)
             }
         }
     }
 
-    private lateinit var slaughterMortalityList: List<SlaughterMortality>
+    private lateinit var tripMortalityList: List<TripMortality>
 
     override fun onStart() {
         super.onStart()
@@ -42,12 +42,12 @@ class HistoryMortalityDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rv.layoutManager = LinearLayoutManager(context)
-        rv.adapter = HistoryMortalityDialogAdapter(slaughterMortalityList)
+        rv.adapter = HistoryMortalityDialogAdapter(tripMortalityList)
     }
 }
 
 class HistoryMortalityDialogAdapter(
-        private val mortalityList: List<SlaughterMortality>)
+        private val mortalityList: List<TripMortality>)
     : RecyclerView.Adapter<HistoryMortalityDialogAdapter.MortalityViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MortalityViewHolder {

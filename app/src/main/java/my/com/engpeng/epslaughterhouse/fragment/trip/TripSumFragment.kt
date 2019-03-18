@@ -24,7 +24,7 @@ import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
-import my.com.engpeng.epslaughterhouse.model.Slaughter
+import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
@@ -33,7 +33,7 @@ class TripSumFragment : Fragment() {
 
     private val appDb: AppDb by inject()
 
-    private lateinit var slaughter: Slaughter
+    private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterDetailAdapter(false)
 
     private var compositeDisposable = CompositeDisposable()
@@ -52,9 +52,9 @@ class TripSumFragment : Fragment() {
     }
 
     private fun setupView() {
-        slaughter = TripSumFragmentArgs.fromBundle(arguments!!).slaughter!!
+        trip = TripSumFragmentArgs.fromBundle(arguments!!).trip!!
 
-        slaughter.run {
+        trip.run {
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
             et_doc_no.setText("${docType}-${docNo}")
             et_type.setText(type)
@@ -109,7 +109,7 @@ class TripSumFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-                        Single.fromCallable { appDb.tempSlaughterDetailDao().deleteById(tempId) }
+                        Single.fromCallable { appDb.tempTripDetailDao().deleteById(tempId) }
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe()
@@ -126,12 +126,12 @@ class TripSumFragment : Fragment() {
         fab_add.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_tripSumFragment_to_tripDetailFragment))
 
         btn_next.setOnClickListener {
-            appDb.tempSlaughterDetailDao().getCount()
+            appDb.tempTripDetailDao().getCount()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         if (it != 0) {
-                            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(slaughter))
+                            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(trip))
                         } else {
                             AlertDialogFragment.show(fragmentManager!!,
                                     "Error",
@@ -143,12 +143,12 @@ class TripSumFragment : Fragment() {
     }
 
     private fun setupRv() {
-        appDb.tempSlaughterDetailDao().getLiveAll().observe(this,
+        appDb.tempTripDetailDao().getLiveAll().observe(this,
                 Observer {
                     rvAdapter.setList(it)
                 })
 
-        appDb.tempSlaughterDetailDao().getLiveTotal().observe(this,
+        appDb.tempTripDetailDao().getLiveTotal().observe(this,
                 Observer {
                     tv_ttl_weight.text = it.ttlWeight.format2Decimal()
                     tv_ttl_qty.text = it.ttlQty.toString()

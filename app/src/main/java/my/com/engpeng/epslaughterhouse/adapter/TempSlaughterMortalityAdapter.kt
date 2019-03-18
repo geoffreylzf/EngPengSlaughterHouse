@@ -7,12 +7,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_temp_slaughter_mortality.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 
 class TempSlaughterMortalityAdapter : RecyclerView.Adapter<TempSlaughterMortalityAdapter.ItemViewHolder>() {
 
-    private var tempList: List<TempSlaughterMortality>? = null
+    private var tempList: List<TempTripMortality>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -41,7 +41,7 @@ class TempSlaughterMortalityAdapter : RecyclerView.Adapter<TempSlaughterMortalit
         return tempList?.count() ?: 0
     }
 
-    fun setList(tempList: List<TempSlaughterMortality>) {
+    fun setList(tempList: List<TempTripMortality>) {
         this.tempList = tempList
         this.notifyDataSetChanged()
     }

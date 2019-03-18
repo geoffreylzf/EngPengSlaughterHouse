@@ -12,14 +12,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_upload.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
-import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Log
-import my.com.engpeng.epslaughterhouse.model.Slaughter
+import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.UploadBody
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
@@ -73,14 +71,14 @@ class UploadService : Service() {
 
     private fun preUpload() {
         initialProgress()
-        appDb.slaughterDao().getAllByUpload(0)
+        appDb.tripDao().getAllByUpload(0)
                 .map { slaughterList ->
                     for (slaughter in slaughterList) {
-                        appDb.slaughterDetailDao().getAllBySlaughterId(slaughter.id!!).subscribe {
-                            slaughter.slaughterDetailList = it
+                        appDb.tripDetailDao().getAllByTripId(slaughter.id!!).subscribe {
+                            slaughter.tripDetailList = it
                         }.addTo(compositeDisposable)
-                        appDb.slaughterMortalityDao().getAllBySlaughterId(slaughter.id!!).subscribe {
-                            slaughter.slaughterMortalityList = it
+                        appDb.tripMortalityDao().getAllByTripId(slaughter.id!!).subscribe {
+                            slaughter.tripMortalityList = it
                         }.addTo(compositeDisposable)
                     }
                     slaughterList
@@ -95,14 +93,14 @@ class UploadService : Service() {
                 .addTo(compositeDisposable)
     }
 
-    private fun upload(slaughterList: List<Slaughter>) {
+    private fun upload(tripList: List<Trip>) {
         apiModule.provideApiService(isLocal)
-                .upload(UploadBody(sharedPreferencesModule.getUniqueId(), slaughterList))
+                .upload(UploadBody(sharedPreferencesModule.getUniqueId(), tripList))
                 .doAfterSuccess {
                     for (id in it.result.slaughterIdList) {
-                        appDb.slaughterDao().getById(id).subscribe { slaughter ->
+                        appDb.tripDao().getById(id).subscribe { slaughter ->
                             slaughter.isUpload = 1
-                            appDb.slaughterDao().insert(slaughter).subscribe().addTo(compositeDisposable)
+                            appDb.tripDao().insert(slaughter).subscribe().addTo(compositeDisposable)
                         }.addTo(compositeDisposable)
                     }
 

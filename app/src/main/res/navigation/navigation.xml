@@ -109,8 +109,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <argument
-            android:name="slaughter"
-            app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
+            android:name="trip"
+            app:argType="my.com.engpeng.epslaughterhouse.model.Trip"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -124,8 +124,8 @@
         android:label="Trip Confirmation"
         tools:layout="@layout/fragment_trip_conf">
         <argument
-            android:name="slaughter"
-            app:argType="my.com.engpeng.epslaughterhouse.model.Slaughter"
+            android:name="trip"
+            app:argType="my.com.engpeng.epslaughterhouse.model.Trip"
             app:nullable="true" />
         <action
             android:id="@+id/action_tripConfFragment_to_tripPrintFragment"

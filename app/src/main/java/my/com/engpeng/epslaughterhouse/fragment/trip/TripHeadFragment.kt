@@ -20,7 +20,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
-import my.com.engpeng.epslaughterhouse.model.Slaughter
+import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit
 class TripHeadFragment : Fragment() {
 
     private var calendarDocDate = Calendar.getInstance()
-    private var slaughter = Slaughter()
+    private var slaughter = Trip()
     private var compositeDisposable = CompositeDisposable()
 
     private val vm: TripHeadViewModel by viewModel()

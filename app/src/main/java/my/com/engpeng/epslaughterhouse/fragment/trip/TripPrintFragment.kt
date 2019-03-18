@@ -19,9 +19,9 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
-import my.com.engpeng.epslaughterhouse.model.SlaughterDisplay
-import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.TripDetail
+import my.com.engpeng.epslaughterhouse.model.TripDisplay
+import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.PrintUtils
 import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
@@ -126,30 +126,30 @@ class TripPrintFragment : Fragment() {
 
     private fun constructPrint() {
         val slaughterId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
-        var slaughterDp: SlaughterDisplay? = null
-        var slaughterDetailList: List<SlaughterDetail>? = null
-        var slaughterMortalityList: List<SlaughterMortality>? = null
+        var slaughterDp: TripDisplay? = null
+        var tripDetailList: List<TripDetail>? = null
+        var tripMortalityList: List<TripMortality>? = null
 
-        appDb.slaughterDao().getDpById(slaughterId)
+        appDb.tripDao().getDpById(slaughterId)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess {
                     slaughterDp = it
                 }
                 .flatMapMaybe {
-                    appDb.slaughterDetailDao().getAllBySlaughterId(slaughterId)
+                    appDb.tripDetailDao().getAllByTripId(slaughterId)
                             .doOnSuccess {
-                                slaughterDetailList = it
+                                tripDetailList = it
                             }
                 }
                 .flatMap {
-                    appDb.slaughterMortalityDao().getAllBySlaughterId(slaughterId)
+                    appDb.tripMortalityDao().getAllByTripId(slaughterId)
                             .doOnSuccess {
-                                slaughterMortalityList = it
+                                tripMortalityList = it
                             }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp!!, slaughterDetailList!!, slaughterMortalityList!!)
+                    tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp!!, tripDetailList!!, tripMortalityList!!)
                 }, {})
                 .addTo(compositeDisposable)
     }

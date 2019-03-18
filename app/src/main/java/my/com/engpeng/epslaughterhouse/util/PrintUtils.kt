@@ -1,9 +1,9 @@
 package my.com.engpeng.epslaughterhouse.util
 
 import android.content.Context
-import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
-import my.com.engpeng.epslaughterhouse.model.SlaughterDisplay
-import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.TripDetail
+import my.com.engpeng.epslaughterhouse.model.TripDisplay
+import my.com.engpeng.epslaughterhouse.model.TripMortality
 import java.util.*
 
 class PrintUtils {
@@ -55,7 +55,7 @@ class PrintUtils {
         private const val TRIP_LIVE_BIRD_HEADER = "  #   Weight   Qty  C "
         private const val TRIP_DEAD_BIRD_HEADER = "  #   Weight   Qty    "
 
-        fun constructTripPrintout(context : Context, slaughterDp: SlaughterDisplay, detailList: List<SlaughterDetail>, mortalityList: List<SlaughterMortality>): String {
+        fun constructTripPrintout(context : Context, slaughterDp: TripDisplay, detailList: List<TripDetail>, mortalityList: List<TripMortality>): String {
             var s = ""
 
             s += formatLine("")

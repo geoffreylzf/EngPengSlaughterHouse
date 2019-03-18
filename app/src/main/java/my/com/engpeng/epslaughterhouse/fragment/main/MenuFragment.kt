@@ -49,7 +49,7 @@ class MenuFragment : Fragment() {
 
     private fun setupView() {
         tv_version.text = context?.appVersion()
-        appDb.slaughterDao().getLiveCountByUpload(0).observe(this, Observer {
+        appDb.tripDao().getLiveCountByUpload(0).observe(this, Observer {
             tv_upload_count.text = it.toString()
         })
 
@@ -60,7 +60,7 @@ class MenuFragment : Fragment() {
             }
         })
 
-        appDb.slaughterDao().getLiveCountByDate(Sdf.getCurrentDate()).observe(this, Observer {
+        appDb.tripDao().getLiveCountByDate(Sdf.getCurrentDate()).observe(this, Observer {
             tv_trip_confirm.text = (it.confirmCount ?: 0).toString()
             tv_trip_delete.text = (it.deleteCount ?: 0).toString()
         })
@@ -72,7 +72,7 @@ class MenuFragment : Fragment() {
         }
 
         btn_upload.setOnClickListener {
-            appDb.slaughterDao().getCountByUpload(0)
+            appDb.tripDao().getCountByUpload(0)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({

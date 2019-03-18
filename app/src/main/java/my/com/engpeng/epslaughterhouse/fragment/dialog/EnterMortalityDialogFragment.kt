@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_dialog_mortality.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 
@@ -31,10 +31,10 @@ class EnterMortalityDialogFragment : DialogFragment() {
         }
     }
 
-    private val doneSubject = PublishSubject.create<TempSlaughterMortality>()
-    private val temp = TempSlaughterMortality()
+    private val doneSubject = PublishSubject.create<TempTripMortality>()
+    private val temp = TempTripMortality()
 
-    val doneEvent: Observable<TempSlaughterMortality> = doneSubject
+    val doneEvent: Observable<TempTripMortality> = doneSubject
 
     private val bt = BluetoothSPP(context)
     private var btName = ""

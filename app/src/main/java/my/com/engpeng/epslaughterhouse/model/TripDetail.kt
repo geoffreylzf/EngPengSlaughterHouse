@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 
-@Entity(tableName = SlaughterDetail.TABLE_NAME)
-data class SlaughterDetail(
+@Entity(tableName = TripDetail.TABLE_NAME)
+data class TripDetail(
         @PrimaryKey var id: Long?,
-        @SerializedName("slaughter_id") @ColumnInfo(name = "slaughter_id") var slaughterId: Long?,
+        @SerializedName("trip_id") @ColumnInfo(name = "trip_id") var tripId: Long?,
         var weight: Double?,
         var qty: Int?,
         var cage: Int?,
@@ -25,13 +25,13 @@ data class SlaughterDetail(
     )
 
     companion object {
-        const val TABLE_NAME = "slaughter_details"
+        const val TABLE_NAME = "trip_details"
 
-        fun transformFromTempWithSlaughterId(slaughterId: Long, tempList: List<TempSlaughterDetail>): List<SlaughterDetail> {
-            val list: MutableList<SlaughterDetail> = mutableListOf()
+        fun transformFromTempWithTripId(tripId: Long, tempList: List<TempTripDetail>): List<TripDetail> {
+            val list: MutableList<TripDetail> = mutableListOf()
             for (temp in tempList) {
                 temp.run {
-                    list.add(SlaughterDetail(null, slaughterId, weight, qty, cage, cover))
+                    list.add(TripDetail(null, tripId, weight, qty, cage, cover))
                 }
             }
             return list
@@ -39,10 +39,10 @@ data class SlaughterDetail(
     }
 
     override val tableName: String
-        get() = SlaughterDetail.TABLE_NAME
+        get() = TripDetail.TABLE_NAME
 
     override val displayName: String
-        get() = "Slaughter Detail"
+        get() = "Trip Detail"
 
 
 }

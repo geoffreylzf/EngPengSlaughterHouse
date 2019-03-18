@@ -25,9 +25,9 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
-import my.com.engpeng.epslaughterhouse.model.Slaughter
-import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
-import my.com.engpeng.epslaughterhouse.model.SlaughterMortality
+import my.com.engpeng.epslaughterhouse.model.Trip
+import my.com.engpeng.epslaughterhouse.model.TripDetail
+import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit
 class TripConfFragment : Fragment() {
 
     private val appDb: AppDb by inject()
-    private lateinit var slaughter: Slaughter
+    private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterMortalityAdapter()
 
     private val companySubject = PublishSubject.create<Long>()
@@ -66,16 +66,16 @@ class TripConfFragment : Fragment() {
     }
 
     private fun setupView() {
-        slaughter = TripConfFragmentArgs.fromBundle(arguments!!).slaughter!!
+        trip = TripConfFragmentArgs.fromBundle(arguments!!).trip!!
 
-        slaughter.run {
+        trip.run {
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
             et_doc_no.setText("${docType}-${docNo}")
             et_type.setText(type)
             et_truck_code.setText(truckCode)
         }
 
-        appDb.tempSlaughterDetailDao().getLiveTotal().observe(this,
+        appDb.tempTripDetailDao().getLiveTotal().observe(this,
                 Observer {
                     et_ttl_weight.setText(it.ttlWeight.format2Decimal() + "Kg")
                     et_ttl_qty.setText(it.ttlQty.toString())
@@ -113,7 +113,7 @@ class TripConfFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-                        Single.fromCallable { appDb.tempSlaughterMortalityDao().deleteById(tempId) }
+                        Single.fromCallable { appDb.tempTripMortalityDao().deleteById(tempId) }
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe().addTo(compositeDisposable)
@@ -145,12 +145,12 @@ class TripConfFragment : Fragment() {
     }
 
     private fun setupRv() {
-        appDb.tempSlaughterMortalityDao().getLiveAll().observe(this,
+        appDb.tempTripMortalityDao().getLiveAll().observe(this,
                 Observer {
                     rvAdapter.setList(it)
                 })
 
-        appDb.tempSlaughterMortalityDao().getLiveTotal().observe(this,
+        appDb.tempTripMortalityDao().getLiveTotal().observe(this,
                 Observer {
                     tv_ttl_weight.text = it.ttlWeight.format2Decimal()
                     tv_ttl_qty.text = it.ttlQty.toString()
@@ -163,7 +163,7 @@ class TripConfFragment : Fragment() {
                 .doneEvent
                 .subscribeOn(Schedulers.io())
                 .flatMapSingle {
-                    appDb.tempSlaughterMortalityDao()
+                    appDb.tempTripMortalityDao()
                             .insert(it)
                             .subscribeOn(Schedulers.io())
                 }
@@ -177,7 +177,7 @@ class TripConfFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     it.run {
-                        slaughter.companyId = id
+                        trip.companyId = id
                         et_company.setText(companyName)
                     }
                 }.addTo(compositeDisposable)
@@ -187,12 +187,12 @@ class TripConfFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     it.run {
-                        slaughter.locationId = id
+                        trip.locationId = id
                         et_location.setText(locationName)
                     }
                 }.addTo(compositeDisposable)
 
-        Observable.just(slaughter).subscribeOn(Schedulers.io())
+        Observable.just(trip).subscribeOn(Schedulers.io())
                 .delay(100, TimeUnit.MILLISECONDS)
                 .subscribe {
                     it.run {
@@ -208,36 +208,36 @@ class TripConfFragment : Fragment() {
     }
 
     private fun save() {
-        appDb.slaughterDao().insert(slaughter)
+        appDb.tripDao().insert(trip)
                 .subscribeOn(Schedulers.io())
                 .flatMapMaybe { slaughterId ->
-                    appDb.tempSlaughterDetailDao().getAll().map { tempList ->
-                        SlaughterDetail.transformFromTempWithSlaughterId(slaughterId, tempList)
+                    appDb.tempTripDetailDao().getAll().map { tempList ->
+                        TripDetail.transformFromTempWithTripId(slaughterId, tempList)
                     }.doOnSuccess {
-                        appDb.slaughterDetailDao().insert(it)
+                        appDb.tripDetailDao().insert(it)
                     }.map {
                         slaughterId
                     }
                 }
                 .flatMap { slaughterId ->
-                    appDb.tempSlaughterMortalityDao().getAll().map { tempList ->
-                        SlaughterMortality.transformFromTempWithSlaughterId(slaughterId, tempList)
+                    appDb.tempTripMortalityDao().getAll().map { tempList ->
+                        TripMortality.transformFromTempWithTripId(slaughterId, tempList)
                     }.doOnSuccess {
-                        appDb.slaughterMortalityDao().insert(it)
+                        appDb.tripMortalityDao().insert(it)
                     }.map {
                         slaughterId
                     }
                 }
                 .flatMap { slaughterId ->
                     Maybe.fromCallable {
-                        appDb.tempSlaughterDetailDao().deleteAll()
+                        appDb.tempTripDetailDao().deleteAll()
                     }.map {
                         slaughterId
                     }
                 }
                 .flatMap { slaughterId ->
                     Maybe.fromCallable {
-                        appDb.tempSlaughterMortalityDao().deleteAll()
+                        appDb.tempTripMortalityDao().deleteAll()
                     }.map {
                         slaughterId
                     }

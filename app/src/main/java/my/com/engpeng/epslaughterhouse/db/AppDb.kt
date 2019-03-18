@@ -8,11 +8,11 @@ import my.com.engpeng.epslaughterhouse.model.*
         entities = [
             Company::class,
             Location::class,
-            Slaughter::class,
-            SlaughterDetail::class,
-            SlaughterMortality::class,
-            TempSlaughterDetail::class,
-            TempSlaughterMortality::class,
+            Trip::class,
+            TripDetail::class,
+            TripMortality::class,
+            TempTripDetail::class,
+            TempTripMortality::class,
             TableLog::class,
             Log::class],
         version = 1,
@@ -21,11 +21,11 @@ import my.com.engpeng.epslaughterhouse.model.*
 abstract class AppDb : RoomDatabase() {
     abstract fun companyDao(): CompanyDao
     abstract fun locationDao(): LocationDao
-    abstract fun slaughterDao(): SlaughterDao
-    abstract fun slaughterDetailDao(): SlaughterDetailDao
-    abstract fun slaughterMortalityDao(): SlaughterMortalityDao
-    abstract fun tempSlaughterDetailDao(): TempSlaughterDetailDao
-    abstract fun tempSlaughterMortalityDao(): TempSlaughterMortalityDao
+    abstract fun tripDao(): TripDao
+    abstract fun tripDetailDao(): TripDetailDao
+    abstract fun tripMortalityDao(): TripMortalityDao
+    abstract fun tempTripDetailDao(): TempTripDetailDao
+    abstract fun tempTripMortalityDao(): TempTripMortalityDao
     abstract fun tableLogDao(): TableLogDao
     abstract fun logDao(): LogDao
 }

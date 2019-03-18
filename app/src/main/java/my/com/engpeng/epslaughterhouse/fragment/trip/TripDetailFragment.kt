@@ -25,7 +25,7 @@ import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetail
+import my.com.engpeng.epslaughterhouse.model.TempTripDetail
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,7 @@ class TripDetailFragment : Fragment() {
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
-    private val tempSlaughterDetail = TempSlaughterDetail()
+    private val tempSlaughterDetail = TempTripDetail()
     private val rvAdapter = TempSlaughterDetailAdapter(true)
     private val compositeDisposable = CompositeDisposable()
 
@@ -173,7 +173,7 @@ class TripDetailFragment : Fragment() {
     }
 
     private fun setupRv() {
-        appDb.tempSlaughterDetailDao().getLiveAll().observe(this,
+        appDb.tempTripDetailDao().getLiveAll().observe(this,
                 Observer {
                     rvAdapter.setList(it)
                 })
@@ -236,7 +236,7 @@ class TripDetailFragment : Fragment() {
             return
         }
 
-        appDb.tempSlaughterDetailDao()
+        appDb.tempTripDetailDao()
                 .insert(tempSlaughterDetail)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

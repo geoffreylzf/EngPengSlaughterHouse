@@ -2,13 +2,13 @@ package my.com.engpeng.epslaughterhouse.model
 
 import androidx.room.ColumnInfo
 
-data class SlaughterDetailTtl(
+data class TripDetailTtl(
         val ttlWeight: Double,
         val ttlQty: Int,
         val ttlCage: Int,
         val ttlCover: Int)
 
-data class SlaughterMortalityTtl(
+data class TripMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
 
@@ -21,7 +21,7 @@ data class TripInfo(
         @ColumnInfo(name = "delete_count") var deleteCount: Int?
 )
 
-class SlaughterDisplay(
+class TripDisplay(
         id: Long?,
         companyId: Long?,
         locationId: Long?,
@@ -39,4 +39,4 @@ class SlaughterDisplay(
         @ColumnInfo(name = "company_name") var companyName: String?,
         @ColumnInfo(name = "location_code") var locationCode: String?,
         @ColumnInfo(name = "location_name") var locationName: String
-) : Slaughter(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, printCount, isUpload, isDelete, timestamp)
+) : Trip(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, printCount, isUpload, isDelete, timestamp)

@@ -21,7 +21,6 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.main.MenuFragmentDirections
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPerformLogout() {
-        appDb.slaughterDao().getCountByUpload(0)
+        appDb.tripDao().getCountByUpload(0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

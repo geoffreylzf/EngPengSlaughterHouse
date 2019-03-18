@@ -22,8 +22,8 @@ import kotlinx.android.synthetic.main.fragment_trip_history.*
 import kotlinx.android.synthetic.main.list_item_trip_history.view.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
-import my.com.engpeng.epslaughterhouse.model.Slaughter
-import my.com.engpeng.epslaughterhouse.model.SlaughterDisplay
+import my.com.engpeng.epslaughterhouse.model.Trip
+import my.com.engpeng.epslaughterhouse.model.TripDisplay
 import my.com.engpeng.epslaughterhouse.util.formatYesNo
 import org.koin.android.ext.android.inject
 import java.util.concurrent.TimeUnit
@@ -54,7 +54,7 @@ class TripHistoryFragment : Fragment() {
                     }.addTo(compositeDisposable)
         }
 
-        appDb.slaughterDao().getLiveAll().observe(this, Observer {
+        appDb.tripDao().getLiveAll().observe(this, Observer {
             rvAdapter.setList(it)
         })
     }
@@ -67,10 +67,10 @@ class TripHistoryFragment : Fragment() {
 
 class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolder>() {
 
-    private val clickSubject = PublishSubject.create<Slaughter>()
-    val clickEvent: Observable<Slaughter> = clickSubject
+    private val clickSubject = PublishSubject.create<Trip>()
+    val clickEvent: Observable<Trip> = clickSubject
 
-    private var slaughterList: List<SlaughterDisplay>? = null
+    private var slaughterList: List<TripDisplay>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
         return TripViewHolder(
@@ -103,7 +103,7 @@ class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolde
         return slaughterList?.size ?: 0
     }
 
-    fun setList(slaughterList: List<SlaughterDisplay>) {
+    fun setList(slaughterList: List<TripDisplay>) {
         this.slaughterList = slaughterList
         this.notifyDataSetChanged()
     }

@@ -20,7 +20,7 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.HistoryMortalityDialogFragment
-import my.com.engpeng.epslaughterhouse.model.SlaughterDetail
+import my.com.engpeng.epslaughterhouse.model.TripDetail
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 
@@ -66,7 +66,7 @@ class TripHistoryDetailFragment : Fragment() {
     private fun setupView() {
         slaughterId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
 
-        appDb.slaughterDao().getDpById(slaughterId)
+        appDb.tripDao().getDpById(slaughterId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -85,7 +85,7 @@ class TripHistoryDetailFragment : Fragment() {
                         }, {}
                 ).addTo(compositeDisposable)
 
-        appDb.slaughterDetailDao().getAllBySlaughterId(slaughterId)
+        appDb.tripDetailDao().getAllByTripId(slaughterId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -96,7 +96,7 @@ class TripHistoryDetailFragment : Fragment() {
                 }
                 .addTo(compositeDisposable)
 
-        appDb.slaughterDetailDao().getTtlBySlaughterId(slaughterId)
+        appDb.tripDetailDao().getTtlByTripId(slaughterId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -108,7 +108,7 @@ class TripHistoryDetailFragment : Fragment() {
                 .addTo(compositeDisposable)
 
         btn_mortality.setOnClickListener {
-            appDb.slaughterMortalityDao().getAllBySlaughterId(slaughterId)
+            appDb.tripMortalityDao().getAllByTripId(slaughterId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -123,10 +123,10 @@ class TripHistoryDetailFragment : Fragment() {
                 getString(R.string.dialog_confirm_msg_delete_trip),
                 getString(R.string.delete), object : ConfirmDialogFragment.Listener {
             override fun onPositiveButtonClicked() {
-                appDb.slaughterDao().getById(slaughterId)
+                appDb.tripDao().getById(slaughterId)
                         .subscribeOn(Schedulers.io())
                         .doOnSuccess {
-                            appDb.slaughterDao().insert(it.apply { isDelete = 1 }).subscribe().addTo(compositeDisposable)
+                            appDb.tripDao().insert(it.apply { isDelete = 1 }).subscribe().addTo(compositeDisposable)
                         }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe{
@@ -144,7 +144,7 @@ class TripHistoryDetailFragment : Fragment() {
     }
 }
 
-class DetailDialogAdapter(private val detailList: List<SlaughterDetail>)
+class DetailDialogAdapter(private val detailList: List<TripDetail>)
     : RecyclerView.Adapter<DetailDialogAdapter.DetailViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {

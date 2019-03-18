@@ -7,13 +7,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_temp_slaughter_detail.view.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.model.TempSlaughterDetail
+import my.com.engpeng.epslaughterhouse.model.TempTripDetail
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 
 class TempSlaughterDetailAdapter(private val isShort: Boolean)
     : RecyclerView.Adapter<TempSlaughterDetailAdapter.ItemViewHolder>() {
 
-    private var tempList: List<TempSlaughterDetail>? = null
+    private var tempList: List<TempTripDetail>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -50,7 +50,7 @@ class TempSlaughterDetailAdapter(private val isShort: Boolean)
         return tempList?.count() ?: 0
     }
 
-    fun setList(tempList: List<TempSlaughterDetail>) {
+    fun setList(tempList: List<TempTripDetail>) {
         this.tempList = tempList
         this.notifyDataSetChanged()
     }
