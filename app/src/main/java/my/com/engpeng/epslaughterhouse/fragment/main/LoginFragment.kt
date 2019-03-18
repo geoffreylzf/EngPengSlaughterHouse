@@ -14,11 +14,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
@@ -39,8 +39,6 @@ class LoginFragment : Fragment() {
     private val apiModule: ApiModule by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
-    private val compositeDisposable = CompositeDisposable()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -60,32 +58,35 @@ class LoginFragment : Fragment() {
 
             when {
                 email == null || (email?.isEmpty()
-                        ?: true) -> AlertDialogFragment.show(fragmentManager!!, "Error", "Please login google account")
-                username.isEmpty() -> AlertDialogFragment.show(fragmentManager!!, "Error", "Please enter username")
-                password.isEmpty() -> AlertDialogFragment.show(fragmentManager!!, "Error", "Please enter password")
+                        ?: true) -> AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.dialog_error_msg_login_email))
+                username.isEmpty() -> AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.dialog_error_msg_no_username))
+                password.isEmpty() -> AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.dialog_error_msg_no_password))
                 else -> {
 
                     val user = User(username, password)
                     dlProgress.show()
-                    apiModule.provideApiService(cb_local.isChecked)
-                            .login(user.credentials, email)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val apiResponse = apiModule.provideApiService(cb_local.isChecked).loginAsync(user.credentials, email).await()
+                            withContext(Dispatchers.Main) {
                                 dlProgress.hide()
-                                if (it.isSuccess() && it.result.success) {
+                                if (apiResponse.isSuccess() && apiResponse.result.success) {
                                     sharedPreferencesModule.saveUser(user)
                                     sharedPreferencesModule.generateSaveUniqueId()
                                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMenuFragment())
                                 } else {
                                     AlertDialogFragment.show(fragmentManager!!,
-                                            getString(R.string.login_error_desc, it.cod.toString()),
-                                            getString(R.string.error_desc, it.result.message))
+                                            getString(R.string.login_error_desc, apiResponse.cod.toString()),
+                                            getString(R.string.error_desc, apiResponse.result.message))
                                 }
-                            }, {
-                                dlProgress.hide()
-                                AlertDialogFragment.show(fragmentManager!!, getString(R.string.error), getString(R.string.error_desc, it.message))
-                            }).addTo(compositeDisposable)
+                            }
+                        } catch (e: Exception) {
+                            AlertDialogFragment.show(fragmentManager!!,
+                                    getString(R.string.error),
+                                    getString(R.string.error_desc, e.message))
+                        }
+                    }
                 }
             }
         }
@@ -97,11 +98,6 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         populateUi(GoogleSignIn.getLastSignedInAccount(context!!))
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
     }
 
     override fun onDetach() {

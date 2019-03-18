@@ -16,8 +16,14 @@ abstract class TempTripMortalityDao : BaseDao<TempTripMortality>() {
     @Query("DELETE FROM temp_trip_mortalities")
     abstract override fun deleteAll()
 
+    @Query("DELETE FROM temp_trip_mortalities")
+    abstract suspend fun deleteAllAsync()
+
     @Query("DELETE FROM temp_trip_mortalities WHERE id = :id")
     abstract fun deleteById(id: Long)
+
+    @Query("DELETE FROM temp_trip_mortalities WHERE id = :id")
+    abstract suspend fun deleteByIdAsync(id: Long)
 
     @Query("SELECT * FROM temp_trip_mortalities ORDER BY id DESC")
     abstract fun getLiveAll(): LiveData<List<TempTripMortality>>
@@ -31,5 +37,5 @@ abstract class TempTripMortalityDao : BaseDao<TempTripMortality>() {
     abstract fun getLiveTotal(): LiveData<TripMortalityTtl>
 
     @Query("SELECT * FROM temp_trip_mortalities")
-    abstract fun getAll(): Maybe<List<TempTripMortality>>
+    abstract suspend fun getAll(): List<TempTripMortality>
 }

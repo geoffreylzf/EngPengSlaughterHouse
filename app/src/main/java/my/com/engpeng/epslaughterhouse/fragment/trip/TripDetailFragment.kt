@@ -18,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
+import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
@@ -44,7 +45,6 @@ class TripDetailFragment : Fragment() {
 
     private val tempSlaughterDetail = TempTripDetail()
     private val rvAdapter = TempSlaughterDetailAdapter(true)
-    private val compositeDisposable = CompositeDisposable()
 
     private val bt = BluetoothSPP(context)
     private var btName = ""
@@ -236,29 +236,28 @@ class TripDetailFragment : Fragment() {
             return
         }
 
-        appDb.tempTripDetailDao()
-                .insert(tempSlaughterDetail)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    activity?.vibrate()
-                    et_weight.text?.clear()
-                    et_weight.requestFocusWithKeyboard(activity)
-                }, {}).addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            appDb.tempTripDetailDao().insertAsync(tempSlaughterDetail)
+            withContext(Dispatchers.Main){
+                activity?.vibrate()
+                et_weight.text?.clear()
+                et_weight.requestFocusWithKeyboard(activity)
+            }
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        compositeDisposable.clear()
         bt.stopService()
     }
 
     private fun backToSummary() {
         activity?.hideKeyboard()
-        Observable.timer(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    findNavController().popBackStack()
-                }.addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(100)
+            withContext(Dispatchers.Main){
+                findNavController().popBackStack()
+            }
+        }
     }
 }

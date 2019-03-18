@@ -11,30 +11,19 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding3.view.clicks
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_history.*
 import kotlinx.android.synthetic.main.list_item_trip_history.view.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
-import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDisplay
 import my.com.engpeng.epslaughterhouse.util.formatYesNo
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 class TripHistoryFragment : Fragment() {
 
     private val appDb: AppDb by inject()
 
-    private var rvAdapter = TripHistoryAdapter()
-
-    private var compositeDisposable = CompositeDisposable()
+    private lateinit var rvAdapter: TripHistoryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -45,32 +34,28 @@ class TripHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rv.layoutManager = LinearLayoutManager(context)
-        rv.adapter = rvAdapter.apply {
-            clickEvent.subscribeOn(Schedulers.io())
-                    .delay(200, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { slaughter ->
-                        findNavController().navigate(TripHistoryFragmentDirections.actionTripHistoryFragmentToTripHistoryDetailFragment(slaughter.id!!))
-                    }.addTo(compositeDisposable)
-        }
+
+        rvAdapter = TripHistoryAdapter(object : TripHistoryAdapter.Listener {
+            override fun onClicked(tripId: Long) {
+                findNavController().navigate(TripHistoryFragmentDirections.actionTripHistoryFragmentToTripHistoryDetailFragment(tripId))
+            }
+        })
+
+        rv.adapter = rvAdapter
 
         appDb.tripDao().getLiveAll().observe(this, Observer {
             rvAdapter.setList(it)
         })
     }
-
-    override fun onStop() {
-        super.onStop()
-        compositeDisposable.clear()
-    }
 }
 
-class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolder>() {
+class TripHistoryAdapter(val listener: Listener) : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolder>() {
 
-    private val clickSubject = PublishSubject.create<Trip>()
-    val clickEvent: Observable<Trip> = clickSubject
+    interface Listener {
+        fun onClicked(tripId: Long)
+    }
 
-    private var slaughterList: List<TripDisplay>? = null
+    private var tripList: List<TripDisplay>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
         return TripViewHolder(
@@ -79,32 +64,35 @@ class TripHistoryAdapter : RecyclerView.Adapter<TripHistoryAdapter.TripViewHolde
     }
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
-        slaughterList!![position].let { slaughter ->
+        tripList!![position].let { trip ->
             holder.itemView.run {
-                clicks().map { slaughter }.subscribe(clickSubject)
                 li_tv_no.text = (itemCount - position).toString()
-                li_tv_company.text = slaughter.companyCode
-                li_tv_location.text = slaughter.locationCode
-                li_tv_doc_date.text = slaughter.docDate
-                li_tv_doc_no.text = "${slaughter.docType}-${slaughter.docNo}"
-                li_tv_type.text = slaughter.type
-                li_tv_upload.text = slaughter.isUpload?.formatYesNo()
+                li_tv_company.text = trip.companyCode
+                li_tv_location.text = trip.locationCode
+                li_tv_doc_date.text = trip.docDate
+                li_tv_doc_no.text = "${trip.docType}-${trip.docNo}"
+                li_tv_type.text = trip.type
+                li_tv_upload.text = trip.isUpload?.formatYesNo()
 
-                if (slaughter.isDelete == 1) {
+                if (trip.isDelete == 1) {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed50))
-                }else{
+                } else {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
+                }
+
+                setOnClickListener {
+                    listener.onClicked(trip.id!!)
                 }
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return slaughterList?.size ?: 0
+        return tripList?.size ?: 0
     }
 
     fun setList(slaughterList: List<TripDisplay>) {
-        this.slaughterList = slaughterList
+        this.tripList = slaughterList
         this.notifyDataSetChanged()
     }
 

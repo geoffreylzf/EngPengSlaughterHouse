@@ -12,6 +12,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
@@ -27,7 +31,6 @@ class UploadService : Service() {
     private val appDb: AppDb by inject()
     private val apiModule: ApiModule by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
-    private var compositeDisposable = CompositeDisposable()
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManager
@@ -65,59 +68,43 @@ class UploadService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         isLocal = intent?.getBooleanExtra(I_KEY_LOCAL, false) ?: false
-        preUpload()
+        upload()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun preUpload() {
+    private fun upload() {
         initialProgress()
-        appDb.tripDao().getAllByUpload(0)
-                .map { slaughterList ->
-                    for (slaughter in slaughterList) {
-                        appDb.tripDetailDao().getAllByTripId(slaughter.id!!).subscribe {
-                            slaughter.tripDetailList = it
-                        }.addTo(compositeDisposable)
-                        appDb.tripMortalityDao().getAllByTripId(slaughter.id!!).subscribe {
-                            slaughter.tripMortalityList = it
-                        }.addTo(compositeDisposable)
-                    }
-                    slaughterList
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val tripList = appDb.tripDao().getAllByUpload(0)
+                for (trip in tripList) {
+                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripIdAsync(trip.id!!)
+                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(trip.id!!)
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    upload(it)
-                }, {
-                    errorProgress()
-                })
-                .addTo(compositeDisposable)
-    }
 
-    private fun upload(tripList: List<Trip>) {
-        apiModule.provideApiService(isLocal)
-                .upload(UploadBody(sharedPreferencesModule.getUniqueId(), tripList))
-                .doAfterSuccess {
-                    for (id in it.result.slaughterIdList) {
-                        appDb.tripDao().getById(id).subscribe { slaughter ->
-                            slaughter.isUpload = 1
-                            appDb.tripDao().insert(slaughter).subscribe().addTo(compositeDisposable)
-                        }.addTo(compositeDisposable)
-                    }
+                val uploadResult = apiModule.provideApiService(isLocal)
+                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList))
+                        .await().result
 
-                    appDb.logDao().insert(Log(
-                            LOG_TASK_UPLOAD,
-                            Sdf.getCurrentDateTime(),
-                            getString(R.string.upload_log_desc, it.result.slaughterIdList.size)
-                            )).subscribe().addTo(compositeDisposable)
+                for (id in uploadResult.tripIdList) {
+                    val trip = appDb.tripDao().getByIdAsync(id)
+                    trip.isUpload = 1
+                    appDb.tripDao().insertAsync(trip)
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+
+                appDb.logDao().insertAsync(Log(
+                        LOG_TASK_UPLOAD,
+                        Sdf.getCurrentDateTime(),
+                        getString(R.string.upload_log_desc, uploadResult.tripIdList.size)
+                ))
+
+                withContext(Dispatchers.Main) {
                     completeProgress()
-                }, {
-                    errorProgress()
-                })
-                .addTo(compositeDisposable)
+                }
+            } catch (e: Exception) {
+                errorProgress(e.message)
+            }
+        }
     }
 
     private fun initialProgress() {
@@ -138,10 +125,10 @@ class UploadService : Service() {
         stopSelf()
     }
 
-    fun errorProgress() {
+    private fun errorProgress(msg: String?) {
         notificationBuilder
                 .setSmallIcon(android.R.drawable.stat_notify_error)
-                .setContentText("Upload error")
+                .setContentText("Upload error. $msg")
                 .setOngoing(false)
                 .setProgress(0, 0, false)
         notificationManager.notify(NOTIFICATION_UPLOAD_ID, notificationBuilder.build())
@@ -153,8 +140,4 @@ class UploadService : Service() {
         throw UnsupportedOperationException("Not yet implemented")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.clear()
-    }
 }

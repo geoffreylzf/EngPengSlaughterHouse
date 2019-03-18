@@ -6,7 +6,11 @@ data class ApiResponse<T>(
         val cod: Int,
         val result: T) {
 
-    fun isSuccess(): Boolean{
-        return cod == HttpURLConnection.HTTP_OK
+    fun isSuccess(): Boolean {
+        val res = cod == HttpURLConnection.HTTP_OK
+        if (!res) {
+            throw Exception("User authentication failed")
+        }
+        return res
     }
 }

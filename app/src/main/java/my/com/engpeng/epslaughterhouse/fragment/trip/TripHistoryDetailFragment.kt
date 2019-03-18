@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_history_detail.*
 import kotlinx.android.synthetic.main.list_item_slaughter_detail.view.*
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
@@ -28,9 +27,8 @@ class TripHistoryDetailFragment : Fragment() {
 
     private val appDb: AppDb by inject()
 
-    private var slaughterId: Long = 0
+    private var tripId: Long = 0
     private var menu: Menu? = null
-    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,7 +50,7 @@ class TripHistoryDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.mi_print -> {
-                findNavController().navigate(TripHistoryDetailFragmentDirections.actionTripHistoryDetailFragmentToTripPrintFragment(slaughterId))
+                findNavController().navigate(TripHistoryDetailFragmentDirections.actionTripHistoryDetailFragmentToTripPrintFragment(tripId))
                 true
             }
             R.id.mi_delete -> {
@@ -64,56 +62,48 @@ class TripHistoryDetailFragment : Fragment() {
     }
 
     private fun setupView() {
-        slaughterId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
+        tripId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
 
-        appDb.tripDao().getDpById(slaughterId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            it.run {
-                                et_company.setText(companyName)
-                                et_location.setText(locationName)
-                                et_doc_date.setText(docDate)
-                                et_doc_no.setText("${docType}-${docNo}")
-                                et_type.setText(type)
-                                et_truck_code.setText(truckCode)
-                                if (isUpload == 0) {
-                                    menu?.findItem(R.id.mi_delete)?.isVisible = true
-                                }
-                            }
-                        }, {}
-                ).addTo(compositeDisposable)
-
-        appDb.tripDetailDao().getAllByTripId(slaughterId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (it.isNotEmpty()) {
-                        rv.layoutManager = LinearLayoutManager(context)
-                        rv.adapter = DetailDialogAdapter(it)
+        CoroutineScope(Dispatchers.IO).launch {
+            val trip = appDb.tripDao().getDpByIdAsync(tripId)
+            withContext(Dispatchers.Main) {
+                trip.run {
+                    et_company.setText(companyName)
+                    et_location.setText(locationName)
+                    et_doc_date.setText(docDate)
+                    et_doc_no.setText("${docType}-${docNo}")
+                    et_type.setText(type)
+                    et_truck_code.setText(truckCode)
+                    if (isUpload == 0 && isDelete == 0) {
+                        menu?.findItem(R.id.mi_delete)?.isVisible = true
                     }
                 }
-                .addTo(compositeDisposable)
+            }
 
-        appDb.tripDetailDao().getTtlByTripId(slaughterId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    tv_ttl_weight.text = it.ttlWeight.format2Decimal()
-                    tv_ttl_qty.text = it.ttlQty.toString()
-                    tv_ttl_cage.text = it.ttlCage.toString()
-                    tv_ttl_cover.text = it.ttlCover.toString()
+            val detail = appDb.tripDetailDao().getAllByTripIdAsync(tripId)
+            withContext(Dispatchers.Main) {
+                if (detail.isNotEmpty()) {
+                    rv.layoutManager = LinearLayoutManager(context)
+                    rv.adapter = DetailDialogAdapter(detail)
                 }
-                .addTo(compositeDisposable)
+            }
+
+            val tripTtl = appDb.tripDetailDao().getTtlByTripId(tripId)
+            withContext(Dispatchers.Main) {
+                tv_ttl_weight.text = tripTtl.ttlWeight.format2Decimal()
+                tv_ttl_qty.text = tripTtl.ttlQty.toString()
+                tv_ttl_cage.text = tripTtl.ttlCage.toString()
+                tv_ttl_cover.text = tripTtl.ttlCover.toString()
+            }
+        }
 
         btn_mortality.setOnClickListener {
-            appDb.tripMortalityDao().getAllByTripId(slaughterId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        HistoryMortalityDialogFragment.show(fragmentManager!!, it)
-                    }.addTo(compositeDisposable)
+            CoroutineScope(Dispatchers.IO).launch {
+                val mortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(tripId)
+                withContext(Dispatchers.Main) {
+                    HistoryMortalityDialogFragment.show(fragmentManager!!, mortalityList)
+                }
+            }
         }
     }
 
@@ -123,24 +113,18 @@ class TripHistoryDetailFragment : Fragment() {
                 getString(R.string.dialog_confirm_msg_delete_trip),
                 getString(R.string.delete), object : ConfirmDialogFragment.Listener {
             override fun onPositiveButtonClicked() {
-                appDb.tripDao().getById(slaughterId)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSuccess {
-                            appDb.tripDao().insert(it.apply { isDelete = 1 }).subscribe().addTo(compositeDisposable)
-                        }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe{
-                            AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
-                        }.addTo(compositeDisposable)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val trip = appDb.tripDao().getByIdAsync(tripId)
+                    appDb.tripDao().insertAsync(trip.apply { isDelete = 1 })
+                    withContext(Dispatchers.Main) {
+                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
+                    }
+                }
             }
 
             override fun onNegativeButtonClicked() {}
         })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
     }
 }
 

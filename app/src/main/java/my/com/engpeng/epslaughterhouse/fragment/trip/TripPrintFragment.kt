@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_print.*
+import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
@@ -24,15 +23,12 @@ import my.com.engpeng.epslaughterhouse.model.TripDisplay
 import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.PrintUtils
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 
 class TripPrintFragment : Fragment() {
 
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
-
-    private var compositeDisposable = CompositeDisposable()
 
     private val bt = BluetoothSPP(context)
     private var btName = ""
@@ -115,48 +111,32 @@ class TripPrintFragment : Fragment() {
         }
 
         if (btName.isNotEmpty() && btAddress.isNotEmpty()) {
-            Maybe.timer(1000, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        bt.connect(btAddress)
-                    }.addTo(compositeDisposable)
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(1000)
+                bt.connect(btAddress)
+            }
         }
     }
 
     private fun constructPrint() {
-        val slaughterId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
+        val tripId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
         var slaughterDp: TripDisplay? = null
         var tripDetailList: List<TripDetail>? = null
         var tripMortalityList: List<TripMortality>? = null
 
-        appDb.tripDao().getDpById(slaughterId)
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess {
-                    slaughterDp = it
-                }
-                .flatMapMaybe {
-                    appDb.tripDetailDao().getAllByTripId(slaughterId)
-                            .doOnSuccess {
-                                tripDetailList = it
-                            }
-                }
-                .flatMap {
-                    appDb.tripMortalityDao().getAllByTripId(slaughterId)
-                            .doOnSuccess {
-                                tripMortalityList = it
-                            }
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp!!, tripDetailList!!, tripMortalityList!!)
-                }, {})
-                .addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            slaughterDp = appDb.tripDao().getDpByIdAsync(tripId)
+            tripDetailList = appDb.tripDetailDao().getAllByTripIdAsync(tripId)
+            tripMortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(tripId)
+
+            withContext(Dispatchers.Main) {
+                tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp!!, tripDetailList!!, tripMortalityList!!)
+            }
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        compositeDisposable.clear()
         bt.stopService()
     }
 

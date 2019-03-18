@@ -7,11 +7,10 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_head.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.camera.CameraPermission
 import my.com.engpeng.epslaughterhouse.camera.ScanActivity
@@ -24,8 +23,8 @@ import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * A simple [Fragment] subclass.
@@ -151,13 +150,12 @@ class TripHeadFragment : Fragment() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun setupObservable() {
-
-        ScanBus.scanSubject
-                .subscribeOn(Schedulers.io())
-                .delay(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { scanText ->
+        CoroutineScope(Dispatchers.IO).launch {
+            ScanBus.scanChannel.consumeEach { scanText ->
+                delay(100)
+                withContext(Dispatchers.Main) {
                     if (scanText.isNotEmpty()) {
                         val arr = scanText.split("|")
                         if (arr.size == 7 || arr.size == 8) {
@@ -195,7 +193,18 @@ class TripHeadFragment : Fragment() {
                         }
                     }
                     ScanBus.reset()
-                }.addTo(compositeDisposable)
+                }
+            }
+        }
+
+
+        /*ScanBus.scanSubject
+                .subscribeOn(Schedulers.io())
+                .delay(100, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { scanText ->
+
+                }.addTo(compositeDisposable)*/
     }
 
     private fun start() {
@@ -260,22 +269,22 @@ class TripHeadFragment : Fragment() {
 
     private fun showCompanyDialog() {
         CompanyDialogFragment
-                .getInstance(fragmentManager!!)
-                .selectEvent
-                .subscribe {
-                    vm.loadCompany(it.id!!)
-                    vm.loadLocation(0)
-                    showLocationDialog(it.id!!)
-                }.addTo(compositeDisposable)
+                .show(fragmentManager!!, object : CompanyDialogFragment.Listener {
+                    override fun onSelected(companyId: Long) {
+                        vm.loadCompany(companyId)
+                        vm.loadLocation(0)
+                        showLocationDialog(companyId)
+                    }
+                })
     }
 
     private fun showLocationDialog(companyId: Long) {
         LocationDialogFragment
-                .getInstance(fragmentManager!!, companyId)
-                .selectEvent
-                .subscribe {
-                    vm.loadLocation(it.id!!)
-                }.addTo(compositeDisposable)
+                .show(fragmentManager!!, companyId, object : LocationDialogFragment.Listener {
+                    override fun onSelected(locationId: Long) {
+                        vm.loadLocation(locationId)
+                    }
+                })
     }
 
     override fun onPause() {

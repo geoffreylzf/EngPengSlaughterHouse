@@ -19,6 +19,9 @@ abstract class TripDetailDao : BaseDao<TripDetail>() {
     @Query("SELECT * FROM trip_details WHERE trip_id = :id")
     abstract fun getAllByTripId(id: Long): Maybe<List<TripDetail>>
 
+    @Query("SELECT * FROM trip_details WHERE trip_id = :id")
+    abstract suspend fun getAllByTripIdAsync(id: Long): List<TripDetail>
+
     @Query("""
         SELECT
             SUM(weight) AS ttlWeight,
@@ -28,5 +31,5 @@ abstract class TripDetailDao : BaseDao<TripDetail>() {
         FROM trip_details
         WHERE trip_id = :id
         """)
-    abstract fun getTtlByTripId(id: Long): Maybe<TripDetailTtl>
+    abstract suspend fun getTtlByTripId(id: Long): TripDetailTtl
 }

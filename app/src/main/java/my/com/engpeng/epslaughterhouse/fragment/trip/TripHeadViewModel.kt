@@ -2,10 +2,10 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Company
 import my.com.engpeng.epslaughterhouse.model.Location
@@ -13,8 +13,6 @@ import java.util.*
 
 class TripHeadViewModel(private val appDb: AppDb)
     : ViewModel() {
-
-    private var compositeDisposable = CompositeDisposable()
 
     val liveCompany = MutableLiveData<Company?>()
     val liveLocation = MutableLiveData<Location?>()
@@ -32,35 +30,32 @@ class TripHeadViewModel(private val appDb: AppDb)
     }
 
     fun loadCompany(companyId: Long) {
-        appDb.companyDao().getById(companyId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    liveCompany.value = it
-                }, {
-                    liveCompany.value = null
-                }).addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val company = appDb.companyDao().getByIdAsync(companyId)
+                withContext(Dispatchers.Main) {
+                    liveCompany.value = company
+                }
+            } catch (e: Exception) {
+                liveCompany.value = null
+            }
+        }
     }
 
     fun loadLocation(locationId: Long) {
-        appDb.locationDao().getById(locationId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    liveLocation.value = it
-                }, {
-                    liveLocation.value = null
-                }).addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val location = appDb.locationDao().getByIdAsync(locationId)
+                withContext(Dispatchers.Main) {
+                    liveLocation.value = location
+                }
+            } catch (e: Exception) {
+                liveLocation.value = null
+            }
+        }
     }
 
-    fun setCalendar(calendar: Calendar){
+    fun setCalendar(calendar: Calendar) {
         liveCalendar.value = calendar
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.clear()
-    }
-
-
 }

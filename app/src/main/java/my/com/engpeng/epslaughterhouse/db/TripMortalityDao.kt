@@ -17,4 +17,7 @@ abstract class TripMortalityDao : BaseDao<TripMortality>() {
 
     @Query("SELECT * FROM trip_mortalities WHERE trip_id = :id")
     abstract fun getAllByTripId(id: Long): Maybe<List<TripMortality>>
+
+    @Query("SELECT * FROM trip_mortalities WHERE trip_id = :id")
+    abstract suspend fun getAllByTripIdAsync(id: Long): List<TripMortality>
 }

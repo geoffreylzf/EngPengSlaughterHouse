@@ -16,6 +16,10 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.merge_menu_log.*
 import kotlinx.android.synthetic.main.merge_menu_trip.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.MainActivity
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
@@ -34,7 +38,6 @@ import org.koin.android.ext.android.inject
 class MenuFragment : Fragment() {
 
     private val appDb: AppDb by inject()
-    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
@@ -72,27 +75,22 @@ class MenuFragment : Fragment() {
         }
 
         btn_upload.setOnClickListener {
-            appDb.tripDao().getCountByUpload(0)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (it == 0) {
-                            AlertDialogFragment.show(fragmentManager!!,
-                                    getString(R.string.error),
-                                    getString(R.string.dialog_error_msg_no_data_upload))
-                        } else {
-                            val intent = Intent(activity, UploadService::class.java).apply {
-                                putExtra(I_KEY_LOCAL, cb_local.isChecked)
-                            }
-                            activity!!.stopService(intent)
-                            activity!!.startService(intent)
+            CoroutineScope(Dispatchers.IO).launch {
+                val count = appDb.tripDao().getCountByUpload(0)
+                withContext(Dispatchers.Main) {
+                    if (count == 0) {
+                        AlertDialogFragment.show(fragmentManager!!,
+                                getString(R.string.error),
+                                getString(R.string.dialog_error_msg_no_data_upload))
+                    } else {
+                        val intent = Intent(activity, UploadService::class.java).apply {
+                            putExtra(I_KEY_LOCAL, cb_local.isChecked)
                         }
-                    }, {}).addTo(compositeDisposable)
+                        activity!!.stopService(intent)
+                        activity!!.startService(intent)
+                    }
+                }
+            }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
     }
 }

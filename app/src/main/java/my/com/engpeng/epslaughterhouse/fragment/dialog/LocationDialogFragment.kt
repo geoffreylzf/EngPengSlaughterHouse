@@ -17,6 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_location.*
 import kotlinx.android.synthetic.main.list_item_location.view.*
+import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Location
@@ -27,21 +28,22 @@ class LocationDialogFragment : DialogFragment() {
 
     companion object {
         val TAG = this::class.qualifiedName
-        fun getInstance(fm: FragmentManager, companyId: Long): LocationDialogFragment {
+        fun show(fm: FragmentManager, companyId: Long, listener: Listener) {
             return LocationDialogFragment().apply {
                 this.companyId = companyId
-                show(fm, TAG)
-            }
+                this.listener = listener
+            }.show(fm, TAG)
         }
     }
 
+    interface Listener {
+        fun onSelected(locationId: Long)
+    }
+
     private val appDb: AppDb by inject()
-
+    private lateinit var listener: Listener
     private var companyId: Long? = null
-    private var compositeDisposable = CompositeDisposable()
 
-    private val selectSubject = PublishSubject.create<Location>()
-    val selectEvent: Observable<Location> = selectSubject
 
     override fun onStart() {
         super.onStart()
@@ -54,41 +56,39 @@ class LocationDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        appDb.locationDao().getAllByCompanyId(companyId!!)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (it.isNotEmpty()) {
-                        //rv.height = dialog.hei
-                        rv.layoutManager = LinearLayoutManager(context)
-                        rv.adapter = LocationDialogAdapter(it).apply {
-                            clickEvent.subscribeOn(Schedulers.io())
-                                    .delay(200, TimeUnit.MILLISECONDS)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe { location ->
-                                        selectSubject.onNext(location)
-                                        selectSubject.onComplete()
-                                        dismiss()
-                                    }.addTo(compositeDisposable)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val locationList = appDb.locationDao().getAllByCompanyIdAsync(companyId!!)
+            withContext(Dispatchers.Main) {
+                if (locationList.isNotEmpty()) {
+                    rv.layoutManager = LinearLayoutManager(context)
+                    rv.adapter = LocationDialogAdapter(locationList, object : LocationDialogAdapter.Listener{
+                        override fun onClicked(locationId: Long) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                delay(200)
+                                withContext(Dispatchers.Main) {
+                                    listener.onSelected(locationId)
+                                    dismiss()
+                                }
+                            }
                         }
-                    } else {
-                        tv_title.setText(R.string.dialog_title_no_company)
-                    }
-                }.addTo(compositeDisposable)
+                    })
+                }else{
+                    tv_title.setText(R.string.dialog_title_no_location)
+                }
+            }
+        }
     }
-
-    override fun onStop() {
-        super.onStop()
-        compositeDisposable.clear()
-    }
-
 }
 
-class LocationDialogAdapter(private val locationList: List<Location>)
+class LocationDialogAdapter(
+        private val locationList: List<Location>,
+        private val listener: Listener)
     : RecyclerView.Adapter<LocationDialogAdapter.LocationViewHolder>() {
 
-    private val clickSubject = PublishSubject.create<Location>()
-    val clickEvent: Observable<Location> = clickSubject
+    interface Listener {
+        fun onClicked(companyId: Long)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
         return LocationViewHolder(
@@ -100,9 +100,12 @@ class LocationDialogAdapter(private val locationList: List<Location>)
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         locationList[position].let { location ->
             holder.itemView.run {
-                clicks().map { location }.subscribe(clickSubject)
                 li_tv_location_code.text = location.locationCode
                 li_tv_location_name.text = location.locationName
+
+                setOnClickListener {
+                    listener.onClicked(location.id!!)
+                }
             }
         }
     }

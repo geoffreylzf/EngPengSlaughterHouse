@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_house_keeping.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.db.BaseDao
@@ -24,14 +24,8 @@ import org.koin.android.ext.android.inject
 
 class HouseKeepingFragment : Fragment() {
 
-    companion object {
-        val TAG = HouseKeepingFragment::class.qualifiedName
-    }
-
     private val appDb: AppDb by inject()
     private val apiModule: ApiModule by inject()
-
-    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -61,58 +55,35 @@ class HouseKeepingFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
-    }
-
     private fun retrieveHouseKeeping() {
-        apiModule.provideApiService(cb_local.isChecked).getCompanyList()
-                .subscribeOn(Schedulers.io())
-                .doOnNext { response ->
-                    if (response.isSuccess()) {
-                        appDb.companyDao().run {
-                            deleteAll()
-                            insert(response.result)
-                        }
 
-                    } else {
-                        throw Exception(getString(R.string.dialog_error_msg_retrieve_company))
-                    }
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val api = apiModule.provideApiService(cb_local.isChecked)
+                val companyList = api.getCompanyListAsync().await().result
+
+                appDb.companyDao().deleteAllAsync()
+                appDb.companyDao().insertAsync(companyList)
+                appDb.tableLogDao().insertAsync(TableLog(Company.TABLE_NAME, Sdf.getCurrentDateTime(), companyList.size, companyList.size))
+
+
+                val locationList = api.getLocationListAsync().await().result
+                appDb.locationDao().deleteAllAsync()
+                appDb.locationDao().insertAsync(locationList)
+                appDb.tableLogDao().insertAsync(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), locationList.size, locationList.size))
+
+                withContext(Dispatchers.Main) {
+                    AlertDialogFragment.show(fragmentManager!!,
+                            getString(R.string.dialog_title_success),
+                            getString(R.string.dialog_success_msg_retrieve))
 
                 }
-                .flatMapSingle {
-                    appDb.tableLogDao().insert(TableLog(Company.TABLE_NAME, Sdf.getCurrentDateTime(), it.result.size, it.result.size))
-                }
-                .flatMap {
-                    apiModule.provideApiService(cb_local.isChecked).getLocationList()
-                }
-                .doOnNext { response ->
-                    if (response.isSuccess()) {
-                        appDb.locationDao().run {
-                            deleteAll()
-                            insert(response.result)
-                        }
-                    } else {
-                        throw Exception(getString(R.string.dialog_error_msg_retrieve_location))
-                    }
-                }
-                .flatMapSingle {
-                    appDb.tableLogDao().insert(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), it.result.size, it.result.size))
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {},
-                        { error ->
-                            AlertDialogFragment.show(fragmentManager!!,
-                                    getString(R.string.dialog_title_error),
-                                    getString(R.string.error_desc, error.message))
-                        },
-                        {
-                            AlertDialogFragment.show(fragmentManager!!,
-                                    getString(R.string.dialog_title_success),
-                                    getString(R.string.dialog_success_msg_retrieve))
-                        }
-                ).addTo(compositeDisposable)
+            } catch (e: Exception) {
+                AlertDialogFragment.show(fragmentManager!!,
+                        getString(R.string.dialog_title_error),
+                        getString(R.string.error_desc, e.message))
+            }
+
+        }
     }
 }

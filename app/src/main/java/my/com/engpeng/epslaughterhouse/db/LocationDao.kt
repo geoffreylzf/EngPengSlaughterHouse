@@ -24,6 +24,19 @@ abstract class LocationDao : BaseDao<Location>() {
         ORDER BY location_name """)
     abstract fun getAllByCompanyId(companyId: Long): Maybe<List<Location>>
 
+    @Query("""
+        SELECT *
+        FROM locations
+        WHERE company_id = :companyId
+        ORDER BY location_name """)
+    abstract suspend fun getAllByCompanyIdAsync(companyId: Long): List<Location>
+
     @Query("SELECT * FROM locations WHERE id = :id")
     abstract fun getById(id: Long): Single<Location>
+
+    @Query("SELECT * FROM locations WHERE id = :id")
+    abstract suspend fun getByIdAsync(id: Long): Location
+
+    @Query("DELETE FROM locations")
+    abstract suspend fun deleteAllAsync()
 }

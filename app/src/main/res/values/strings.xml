@@ -82,19 +82,25 @@
     <string name="dialog_title_bluetooth_device">Please Select Bluetooth Device</string>
     <string name="dialog_title_location">Please Select Location</string>
     <string name="dialog_title_no_company">Empty Company Listing</string>
+    <string name="dialog_title_no_location">Empty Location Listing</string>
     <string name="dialog_title_mortality2">Please enter mortality (Ayam mati)</string>
     <string name="dialog_title_mortality_detail">Mortality Detail</string>
     <string name="dialog_title_logout">Are you sure to logout?</string>
 
-    <string name="dialog_confirm_msg_logout">Internet connection is required to login.</string>
     <string name="dialog_error_msg_got_un_upload">Got un-upload data, please upload before logout.</string>
     <string name="dialog_error_msg_retrieve_company">Error retrieve company data.</string>
     <string name="dialog_error_msg_retrieve_location">Error retrieve location data.</string>
     <string name="dialog_error_msg_no_data_upload">No data to upload.</string>
+    <string name="dialog_error_msg_auth_fail">User auth failed.</string>
+    <string name="dialog_error_msg_login_email">Please login google account.</string>
+    <string name="dialog_error_msg_no_username">Please enter username.</string>
+    <string name="dialog_error_msg_no_password">Please enter password.</string>
+    <string name="dialog_error_msg_no_detail">Please enter detail.</string>
+    <string name="dialog_confirm_msg_delete_trip">Unable to undo after delete</string>
+    <string name="dialog_confirm_msg_logout">Internet connection is required to login.</string>
     <string name="dialog_success_msg_retrieve">Retrieve complete.</string>
     <string name="dialog_success_msg_upload">Upload complete.</string>
     <string name="dialog_success_delete">Deleted…</string>
-    <string name="dialog_confirm_msg_delete_trip">Unable to undo after delete</string>
 
     <string name="dialog_positive_button_text">OK</string>
     <string name="dialog_negative_button_text">Cancel</string>

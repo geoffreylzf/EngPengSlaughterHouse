@@ -20,7 +20,16 @@ abstract class CompanyDao : BaseDao<Company>() {
     @Query("SELECT * FROM companies")
     abstract fun getAll(): Maybe<List<Company>>
 
+    @Query("SELECT * FROM companies")
+    abstract suspend fun getAllAsync(): List<Company>
+
     @Query("SELECT * FROM companies WHERE id = :id")
     abstract fun getById(id: Long): Single<Company>
+
+    @Query("SELECT * FROM companies WHERE id = :id")
+    abstract suspend fun getByIdAsync(id: Long): Company
+
+    @Query("DELETE FROM companies")
+    abstract suspend fun deleteAllAsync()
 
 }

@@ -8,14 +8,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_mortality.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempTripMortality
-import my.com.engpeng.epslaughterhouse.util.*
+import my.com.engpeng.epslaughterhouse.util.BT_WT_PREFIX_KG
+import my.com.engpeng.epslaughterhouse.util.format2Decimal
+import my.com.engpeng.epslaughterhouse.util.requestFocusWithKeyboard
+import my.com.engpeng.epslaughterhouse.util.vibrate
 import org.koin.android.ext.android.inject
 
 class EnterMortalityDialogFragment : DialogFragment() {
@@ -24,17 +25,19 @@ class EnterMortalityDialogFragment : DialogFragment() {
 
     companion object {
         val TAG = this::class.qualifiedName
-        fun getInstance(fm: FragmentManager): EnterMortalityDialogFragment {
+        fun show(fm: FragmentManager, listener: Listener) {
             return EnterMortalityDialogFragment().apply {
-                show(fm, TAG)
-            }
+                this.listener = listener
+            }.show(fm, TAG)
         }
     }
 
-    private val doneSubject = PublishSubject.create<TempTripMortality>()
-    private val temp = TempTripMortality()
+    interface Listener {
+        fun onSubmit(tempTripMortality: TempTripMortality)
+    }
 
-    val doneEvent: Observable<TempTripMortality> = doneSubject
+    private val temp = TempTripMortality()
+    private lateinit var listener: Listener
 
     private val bt = BluetoothSPP(context)
     private var btName = ""
@@ -52,14 +55,14 @@ class EnterMortalityDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_save.setOnClickListener {
-            temp.run{
+            temp.run {
                 weight = et_weight.text.toString().toDoubleOrNull()
                 qty = et_qty.text.toString().toIntOrNull()
             }
 
             var message = ""
             temp.run check@{
-                if(weight == null){
+                if (weight == null) {
                     message = "Please enter weight"
                     return@check
                 }
@@ -71,8 +74,8 @@ class EnterMortalityDialogFragment : DialogFragment() {
 
             if (message.isNotEmpty()) {
                 AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), message)
-            }else{
-                doneSubject.onNext(temp)
+            } else {
+                listener.onSubmit(temp)
                 activity?.vibrate()
                 dismiss()
             }

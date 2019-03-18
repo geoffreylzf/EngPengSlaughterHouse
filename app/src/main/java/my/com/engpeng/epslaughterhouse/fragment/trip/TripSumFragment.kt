@@ -12,13 +12,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_sum.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
@@ -35,8 +37,6 @@ class TripSumFragment : Fragment() {
 
     private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterDetailAdapter(false)
-
-    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -60,23 +60,15 @@ class TripSumFragment : Fragment() {
             et_type.setText(type)
             et_truck_code.setText(truckCode)
 
-            Observable.just(companyId).subscribeOn(Schedulers.io())
-                    .flatMapSingle { appDb.companyDao().getById(it) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        it.run {
-                            et_company.setText(companyName)
-                        }
-                    }.addTo(compositeDisposable)
+            CoroutineScope(Dispatchers.IO).launch {
+                val company = appDb.companyDao().getByIdAsync(companyId!!)
+                val location = appDb.locationDao().getByIdAsync(locationId!!)
 
-            Observable.just(locationId).subscribeOn(Schedulers.io())
-                    .flatMapSingle { appDb.locationDao().getById(it) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        it.run {
-                            et_location.setText(locationName)
-                        }
-                    }.addTo(compositeDisposable)
+                withContext(Dispatchers.Main) {
+                    et_company.setText(company.companyName)
+                    et_location.setText(location.locationName)
+                }
+            }
         }
 
         rv.run {
@@ -109,11 +101,11 @@ class TripSumFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-                        Single.fromCallable { appDb.tempTripDetailDao().deleteById(tempId) }
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
-                                .addTo(compositeDisposable)
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            appDb.tempTripDetailDao().deleteByIdAsync(tempId)
+                        }
+
                     }
 
                     override fun onNegativeButtonClicked() {
@@ -126,19 +118,19 @@ class TripSumFragment : Fragment() {
         fab_add.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_tripSumFragment_to_tripDetailFragment))
 
         btn_next.setOnClickListener {
-            appDb.tempTripDetailDao().getCount()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (it != 0) {
-                            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(trip))
-                        } else {
-                            AlertDialogFragment.show(fragmentManager!!,
-                                    "Error",
-                                    "Please enter detail")
-                        }
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val count = appDb.tempTripDetailDao().getCount()
+                withContext(Dispatchers.Main) {
+                    if (count != 0) {
+                        findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripConfFragment(trip))
+                    } else {
+                        AlertDialogFragment.show(fragmentManager!!,
+                                getString(R.string.dialog_title_error),
+                                getString(R.string.dialog_error_msg_no_detail))
                     }
-                    .addTo(compositeDisposable)
+                }
+            }
         }
     }
 
@@ -155,10 +147,5 @@ class TripSumFragment : Fragment() {
                     tv_ttl_cage.text = it.ttlCage.toString()
                     tv_ttl_cover.text = it.ttlCover.toString()
                 })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
     }
 }

@@ -10,28 +10,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_trip_conf.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
+import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDetail
 import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 
 class TripConfFragment : Fragment() {
@@ -39,11 +35,6 @@ class TripConfFragment : Fragment() {
     private val appDb: AppDb by inject()
     private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterMortalityAdapter()
-
-    private val companySubject = PublishSubject.create<Long>()
-    private val locationSubject = PublishSubject.create<Long>()
-
-    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -60,11 +51,6 @@ class TripConfFragment : Fragment() {
         setupRv()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupObservable()
-    }
-
     private fun setupView() {
         trip = TripConfFragmentArgs.fromBundle(arguments!!).trip!!
 
@@ -73,6 +59,16 @@ class TripConfFragment : Fragment() {
             et_doc_no.setText("${docType}-${docNo}")
             et_type.setText(type)
             et_truck_code.setText(truckCode)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val company = appDb.companyDao().getByIdAsync(companyId!!)
+                val location = appDb.locationDao().getByIdAsync(locationId!!)
+
+                withContext(Dispatchers.Main) {
+                    et_company.setText(company.companyName)
+                    et_location.setText(location.locationName)
+                }
+            }
         }
 
         appDb.tempTripDetailDao().getLiveTotal().observe(this,
@@ -113,10 +109,9 @@ class TripConfFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-                        Single.fromCallable { appDb.tempTripMortalityDao().deleteById(tempId) }
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe().addTo(compositeDisposable)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            appDb.tempTripMortalityDao().deleteByIdAsync(tempId)
+                        }
                     }
 
                     override fun onNegativeButtonClicked() {
@@ -159,95 +154,39 @@ class TripConfFragment : Fragment() {
 
     private fun showMortalityDialog() {
         EnterMortalityDialogFragment
-                .getInstance(fragmentManager!!)
-                .doneEvent
-                .subscribeOn(Schedulers.io())
-                .flatMapSingle {
-                    appDb.tempTripMortalityDao()
-                            .insert(it)
-                            .subscribeOn(Schedulers.io())
-                }
-                .subscribe()
-                .addTo(compositeDisposable)
-    }
-
-    private fun setupObservable() {
-        companySubject.subscribeOn(Schedulers.io())
-                .flatMapSingle { appDb.companyDao().getById(it) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    it.run {
-                        trip.companyId = id
-                        et_company.setText(companyName)
+                .show(fragmentManager!!, object : EnterMortalityDialogFragment.Listener {
+                    override fun onSubmit(tempTripMortality: TempTripMortality) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            appDb.tempTripMortalityDao().insertAsync(tempTripMortality)
+                        }
                     }
-                }.addTo(compositeDisposable)
-
-        locationSubject.subscribeOn(Schedulers.io())
-                .flatMapSingle { appDb.locationDao().getById(it) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    it.run {
-                        trip.locationId = id
-                        et_location.setText(locationName)
-                    }
-                }.addTo(compositeDisposable)
-
-        Observable.just(trip).subscribeOn(Schedulers.io())
-                .delay(100, TimeUnit.MILLISECONDS)
-                .subscribe {
-                    it.run {
-                        companySubject.onNext(companyId!!)
-                        locationSubject.onNext(locationId!!)
-                    }
-                }.addTo(compositeDisposable)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
+                })
     }
 
     private fun save() {
-        appDb.tripDao().insert(trip)
-                .subscribeOn(Schedulers.io())
-                .flatMapMaybe { slaughterId ->
-                    appDb.tempTripDetailDao().getAll().map { tempList ->
-                        TripDetail.transformFromTempWithTripId(slaughterId, tempList)
-                    }.doOnSuccess {
-                        appDb.tripDetailDao().insert(it)
-                    }.map {
-                        slaughterId
-                    }
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+
+                val tripId = appDb.tripDao().insertAsync(trip)
+
+                val tempDetailList = appDb.tempTripDetailDao().getAll()
+                val detailList = TripDetail.transformFromTempWithTripId(tripId, tempDetailList)
+                appDb.tripDetailDao().insertAsync(detailList)
+
+                val tempMortalityList = appDb.tempTripMortalityDao().getAll()
+                val mortalityList = TripMortality.transformFromTempWithTripId(tripId, tempMortalityList)
+                appDb.tripMortalityDao().insertAsync(mortalityList)
+
+                appDb.tempTripDetailDao().deleteAllAsync()
+                appDb.tempTripMortalityDao().deleteAllAsync()
+
+                withContext(Dispatchers.Main) {
+                    findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(tripId))
                 }
-                .flatMap { slaughterId ->
-                    appDb.tempTripMortalityDao().getAll().map { tempList ->
-                        TripMortality.transformFromTempWithTripId(slaughterId, tempList)
-                    }.doOnSuccess {
-                        appDb.tripMortalityDao().insert(it)
-                    }.map {
-                        slaughterId
-                    }
-                }
-                .flatMap { slaughterId ->
-                    Maybe.fromCallable {
-                        appDb.tempTripDetailDao().deleteAll()
-                    }.map {
-                        slaughterId
-                    }
-                }
-                .flatMap { slaughterId ->
-                    Maybe.fromCallable {
-                        appDb.tempTripMortalityDao().deleteAll()
-                    }.map {
-                        slaughterId
-                    }
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(it))
-                }, {
-                    AlertDialogFragment.show(fragmentManager!!, "Error", it.message + "")
-                })
-                .addTo(compositeDisposable)
+
+            } catch (e: Exception) {
+                AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.error_desc, e.message))
+            }
+        }
     }
 }

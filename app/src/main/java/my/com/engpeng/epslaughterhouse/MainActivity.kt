@@ -12,9 +12,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
@@ -27,10 +30,8 @@ class MainActivity : AppCompatActivity() {
 
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
-    private val compositeDisposable = CompositeDisposable()
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,36 +82,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPerformLogout() {
-        appDb.tripDao().getCountByUpload(0)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (it > 0) {
-                        AlertDialogFragment.show(supportFragmentManager,
-                                getString(R.string.error),
-                                getString(R.string.dialog_error_msg_got_un_upload))
-                    } else {
-                        ConfirmDialogFragment.show(supportFragmentManager,
-                                getString(R.string.dialog_title_logout),
-                                getString(R.string.dialog_confirm_msg_logout),
-                                getString(R.string.logout), object : ConfirmDialogFragment.Listener {
-                            override fun onPositiveButtonClicked() {
-                                sharedPreferencesModule.removeUser()
-                                findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToLoginFragment())
-                            }
 
-                            override fun onNegativeButtonClicked() {}
-                        })
-                    }
-                }, {}).addTo(compositeDisposable)
+        CoroutineScope(Dispatchers.IO).launch {
+            val count = appDb.tripDao().getCountByUpload(0)
+            withContext(Dispatchers.Main) {
+                if (count > 0) {
+                    AlertDialogFragment.show(supportFragmentManager,
+                            getString(R.string.error),
+                            getString(R.string.dialog_error_msg_got_un_upload))
+                }else{
+                    ConfirmDialogFragment.show(supportFragmentManager,
+                            getString(R.string.dialog_title_logout),
+                            getString(R.string.dialog_confirm_msg_logout),
+                            getString(R.string.logout), object : ConfirmDialogFragment.Listener {
+                        override fun onPositiveButtonClicked() {
+                            sharedPreferencesModule.removeUser()
+                            findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToLoginFragment())
+                        }
+
+                        override fun onNegativeButtonClicked() {}
+                    })
+                }
+            }
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
-    }
-
-    fun setNavHeader(){
+    fun setNavHeader() {
         main_nv_start?.getHeaderView(0)?.run {
             findViewById<TextView>(R.id.tv_username)?.text = sharedPreferencesModule.getUser().username
             findViewById<TextView>(R.id.tv_unique_id)?.text = sharedPreferencesModule.getUniqueId()

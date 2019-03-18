@@ -16,6 +16,12 @@ abstract class BaseDao<T : BaseEntity> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(ts: List<T>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertAsync(ts: T): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertAsync(ts: List<T>)
+
     abstract fun getLiveCount(): LiveData<Int>
 
     abstract fun deleteAll()

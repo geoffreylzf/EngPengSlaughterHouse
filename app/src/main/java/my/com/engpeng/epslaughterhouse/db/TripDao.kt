@@ -20,7 +20,7 @@ abstract class TripDao : BaseDao<Trip>() {
     abstract override fun deleteAll()
 
     @Query("SELECT * FROM trips WHERE id = :id")
-    abstract fun getById(id: Long): Maybe<Trip>
+    abstract suspend fun getByIdAsync(id: Long): Trip
 
     @Query("""
         SELECT
@@ -46,14 +46,14 @@ abstract class TripDao : BaseDao<Trip>() {
         LEFT JOIN companies c ON t.company_id = c.id
         LEFT JOIN locations l ON t.location_id = l.id
         WHERE t.id=:id """)
-    abstract fun getDpById(id: Long): Single<TripDisplay>
+    abstract suspend fun getDpByIdAsync(id: Long): TripDisplay
 
     @Query("""
         SELECT
         COUNT(*)
         FROM trips t
         WHERE is_upload = :upload""")
-    abstract fun getCountByUpload(upload: Int): Single<Int>
+    abstract suspend fun getCountByUpload(upload: Int): Int
 
 
     @Query("""
@@ -68,7 +68,7 @@ abstract class TripDao : BaseDao<Trip>() {
         *
         FROM trips t
         WHERE is_upload = :upload""")
-    abstract fun getAllByUpload(upload: Int): Single<List<Trip>>
+    abstract suspend fun getAllByUpload(upload: Int): List<Trip>
 
     @Query("""
         SELECT

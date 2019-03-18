@@ -27,7 +27,7 @@ class ConfirmDialogFragment : DialogFragment() {
         }
     }
 
-    lateinit var listener: Listener
+    private lateinit var listener: Listener
 
     interface Listener {
         fun onPositiveButtonClicked()
