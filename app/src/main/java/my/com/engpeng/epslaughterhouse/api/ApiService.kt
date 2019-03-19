@@ -1,7 +1,5 @@
 package my.com.engpeng.epslaughterhouse.api
 
-import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.Deferred
 import my.com.engpeng.epslaughterhouse.model.*
 import retrofit2.http.*

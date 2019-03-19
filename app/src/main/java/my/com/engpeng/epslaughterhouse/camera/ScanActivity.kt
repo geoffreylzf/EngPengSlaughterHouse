@@ -1,17 +1,17 @@
 package my.com.engpeng.epslaughterhouse.camera
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.launch
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import timber.log.Timber
 
-@ExperimentalCoroutinesApi
+
+const val SCAN_REQUEST_CODE = 1
+const val I_KEY_SCAN = "I_KEY_SCAN"
+
 class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private var scannerView: ZXingScannerView? = null
@@ -41,28 +41,7 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(rawResult: Result?) {
-        CoroutineScope(Dispatchers.IO).launch {
-            Timber.e("handleResult")
-            ScanBus.scanChannel.send("${rawResult?.text}")
-        }
+        setResult(RESULT_OK, Intent().apply { putExtra(I_KEY_SCAN, rawResult?.text) })
         finish()
-    }
-
-    override fun onBackPressed() {
-        CoroutineScope(Dispatchers.IO).launch {
-            ScanBus.scanChannel.send("")
-        }
-        super.onBackPressed()
-    }
-}
-
-class ScanBus {
-    @ExperimentalCoroutinesApi
-    companion object {
-        var scanChannel = ConflatedBroadcastChannel<String>()
-
-        fun reset() {
-            scanChannel = ConflatedBroadcastChannel()
-        }
     }
 }

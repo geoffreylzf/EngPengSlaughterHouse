@@ -2,7 +2,7 @@ package my.com.engpeng.epslaughterhouse.fragment.trip
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,11 +30,10 @@ class TripHeadViewModel(private val appDb: AppDb)
     }
 
     fun loadCompany(companyId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
-                val company = appDb.companyDao().getByIdAsync(companyId)
-                withContext(Dispatchers.Main) {
-                    liveCompany.value = company
+                liveCompany.value = withContext(Dispatchers.IO) {
+                    appDb.companyDao().getById(companyId)
                 }
             } catch (e: Exception) {
                 liveCompany.value = null
@@ -43,11 +42,10 @@ class TripHeadViewModel(private val appDb: AppDb)
     }
 
     fun loadLocation(locationId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
-                val location = appDb.locationDao().getByIdAsync(locationId)
-                withContext(Dispatchers.Main) {
-                    liveLocation.value = location
+                liveLocation.value = withContext(Dispatchers.IO) {
+                    appDb.locationDao().getById(locationId)
                 }
             } catch (e: Exception) {
                 liveLocation.value = null

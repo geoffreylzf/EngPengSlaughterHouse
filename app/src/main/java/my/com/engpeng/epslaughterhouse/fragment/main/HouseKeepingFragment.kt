@@ -62,15 +62,15 @@ class HouseKeepingFragment : Fragment() {
                 val api = apiModule.provideApiService(cb_local.isChecked)
                 val companyList = api.getCompanyListAsync().await().result
 
-                appDb.companyDao().deleteAllAsync()
-                appDb.companyDao().insertAsync(companyList)
-                appDb.tableLogDao().insertAsync(TableLog(Company.TABLE_NAME, Sdf.getCurrentDateTime(), companyList.size, companyList.size))
+                appDb.companyDao().deleteAll()
+                appDb.companyDao().insert(companyList)
+                appDb.tableLogDao().insert(TableLog(Company.TABLE_NAME, Sdf.getCurrentDateTime(), companyList.size, companyList.size))
 
 
                 val locationList = api.getLocationListAsync().await().result
-                appDb.locationDao().deleteAllAsync()
-                appDb.locationDao().insertAsync(locationList)
-                appDb.tableLogDao().insertAsync(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), locationList.size, locationList.size))
+                appDb.locationDao().deleteAll()
+                appDb.locationDao().insert(locationList)
+                appDb.tableLogDao().insert(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), locationList.size, locationList.size))
 
                 withContext(Dispatchers.Main) {
                     AlertDialogFragment.show(fragmentManager!!,

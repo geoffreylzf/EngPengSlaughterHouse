@@ -10,9 +10,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -90,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                     AlertDialogFragment.show(supportFragmentManager,
                             getString(R.string.error),
                             getString(R.string.dialog_error_msg_got_un_upload))
-                }else{
+                } else {
                     ConfirmDialogFragment.show(supportFragmentManager,
                             getString(R.string.dialog_title_logout),
                             getString(R.string.dialog_confirm_msg_logout),

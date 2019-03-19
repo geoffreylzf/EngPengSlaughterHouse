@@ -65,7 +65,7 @@ class TripHistoryDetailFragment : Fragment() {
         tripId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
 
         CoroutineScope(Dispatchers.IO).launch {
-            val trip = appDb.tripDao().getDpByIdAsync(tripId)
+            val trip = appDb.tripDao().getDpById(tripId)
             withContext(Dispatchers.Main) {
                 trip.run {
                     et_company.setText(companyName)
@@ -80,7 +80,7 @@ class TripHistoryDetailFragment : Fragment() {
                 }
             }
 
-            val detail = appDb.tripDetailDao().getAllByTripIdAsync(tripId)
+            val detail = appDb.tripDetailDao().getAllByTripId(tripId)
             withContext(Dispatchers.Main) {
                 if (detail.isNotEmpty()) {
                     rv.layoutManager = LinearLayoutManager(context)
@@ -99,7 +99,7 @@ class TripHistoryDetailFragment : Fragment() {
 
         btn_mortality.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val mortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(tripId)
+                val mortalityList = appDb.tripMortalityDao().getAllByTripId(tripId)
                 withContext(Dispatchers.Main) {
                     HistoryMortalityDialogFragment.show(fragmentManager!!, mortalityList)
                 }
@@ -115,8 +115,8 @@ class TripHistoryDetailFragment : Fragment() {
             override fun onPositiveButtonClicked() {
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    val trip = appDb.tripDao().getByIdAsync(tripId)
-                    appDb.tripDao().insertAsync(trip.apply { isDelete = 1 })
+                    val trip = appDb.tripDao().getById(tripId)
+                    appDb.tripDao().insert(trip.apply { isDelete = 1 })
                     withContext(Dispatchers.Main) {
                         AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
                     }

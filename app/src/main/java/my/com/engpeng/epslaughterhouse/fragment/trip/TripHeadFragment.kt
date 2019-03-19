@@ -1,20 +1,19 @@
 package my.com.engpeng.epslaughterhouse.fragment.trip
 
 
+import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_trip_head.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.consumeEach
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.camera.CameraPermission
+import my.com.engpeng.epslaughterhouse.camera.I_KEY_SCAN
+import my.com.engpeng.epslaughterhouse.camera.SCAN_REQUEST_CODE
 import my.com.engpeng.epslaughterhouse.camera.ScanActivity
-import my.com.engpeng.epslaughterhouse.camera.ScanBus
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
@@ -34,7 +33,6 @@ class TripHeadFragment : Fragment() {
 
     private var calendarDocDate = Calendar.getInstance()
     private var slaughter = Trip()
-    private var compositeDisposable = CompositeDisposable()
 
     private val vm: TripHeadViewModel by viewModel()
 
@@ -73,11 +71,6 @@ class TripHeadFragment : Fragment() {
             et_doc_date.setText(Sdf.formatDisplay(it.time))
             slaughter.docDate = Sdf.formatSave(it.time)
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupObservable()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,7 +121,7 @@ class TripHeadFragment : Fragment() {
 
         fab_scan.setOnClickListener {
             if (CameraPermission.check(requireActivity())) {
-                startActivity(Intent(context, ScanActivity::class.java))
+                startActivityForResult(Intent(context, ScanActivity::class.java), SCAN_REQUEST_CODE)
             } else {
                 CameraPermission.request(requireActivity())
             }
@@ -150,61 +143,51 @@ class TripHeadFragment : Fragment() {
         }
     }
 
-    @ExperimentalCoroutinesApi
-    private fun setupObservable() {
-        CoroutineScope(Dispatchers.IO).launch {
-            ScanBus.scanChannel.consumeEach { scanText ->
-                delay(100)
-                withContext(Dispatchers.Main) {
-                    if (scanText.isNotEmpty()) {
-                        val arr = scanText.split("|")
-                        if (arr.size == 7 || arr.size == 8) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SCAN_REQUEST_CODE) {
+            Timber.e("requestCode")
+            if (resultCode == RESULT_OK) {
+                Timber.e("resultCode")
+                val scanText = data?.getStringExtra(I_KEY_SCAN) ?: ""
+                if (scanText.isNotEmpty()) {
+                    val arr = scanText.split("|")
+                    if (arr.size == 7 || arr.size == 8) {
 
-                            val companyId = arr[0].toLong()
-                            val locationId = arr[1].toLong()
-                            val docDate = arr[2]
-                            val docNo = arr[3]
-                            val docType = arr[4]
-                            val type = arr[5]
-                            val truckCode = arr[6]
-                            val catchBtaCode = if (arr.size == 8) arr[7] else " "
+                        val companyId = arr[0].toLong()
+                        val locationId = arr[1].toLong()
+                        val docDate = arr[2]
+                        val docNo = arr[3]
+                        val docType = arr[4]
+                        val type = arr[5]
+                        val truckCode = arr[6]
+                        val catchBtaCode = if (arr.size == 8) arr[7] else " "
 
-                            vm.loadCompany(companyId)
-                            vm.loadLocation(locationId)
+                        vm.loadCompany(companyId)
+                        vm.loadLocation(locationId)
 
-                            calendarDocDate.time = Sdf.getDateFromSave(docDate)
-                            vm.setCalendar(calendarDocDate)
+                        calendarDocDate.time = Sdf.getDateFromSave(docDate)
+                        vm.setCalendar(calendarDocDate)
 
-                            et_doc_no.setText(docNo)
-                            when (docType) {
-                                "IFT" -> rb_doc_type_ift.isChecked = true
-                                "PL" -> rb_doc_type_pl.isChecked = true
-                            }
-                            when (type) {
-                                "KFC" -> rb_type_kfc.isChecked = true
-                                "A" -> rb_type_a.isChecked = true
-                                "B" -> rb_type_b.isChecked = true
-                            }
-                            et_truck_code.setText(truckCode)
-                            et_catch_bta_code.setText(catchBtaCode)
-                            vm.setIsQrScan(true)
-                        } else {
-                            AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), "Invalid QR code")
+                        et_doc_no.setText(docNo)
+                        when (docType) {
+                            "IFT" -> rb_doc_type_ift.isChecked = true
+                            "PL" -> rb_doc_type_pl.isChecked = true
                         }
+                        when (type) {
+                            "KFC" -> rb_type_kfc.isChecked = true
+                            "A" -> rb_type_a.isChecked = true
+                            "B" -> rb_type_b.isChecked = true
+                        }
+                        et_truck_code.setText(truckCode)
+                        et_catch_bta_code.setText(catchBtaCode)
+                        vm.setIsQrScan(true)
+                    } else {
+                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), "Invalid QR code")
                     }
-                    ScanBus.reset()
                 }
             }
         }
-
-
-        /*ScanBus.scanSubject
-                .subscribeOn(Schedulers.io())
-                .delay(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { scanText ->
-
-                }.addTo(compositeDisposable)*/
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun start() {
@@ -285,11 +268,6 @@ class TripHeadFragment : Fragment() {
                         vm.loadLocation(locationId)
                     }
                 })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        compositeDisposable.clear()
     }
 
     private fun freezeEntry(b: Boolean) {

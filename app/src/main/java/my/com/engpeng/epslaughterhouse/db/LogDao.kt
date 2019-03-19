@@ -11,9 +11,6 @@ abstract class LogDao : BaseDao<Log>() {
     @Query("SELECT COUNT(*) FROM logs")
     abstract override fun getLiveCount(): LiveData<Int>
 
-    @Query("DELETE FROM logs")
-    abstract override fun deleteAll()
-
     @Query("SELECT * FROM logs WHERE task = :task ORDER BY id DESC")
     abstract fun getLiveLogByTask(task: String): LiveData<List<Log>>
 

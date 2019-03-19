@@ -8,9 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_print.*
 import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
@@ -18,9 +15,6 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.TripDetail
-import my.com.engpeng.epslaughterhouse.model.TripDisplay
-import my.com.engpeng.epslaughterhouse.model.TripMortality
 import my.com.engpeng.epslaughterhouse.util.PrintUtils
 import org.koin.android.ext.android.inject
 
@@ -120,17 +114,14 @@ class TripPrintFragment : Fragment() {
 
     private fun constructPrint() {
         val tripId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
-        var slaughterDp: TripDisplay? = null
-        var tripDetailList: List<TripDetail>? = null
-        var tripMortalityList: List<TripMortality>? = null
 
         CoroutineScope(Dispatchers.IO).launch {
-            slaughterDp = appDb.tripDao().getDpByIdAsync(tripId)
-            tripDetailList = appDb.tripDetailDao().getAllByTripIdAsync(tripId)
-            tripMortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(tripId)
+            val slaughterDp = appDb.tripDao().getDpById(tripId)
+            val tripDetailList = appDb.tripDetailDao().getAllByTripId(tripId)
+            val tripMortalityList = appDb.tripMortalityDao().getAllByTripId(tripId)
 
             withContext(Dispatchers.Main) {
-                tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp!!, tripDetailList!!, tripMortalityList!!)
+                tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp, tripDetailList, tripMortalityList)
             }
         }
     }

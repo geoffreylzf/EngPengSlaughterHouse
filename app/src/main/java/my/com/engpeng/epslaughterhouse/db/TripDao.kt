@@ -3,8 +3,6 @@ package my.com.engpeng.epslaughterhouse.db
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import io.reactivex.Maybe
-import io.reactivex.Single
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDisplay
 import my.com.engpeng.epslaughterhouse.model.TripInfo
@@ -16,11 +14,8 @@ abstract class TripDao : BaseDao<Trip>() {
     @Query("SELECT COUNT(*) FROM trips")
     abstract override fun getLiveCount(): LiveData<Int>
 
-    @Query("DELETE FROM trips")
-    abstract override fun deleteAll()
-
     @Query("SELECT * FROM trips WHERE id = :id")
-    abstract suspend fun getByIdAsync(id: Long): Trip
+    abstract suspend fun getById(id: Long): Trip
 
     @Query("""
         SELECT
@@ -46,7 +41,7 @@ abstract class TripDao : BaseDao<Trip>() {
         LEFT JOIN companies c ON t.company_id = c.id
         LEFT JOIN locations l ON t.location_id = l.id
         WHERE t.id=:id """)
-    abstract suspend fun getDpByIdAsync(id: Long): TripDisplay
+    abstract suspend fun getDpById(id: Long): TripDisplay
 
     @Query("""
         SELECT

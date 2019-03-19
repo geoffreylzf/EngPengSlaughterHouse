@@ -61,8 +61,8 @@ class TripConfFragment : Fragment() {
             et_truck_code.setText(truckCode)
 
             CoroutineScope(Dispatchers.IO).launch {
-                val company = appDb.companyDao().getByIdAsync(companyId!!)
-                val location = appDb.locationDao().getByIdAsync(locationId!!)
+                val company = appDb.companyDao().getById(companyId!!)
+                val location = appDb.locationDao().getById(locationId!!)
 
                 withContext(Dispatchers.Main) {
                     et_company.setText(company.companyName)
@@ -110,7 +110,7 @@ class TripConfFragment : Fragment() {
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
                         CoroutineScope(Dispatchers.IO).launch {
-                            appDb.tempTripMortalityDao().deleteByIdAsync(tempId)
+                            appDb.tempTripMortalityDao().deleteById(tempId)
                         }
                     }
 
@@ -157,7 +157,7 @@ class TripConfFragment : Fragment() {
                 .show(fragmentManager!!, object : EnterMortalityDialogFragment.Listener {
                     override fun onSubmit(tempTripMortality: TempTripMortality) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            appDb.tempTripMortalityDao().insertAsync(tempTripMortality)
+                            appDb.tempTripMortalityDao().insert(tempTripMortality)
                         }
                     }
                 })
@@ -167,18 +167,18 @@ class TripConfFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
-                val tripId = appDb.tripDao().insertAsync(trip)
+                val tripId = appDb.tripDao().insert(trip)
 
                 val tempDetailList = appDb.tempTripDetailDao().getAll()
                 val detailList = TripDetail.transformFromTempWithTripId(tripId, tempDetailList)
-                appDb.tripDetailDao().insertAsync(detailList)
+                appDb.tripDetailDao().insert(detailList)
 
                 val tempMortalityList = appDb.tempTripMortalityDao().getAll()
                 val mortalityList = TripMortality.transformFromTempWithTripId(tripId, tempMortalityList)
-                appDb.tripMortalityDao().insertAsync(mortalityList)
+                appDb.tripMortalityDao().insert(mortalityList)
 
-                appDb.tempTripDetailDao().deleteAllAsync()
-                appDb.tempTripMortalityDao().deleteAllAsync()
+                appDb.tempTripDetailDao().deleteAll()
+                appDb.tempTripMortalityDao().deleteAll()
 
                 withContext(Dispatchers.Main) {
                     findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(tripId))

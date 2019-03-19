@@ -34,7 +34,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha04'
 
     implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-rxjava2:$room_version"
     implementation "androidx.room:room-coroutines:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -43,16 +42,13 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
-    
-    implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
-    implementation 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-alpha03'
 
     implementation "org.koin:koin-android:1.0.2"
     implementation 'org.koin:koin-android-viewmodel:1.0.2'
@@ -61,7 +57,7 @@ dependencies {
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     testImplementation 'junit:junit:4.12'

@@ -3,7 +3,6 @@ package my.com.engpeng.epslaughterhouse.db
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import io.reactivex.Maybe
 import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.model.TripMortalityTtl
 
@@ -14,16 +13,10 @@ abstract class TempTripMortalityDao : BaseDao<TempTripMortality>() {
     abstract override fun getLiveCount(): LiveData<Int>
 
     @Query("DELETE FROM temp_trip_mortalities")
-    abstract override fun deleteAll()
-
-    @Query("DELETE FROM temp_trip_mortalities")
-    abstract suspend fun deleteAllAsync()
+    abstract suspend fun deleteAll()
 
     @Query("DELETE FROM temp_trip_mortalities WHERE id = :id")
-    abstract fun deleteById(id: Long)
-
-    @Query("DELETE FROM temp_trip_mortalities WHERE id = :id")
-    abstract suspend fun deleteByIdAsync(id: Long)
+    abstract suspend fun deleteById(id: Long)
 
     @Query("SELECT * FROM temp_trip_mortalities ORDER BY id DESC")
     abstract fun getLiveAll(): LiveData<List<TempTripMortality>>

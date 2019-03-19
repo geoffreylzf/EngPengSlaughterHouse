@@ -48,7 +48,7 @@ class CompanyDialogFragment : DialogFragment() {
         super.onResume()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val companyList = appDb.companyDao().getAllAsync()
+            val companyList = appDb.companyDao().getAll()
 
             withContext(Dispatchers.Main) {
                 if (companyList.isNotEmpty()) {

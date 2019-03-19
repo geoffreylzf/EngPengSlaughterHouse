@@ -12,11 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
@@ -29,7 +24,6 @@ import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempTripDetail
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -237,8 +231,8 @@ class TripDetailFragment : Fragment() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            appDb.tempTripDetailDao().insertAsync(tempSlaughterDetail)
-            withContext(Dispatchers.Main){
+            appDb.tempTripDetailDao().insert(tempSlaughterDetail)
+            withContext(Dispatchers.Main) {
                 activity?.vibrate()
                 et_weight.text?.clear()
                 et_weight.requestFocusWithKeyboard(activity)
@@ -255,7 +249,7 @@ class TripDetailFragment : Fragment() {
         activity?.hideKeyboard()
         CoroutineScope(Dispatchers.IO).launch {
             delay(100)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 findNavController().popBackStack()
             }
         }

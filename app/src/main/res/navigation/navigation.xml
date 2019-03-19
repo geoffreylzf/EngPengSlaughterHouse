@@ -182,6 +182,6 @@
     <fragment
         android:id="@+id/uploadFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.UploadFragment"
-        android:label="fragment_upload"
+        android:label="Upload"
         tools:layout="@layout/fragment_upload" />
 </navigation>

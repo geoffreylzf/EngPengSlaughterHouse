@@ -12,10 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_trip_sum.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,8 +57,8 @@ class TripSumFragment : Fragment() {
             et_truck_code.setText(truckCode)
 
             CoroutineScope(Dispatchers.IO).launch {
-                val company = appDb.companyDao().getByIdAsync(companyId!!)
-                val location = appDb.locationDao().getByIdAsync(locationId!!)
+                val company = appDb.companyDao().getById(companyId!!)
+                val location = appDb.locationDao().getById(locationId!!)
 
                 withContext(Dispatchers.Main) {
                     et_company.setText(company.companyName)
@@ -103,7 +99,7 @@ class TripSumFragment : Fragment() {
                     override fun onPositiveButtonClicked() {
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            appDb.tempTripDetailDao().deleteByIdAsync(tempId)
+                            appDb.tempTripDetailDao().deleteById(tempId)
                         }
 
                     }

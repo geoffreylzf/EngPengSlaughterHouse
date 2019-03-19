@@ -8,13 +8,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding3.view.clicks
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_location.*
 import kotlinx.android.synthetic.main.list_item_location.view.*
 import kotlinx.coroutines.*
@@ -22,7 +15,6 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.model.Location
 import org.koin.android.ext.android.inject
-import java.util.concurrent.TimeUnit
 
 class LocationDialogFragment : DialogFragment() {
 
@@ -58,11 +50,11 @@ class LocationDialogFragment : DialogFragment() {
         super.onResume()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val locationList = appDb.locationDao().getAllByCompanyIdAsync(companyId!!)
+            val locationList = appDb.locationDao().getAllByCompanyId(companyId!!)
             withContext(Dispatchers.Main) {
                 if (locationList.isNotEmpty()) {
                     rv.layoutManager = LinearLayoutManager(context)
-                    rv.adapter = LocationDialogAdapter(locationList, object : LocationDialogAdapter.Listener{
+                    rv.adapter = LocationDialogAdapter(locationList, object : LocationDialogAdapter.Listener {
                         override fun onClicked(locationId: Long) {
                             CoroutineScope(Dispatchers.IO).launch {
                                 delay(200)
@@ -73,7 +65,7 @@ class LocationDialogFragment : DialogFragment() {
                             }
                         }
                     })
-                }else{
+                } else {
                     tv_title.setText(R.string.dialog_title_no_location)
                 }
             }
@@ -87,7 +79,7 @@ class LocationDialogAdapter(
     : RecyclerView.Adapter<LocationDialogAdapter.LocationViewHolder>() {
 
     interface Listener {
-        fun onClicked(companyId: Long)
+        fun onClicked(locationId: Long)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {

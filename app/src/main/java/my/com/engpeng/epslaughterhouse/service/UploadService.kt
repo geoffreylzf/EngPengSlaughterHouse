@@ -8,10 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +17,6 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.model.Log
-import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.UploadBody
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
@@ -78,8 +73,8 @@ class UploadService : Service() {
             try {
                 val tripList = appDb.tripDao().getAllByUpload(0)
                 for (trip in tripList) {
-                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripIdAsync(trip.id!!)
-                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripIdAsync(trip.id!!)
+                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripId(trip.id!!)
+                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripId(trip.id!!)
                 }
 
                 val uploadResult = apiModule.provideApiService(isLocal)
@@ -87,12 +82,12 @@ class UploadService : Service() {
                         .await().result
 
                 for (id in uploadResult.tripIdList) {
-                    val trip = appDb.tripDao().getByIdAsync(id)
+                    val trip = appDb.tripDao().getById(id)
                     trip.isUpload = 1
-                    appDb.tripDao().insertAsync(trip)
+                    appDb.tripDao().insert(trip)
                 }
 
-                appDb.logDao().insertAsync(Log(
+                appDb.logDao().insert(Log(
                         LOG_TASK_UPLOAD,
                         Sdf.getCurrentDateTime(),
                         getString(R.string.upload_log_desc, uploadResult.tripIdList.size)

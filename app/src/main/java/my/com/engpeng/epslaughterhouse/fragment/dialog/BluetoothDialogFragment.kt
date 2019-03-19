@@ -8,18 +8,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding3.view.clicks
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_dialog_bluetooth.*
 import kotlinx.android.synthetic.main.list_item_bluetooth.view.*
+import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import java.util.concurrent.TimeUnit
 
 class BluetoothDialogFragment : DialogFragment() {
 
@@ -46,8 +39,6 @@ class BluetoothDialogFragment : DialogFragment() {
     private lateinit var addressList: List<String>
     private lateinit var listener: Listener
 
-    private var compositeDisposable = CompositeDisposable()
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(600, 600)
@@ -60,31 +51,29 @@ class BluetoothDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rv.layoutManager = LinearLayoutManager(context)
-        rv.adapter = BluetoothDialogAdapter(nameList, addressList).apply {
-            clickEvent
-                    .subscribeOn(Schedulers.io())
-                    .delay(200, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        listener.onSelect(it)
+        rv.adapter = BluetoothDialogAdapter(nameList, addressList, object : BluetoothDialogAdapter.Listener {
+            override fun onClicked(bluetooth: Bluetooth) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(200)
+                    withContext(Dispatchers.Main) {
+                        listener.onSelect(bluetooth)
                         dismiss()
-                    }.addTo(compositeDisposable)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        compositeDisposable.clear()
+                    }
+                }
+            }
+        })
     }
 }
 
 class BluetoothDialogAdapter(
         private val nameList: List<String>,
-        private val addressList: List<String>
+        private val addressList: List<String>,
+        private val listener: Listener
 ) : RecyclerView.Adapter<BluetoothDialogAdapter.BluetoothViewHolder>() {
 
-    private val clickSubject = PublishSubject.create<Bluetooth>()
-    val clickEvent: Observable<Bluetooth> = clickSubject
+    interface Listener {
+        fun onClicked(bluetooth: Bluetooth)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothViewHolder {
         return BluetoothViewHolder(
@@ -97,9 +86,12 @@ class BluetoothDialogAdapter(
         val address = addressList[position]
 
         holder.itemView.run {
-            clicks().map { Bluetooth(name, address) }.subscribe(clickSubject)
             li_bt_name.text = name
             li_bt_address.text = address
+
+            setOnClickListener {
+                listener.onClicked(Bluetooth(name, address))
+            }
         }
     }
 
