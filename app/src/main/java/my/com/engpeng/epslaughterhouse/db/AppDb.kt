@@ -8,6 +8,7 @@ import my.com.engpeng.epslaughterhouse.model.*
         entities = [
             Company::class,
             Location::class,
+            Doc::class,
             Trip::class,
             TripDetail::class,
             TripMortality::class,
@@ -21,6 +22,7 @@ import my.com.engpeng.epslaughterhouse.model.*
 abstract class AppDb : RoomDatabase() {
     abstract fun companyDao(): CompanyDao
     abstract fun locationDao(): LocationDao
+    abstract fun docDao(): DocDao
     abstract fun tripDao(): TripDao
     abstract fun tripDetailDao(): TripDetailDao
     abstract fun tripMortalityDao(): TripMortalityDao

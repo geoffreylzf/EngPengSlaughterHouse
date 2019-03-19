@@ -4,13 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.Result
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import me.dm7.barcodescanner.zxing.ZXingScannerView
+import my.com.engpeng.epslaughterhouse.util.I_KEY_SCAN_TEXT
 
-
-const val SCAN_REQUEST_CODE = 1
-const val I_KEY_SCAN = "I_KEY_SCAN"
 
 class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
@@ -41,7 +37,7 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(rawResult: Result?) {
-        setResult(RESULT_OK, Intent().apply { putExtra(I_KEY_SCAN, rawResult?.text) })
+        setResult(RESULT_OK, Intent().apply { putExtra(I_KEY_SCAN_TEXT, rawResult?.text) })
         finish()
     }
 }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="73dp">
+    android:layout_height="49dp">
 
     <View
         android:id="@+id/li_v_divider"
@@ -15,20 +14,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/li_tv_remark"
+        android:id="@+id/li_tv_doc_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textColor="@color/colorListItemPrimaryText"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/li_tv_datetime"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/li_tv_location_code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        tool:text="Code" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/li_tv_datetime"
+        android:id="@+id/li_tv_location_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -36,7 +34,6 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/li_tv_remark"
-        tool:text="Company Name" />
+        app:layout_constraintTop_toBottomOf="@id/li_tv_doc_no" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

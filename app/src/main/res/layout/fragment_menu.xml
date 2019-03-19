@@ -12,6 +12,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_log"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -26,6 +27,24 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_doc"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/gl_50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_log"
+        app:layout_constraintBottom_toTopOf="@+id/tv_version">
+
+        <include layout="@layout/merge_menu_doc" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_trip"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -53,5 +72,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <CheckBox
+        android:id="@+id/cb_local"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/local2"
+        android:layout_marginStart="16dp"
+        android:buttonTint="@color/colorWhite"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="@id/tv_version"
+        app:layout_constraintStart_toStartOf="@id/tv_version"
+        app:layout_constraintTop_toTopOf="@id/tv_version" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

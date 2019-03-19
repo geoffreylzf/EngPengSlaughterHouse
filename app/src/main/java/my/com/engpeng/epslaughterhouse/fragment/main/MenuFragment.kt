@@ -9,22 +9,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_menu.*
+import kotlinx.android.synthetic.main.list_item_doc.view.*
+import kotlinx.android.synthetic.main.merge_menu_doc.*
 import kotlinx.android.synthetic.main.merge_menu_log.*
 import kotlinx.android.synthetic.main.merge_menu_trip.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.MainActivity
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
+import my.com.engpeng.epslaughterhouse.model.Doc
+import my.com.engpeng.epslaughterhouse.service.GetDocService
 import my.com.engpeng.epslaughterhouse.service.UploadService
-import my.com.engpeng.epslaughterhouse.util.I_KEY_LOCAL
-import my.com.engpeng.epslaughterhouse.util.LOG_TASK_UPLOAD
-import my.com.engpeng.epslaughterhouse.util.Sdf
-import my.com.engpeng.epslaughterhouse.util.appVersion
+import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 
 /**
@@ -34,6 +35,8 @@ import org.koin.android.ext.android.inject
 class MenuFragment : Fragment() {
 
     private val appDb: AppDb by inject()
+    private val apiModule: ApiModule by inject()
+    private var rvAdapter = DocAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
@@ -44,6 +47,7 @@ class MenuFragment : Fragment() {
         (activity as MainActivity).setNavHeader()
         setupView()
         setupListener()
+        setupRv()
     }
 
     private fun setupView() {
@@ -88,5 +92,53 @@ class MenuFragment : Fragment() {
                 }
             }
         }
+
+        btn_doc.setOnClickListener {
+            val intent = Intent(activity, GetDocService::class.java).apply {
+                putExtra(I_KEY_LOCAL, cb_local.isChecked)
+                putExtra(I_KEY_DATE, Sdf.getCurrentDate())
+            }
+            activity!!.stopService(intent)
+            activity!!.startService(intent)
+        }
     }
+
+    private fun setupRv(){
+        rv.layoutManager = LinearLayoutManager(context)
+        rv.adapter = rvAdapter
+        appDb.docDao().getLiveAll().observe(this, Observer {
+            rvAdapter.setList(it)
+        })
+    }
+}
+
+class DocAdapter : RecyclerView.Adapter<DocAdapter.DocViewHolder>() {
+
+    private var docList: List<Doc>? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocViewHolder {
+        return DocViewHolder(
+                LayoutInflater.from(parent.context)
+                        .inflate(R.layout.list_item_doc, parent, false))
+    }
+
+    override fun onBindViewHolder(holder: DocViewHolder, position: Int) {
+        docList!![position].let { doc ->
+            holder.itemView.run {
+                li_tv_doc_no.text = doc.docNo
+                li_tv_location_code.text = doc.locationName
+            }
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return docList?.size ?: 0
+    }
+
+    fun setList(docList: List<Doc>) {
+        this.docList = docList
+        this.notifyDataSetChanged()
+    }
+
+    class DocViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

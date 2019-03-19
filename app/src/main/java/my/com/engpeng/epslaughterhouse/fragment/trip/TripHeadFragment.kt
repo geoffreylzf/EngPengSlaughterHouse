@@ -11,14 +11,14 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_trip_head.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.camera.CameraPermission
-import my.com.engpeng.epslaughterhouse.camera.I_KEY_SCAN
-import my.com.engpeng.epslaughterhouse.camera.SCAN_REQUEST_CODE
 import my.com.engpeng.epslaughterhouse.camera.ScanActivity
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Trip
+import my.com.engpeng.epslaughterhouse.util.I_KEY_SCAN_TEXT
+import my.com.engpeng.epslaughterhouse.util.SCAN_REQUEST_CODE
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -148,7 +148,7 @@ class TripHeadFragment : Fragment() {
             Timber.e("requestCode")
             if (resultCode == RESULT_OK) {
                 Timber.e("resultCode")
-                val scanText = data?.getStringExtra(I_KEY_SCAN) ?: ""
+                val scanText = data?.getStringExtra(I_KEY_SCAN_TEXT) ?: ""
                 if (scanText.isNotEmpty()) {
                     val arr = scanText.split("|")
                     if (arr.size == 7 || arr.size == 8) {

@@ -49,6 +49,7 @@
     <string name="truck">Truck</string>
     <string name="delete">Delete</string>
     <string name="upload">Upload</string>
+    <string name="retrieve_doc">Retrieve Document</string>
     <string name="mortality">Mortality</string>
     <string name="print">Print</string>
     <string name="username">Username</string>
@@ -57,11 +58,13 @@
     <string name="database">Database</string>
     <string name="session">Session</string>
     <string name="logout">Logout</string>
+    <string name="get_doc">Get Document</string>
     <string name="local2">Local (Connect Office Wi-Fi)</string>
     <string name="re_sync_all">Re-sync All</string>
     <string name="update_all">Update All</string>
     <string name="house_keeping">House Keeping</string>
     <string name="last_history_log">Last History Log</string>
+    <string name="document_list">Document List</string>
     <string name="slaughter_today">Slaughter Today</string>
 
     <string name="SHORT_NUMBER">#</string>
@@ -112,6 +115,10 @@
     <string name="notification_main_channel_name">Primary</string>
     <string name="notification_msg_upload_initial">Prepare upload to server…</string>
     <string name="notification_msg_upload_complete">Upload complete.</string>
-    <string name="notification_msg_upload_error">Upload error.</string>
+    <string name="notification_msg_upload_error">Upload error. %1$s</string>
+
+    <string name="notification_msg_get_doc_initial">Prepare to get document…</string>
+    <string name="notification_msg_get_doc_complete">Get document complete.</string>
+    <string name="notification_msg_get_doc_error">Get document error. %1$s</string>
 
 </resources>

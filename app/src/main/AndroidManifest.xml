@@ -17,9 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".service.UploadService"
+            android:name=".service.GetDocService"
             android:enabled="true"
             android:exported="false"></service>
+        <service
+            android:name=".service.UploadService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity android:name=".camera.ScanActivity" />
         <activity

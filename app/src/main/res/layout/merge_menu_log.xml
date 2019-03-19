@@ -107,20 +107,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/upload"
-            app:layout_constraintBottom_toTopOf="@+id/cb_local"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_upload_count" />
 
-        <CheckBox
-            android:id="@+id/cb_local"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/local2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_upload" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -12,6 +12,8 @@ interface ApiService {
     @GET("index.php?r=apiMobileSlaughterHouse/getHouseKeeping&type=location")
     fun getLocationListAsync(): Deferred<ApiResponse<List<Location>>>
 
+    @GET("index.php?r=apiMobileSlaughterHouse/getHouseKeeping&type=processDoc")
+    fun getDocListAsync(@Query("date") date: String): Deferred<ApiResponse<List<Doc>>>
 
     @FormUrlEncoded
     @Headers("No-Authentication: true")

@@ -12,21 +12,18 @@ import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
-import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
-import my.com.engpeng.epslaughterhouse.model.Log
-import my.com.engpeng.epslaughterhouse.model.UploadBody
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 
-class UploadService : Service() {
+class GetDocService : Service() {
 
     private val appDb: AppDb by inject()
     private val apiModule: ApiModule by inject()
-    private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManager
     private var isLocal: Boolean = false
+    private var date = Sdf.getCurrentDate()
 
     override fun onCreate() {
         super.onCreate()
@@ -36,9 +33,9 @@ class UploadService : Service() {
     }
 
     private fun setupNotificationBuilder() {
-        notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_UPLOAD_ID)
-                .setSmallIcon(android.R.drawable.stat_sys_upload)
-                .setContentTitle(getString(R.string.upload))
+        notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_GET_DOC_ID)
+                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setContentTitle(getString(R.string.get_doc))
                 .setOngoing(true)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -51,7 +48,7 @@ class UploadService : Service() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel = NotificationChannel(
-                    NOTIFICATION_CHANNEL_UPLOAD_ID,
+                    NOTIFICATION_CHANNEL_GET_DOC_ID,
                     getString(R.string.notification_main_channel_name),
                     NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(mChannel)
@@ -60,62 +57,48 @@ class UploadService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         isLocal = intent?.getBooleanExtra(I_KEY_LOCAL, false) ?: false
-        upload()
+        date = intent?.getStringExtra(I_KEY_DATE) ?: Sdf.getCurrentDate()
+        getDoc()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun upload() {
+    private fun getDoc() {
         initialProgress()
         CoroutineScope(Dispatchers.IO).launch {
             delay(200)
             try {
-                val tripList = appDb.tripDao().getAllByUpload(0)
-                for (trip in tripList) {
-                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripId(trip.id!!)
-                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripId(trip.id!!)
-                }
-
-                val uploadResult = apiModule.provideApiService(isLocal)
-                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList))
-                        .await().result
-
-                for (id in uploadResult.tripIdList) {
-                    val trip = appDb.tripDao().getById(id)
-                    trip.isUpload = 1
-                    appDb.tripDao().insert(trip)
-                }
-
-                appDb.logDao().insert(Log(
-                        LOG_TASK_UPLOAD,
-                        Sdf.getCurrentDateTime(),
-                        getString(R.string.upload_log_desc, uploadResult.tripIdList.size)
-                ))
+                val docList = apiModule.provideApiService(isLocal).getDocListAsync(date).await().result
+                appDb.docDao().deleteAll()
+                delay(200)
+                appDb.docDao().insert(docList)
 
                 withContext(Dispatchers.Main) {
                     delay(200)
                     completeProgress()
                 }
-            } catch (e: Exception) {
+
+            }catch (e: Exception) {
                 delay(200)
                 errorProgress(e.message)
             }
         }
     }
 
+
     private fun initialProgress() {
         notificationBuilder
-                .setContentText(getString(R.string.notification_msg_upload_initial))
+                .setContentText(getString(R.string.notification_msg_get_doc_initial))
                 .setProgress(0, 0, true)
-        notificationManager.notify(NOTIFICATION_UPLOAD_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_GET_DOC_ID, notificationBuilder.build())
     }
 
     private fun completeProgress() {
         notificationBuilder
-                .setSmallIcon(android.R.drawable.stat_sys_upload_done)
-                .setContentText(getString(R.string.notification_msg_upload_complete))
+                .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                .setContentText(getString(R.string.notification_msg_get_doc_complete))
                 .setOngoing(false)
                 .setProgress(0, 0, false)
-        notificationManager.notify(NOTIFICATION_UPLOAD_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_GET_DOC_ID, notificationBuilder.build())
         stopForeground(Service.STOP_FOREGROUND_DETACH)
         stopSelf()
     }
@@ -123,16 +106,16 @@ class UploadService : Service() {
     private fun errorProgress(msg: String?) {
         notificationBuilder
                 .setSmallIcon(android.R.drawable.stat_notify_error)
-                .setContentText(getString(R.string.notification_msg_upload_error, msg))
+                .setContentText(getString(R.string.notification_msg_get_doc_error, msg))
                 .setOngoing(false)
                 .setProgress(0, 0, false)
-        notificationManager.notify(NOTIFICATION_UPLOAD_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_GET_DOC_ID, notificationBuilder.build())
         stopForeground(Service.STOP_FOREGROUND_DETACH)
         stopSelf()
     }
 
+
     override fun onBind(intent: Intent): IBinder {
         throw UnsupportedOperationException("Not yet implemented")
     }
-
 }
