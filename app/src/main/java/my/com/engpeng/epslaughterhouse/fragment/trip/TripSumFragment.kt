@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
+import my.com.engpeng.epslaughterhouse.adapter.TempTripDetailAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
@@ -32,7 +32,7 @@ class TripSumFragment : Fragment() {
     private val appDb: AppDb by inject()
 
     private lateinit var trip: Trip
-    private var rvAdapter = TempSlaughterDetailAdapter(false)
+    private var rvAdapter = TempTripDetailAdapter(false)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -111,10 +111,11 @@ class TripSumFragment : Fragment() {
             }
         }).attachToRecyclerView(rv)
 
-        fab_add.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_tripSumFragment_to_tripDetailFragment))
+        fab_add.setOnClickListener{
+            findNavController().navigate(TripSumFragmentDirections.actionTripSumFragmentToTripDetailFragment(trip.houseStr))
+        }
 
         btn_next.setOnClickListener {
-
             CoroutineScope(Dispatchers.IO).launch {
                 val count = appDb.tempTripDetailDao().getCount()
                 withContext(Dispatchers.Main) {
@@ -139,9 +140,7 @@ class TripSumFragment : Fragment() {
         appDb.tempTripDetailDao().getLiveTotal().observe(this,
                 Observer {
                     tv_ttl_weight.text = it.ttlWeight.format2Decimal()
-                    tv_ttl_qty.text = it.ttlQty.toString()
                     tv_ttl_cage.text = it.ttlCage.toString()
-                    tv_ttl_cover.text = it.ttlCover.toString()
                 })
     }
 }

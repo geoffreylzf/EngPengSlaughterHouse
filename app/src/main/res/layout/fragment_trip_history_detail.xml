@@ -143,9 +143,19 @@
             style="@style/TableTitleTextViewStyle"
             android:text="@string/SHORT_NUMBER"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_weight"
+            app:layout_constraintEnd_toStartOf="@id/tv_house"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_house"
+            style="@style/TableTitleTextViewStyle"
+            android:text="@string/house"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_weight"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintStart_toEndOf="@id/tv_num"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -153,19 +163,9 @@
             style="@style/TableTitleTextViewStyle"
             android:text="@string/weight_kg"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_qty"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_num"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_qty"
-            style="@style/TableTitleTextViewStyle"
-            android:text="@string/quantity"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_cage"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_weight"
+            app:layout_constraintStart_toEndOf="@id/tv_house"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -173,20 +173,11 @@
             style="@style/TableTitleTextViewStyle"
             android:text="@string/cage"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_cover"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_qty"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_cover"
-            style="@style/TableTitleTextViewStyle"
-            android:text="@string/cover"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_cage"
+            app:layout_constraintStart_toEndOf="@id/tv_weight"
             app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -216,7 +207,7 @@
             android:text="@string/total"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_ttl_weight"
-            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -225,19 +216,9 @@
             style="@style/TableTotalTextViewStyle"
             android:text="@string/weight_kg"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_ttl_qty"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_total"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_ttl_qty"
-            style="@style/TableTotalTextViewStyle"
-            android:text="@string/quantity"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_ttl_cage"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_ttl_weight"
+            app:layout_constraintStart_toEndOf="@id/tv_total"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -245,20 +226,11 @@
             style="@style/TableTotalTextViewStyle"
             android:text="@string/cage"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_ttl_cover"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_ttl_qty"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_ttl_cover"
-            style="@style/TableTotalTextViewStyle"
-            android:text="@string/cover"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tv_ttl_cage"
+            app:layout_constraintStart_toEndOf="@id/tv_ttl_weight"
             app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

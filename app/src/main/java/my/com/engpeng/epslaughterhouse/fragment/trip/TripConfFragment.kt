@@ -74,9 +74,7 @@ class TripConfFragment : Fragment() {
         appDb.tempTripDetailDao().getLiveTotal().observe(this,
                 Observer {
                     et_ttl_weight.setText(it.ttlWeight.format2Decimal() + "Kg")
-                    et_ttl_qty.setText(it.ttlQty.toString())
                     et_ttl_cage.setText(it.ttlCage.toString())
-                    et_ttl_cover.setText(it.ttlCover.toString())
                 })
 
         rv.run {

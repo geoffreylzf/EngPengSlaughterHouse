@@ -18,7 +18,6 @@ import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.util.PrintUtils
 import org.koin.android.ext.android.inject
 
-
 class TripPrintFragment : Fragment() {
 
     private val appDb: AppDb by inject()

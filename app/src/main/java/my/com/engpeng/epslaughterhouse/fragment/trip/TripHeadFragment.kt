@@ -16,13 +16,13 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
+import my.com.engpeng.epslaughterhouse.model.ScanData
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.util.I_KEY_SCAN_TEXT
 import my.com.engpeng.epslaughterhouse.util.SCAN_REQUEST_CODE
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import org.koin.android.viewmodel.ext.android.viewModel
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -32,7 +32,7 @@ import java.util.*
 class TripHeadFragment : Fragment() {
 
     private var calendarDocDate = Calendar.getInstance()
-    private var slaughter = Trip()
+    private var trip = Trip()
 
     private val vm: TripHeadViewModel by viewModel()
 
@@ -51,25 +51,25 @@ class TripHeadFragment : Fragment() {
         })
         vm.liveCompany.observe(this, androidx.lifecycle.Observer {
             if (it != null) {
-                slaughter.companyId = it.id
+                trip.companyId = it.id
                 et_company.setText(it.companyName)
             } else {
-                slaughter.companyId = null
+                trip.companyId = null
                 et_company.setText("")
             }
         })
         vm.liveLocation.observe(this, androidx.lifecycle.Observer {
             if (it != null) {
-                slaughter.locationId = it.id
+                trip.locationId = it.id
                 et_location.setText(it.locationName)
             } else {
-                slaughter.locationId = null
+                trip.locationId = null
                 et_location.setText("")
             }
         })
         vm.liveCalendar.observe(this, androidx.lifecycle.Observer {
             et_doc_date.setText(Sdf.formatDisplay(it.time))
-            slaughter.docDate = Sdf.formatSave(it.time)
+            trip.docDate = Sdf.formatSave(it.time)
         })
     }
 
@@ -94,7 +94,7 @@ class TripHeadFragment : Fragment() {
         }
 
         et_location.setOnClickListener {
-            slaughter.companyId?.run {
+            trip.companyId?.run {
                 showLocationDialog(this)
             } ?: run {
                 AlertDialogFragment.show(fragmentManager!!,
@@ -136,7 +136,9 @@ class TripHeadFragment : Fragment() {
 
             et_doc_no.text?.clear()
             et_truck_code.text?.clear()
-            et_catch_bta_code.setText(" ")
+            et_catch_bta_code.setText("")
+            et_ttl_qty.setText("")
+            et_house_list.setText("")
 
             rg_doc_type.clearCheck()
             rg_type.clearCheck()
@@ -145,44 +147,37 @@ class TripHeadFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SCAN_REQUEST_CODE) {
-            Timber.e("requestCode")
             if (resultCode == RESULT_OK) {
-                Timber.e("resultCode")
                 val scanText = data?.getStringExtra(I_KEY_SCAN_TEXT) ?: ""
                 if (scanText.isNotEmpty()) {
-                    val arr = scanText.split("|")
-                    if (arr.size == 7 || arr.size == 8) {
+                    try {
 
-                        val companyId = arr[0].toLong()
-                        val locationId = arr[1].toLong()
-                        val docDate = arr[2]
-                        val docNo = arr[3]
-                        val docType = arr[4]
-                        val type = arr[5]
-                        val truckCode = arr[6]
-                        val catchBtaCode = if (arr.size == 8) arr[7] else " "
+                        val scanData = ScanData(scanText)
 
-                        vm.loadCompany(companyId)
-                        vm.loadLocation(locationId)
+                        vm.loadCompany(scanData.companyId!!)
+                        vm.loadLocation(scanData.locationId!!)
 
-                        calendarDocDate.time = Sdf.getDateFromSave(docDate)
+                        calendarDocDate.time = Sdf.getDateFromSave(scanData.docDate!!)
                         vm.setCalendar(calendarDocDate)
 
-                        et_doc_no.setText(docNo)
-                        when (docType) {
+                        et_doc_no.setText(scanData.docNo)
+                        when (scanData.docType) {
                             "IFT" -> rb_doc_type_ift.isChecked = true
                             "PL" -> rb_doc_type_pl.isChecked = true
                         }
-                        when (type) {
+                        when (scanData.type) {
                             "KFC" -> rb_type_kfc.isChecked = true
                             "A" -> rb_type_a.isChecked = true
                             "B" -> rb_type_b.isChecked = true
                         }
-                        et_truck_code.setText(truckCode)
-                        et_catch_bta_code.setText(catchBtaCode)
+                        et_truck_code.setText(scanData.truckCode)
+                        et_catch_bta_code.setText(scanData.catchBtaCode)
+                        et_house_list.setText(scanData.houseStr)
+                        et_ttl_qty.setText(scanData.ttlQty.toString())
                         vm.setIsQrScan(true)
-                    } else {
-                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), "Invalid QR code")
+
+                    } catch (e: Exception) {
+                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.error_desc, e.message))
                     }
                 }
             }
@@ -191,7 +186,7 @@ class TripHeadFragment : Fragment() {
     }
 
     private fun start() {
-        slaughter.run {
+        trip.run {
             docNo = et_doc_no.text.toString()
             truckCode = et_truck_code.text.toString()
 
@@ -202,6 +197,7 @@ class TripHeadFragment : Fragment() {
                     else -> ""
                 }
             }
+
             rg_type.checkedRadioButtonId.let {
                 type = when (it) {
                     R.id.rb_type_kfc -> "KFC"
@@ -210,11 +206,14 @@ class TripHeadFragment : Fragment() {
                     else -> ""
                 }
             }
+
             catchBtaCode = et_catch_bta_code.text.toString().trim()
+            houseStr = et_house_list.text.toString().trim()
+            ttlQty = et_ttl_qty.text.toString().toIntOrNull()
         }
 
         var message = ""
-        slaughter.run check@{
+        trip.run check@{
             if (companyId == null) {
                 message = "Please select company"
                 return@check
@@ -223,19 +222,19 @@ class TripHeadFragment : Fragment() {
                 message = "Please select location"
                 return@check
             }
-            if (docNo.isEmpty()) {
+            if (docNo == null || docNo!!.isEmpty()) {
                 message = "Please enter document number"
                 return@check
             }
-            if (docType.isEmpty()) {
+            if (docType == null || docType!!.isEmpty()) {
                 message = "Please select document type"
                 return@check
             }
-            if (type.isEmpty()) {
+            if (type == null || type!!.isEmpty()) {
                 message = "Please select type"
                 return@check
             }
-            if (truckCode.isEmpty()) {
+            if (truckCode == null || truckCode!!.isEmpty()) {
                 message = "Please enter truck code"
                 return@check
             }
@@ -247,7 +246,7 @@ class TripHeadFragment : Fragment() {
         }
 
         activity?.hideKeyboard()
-        findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripSumFragment(slaughter))
+        findNavController().navigate(TripHeadFragmentDirections.actionTripHeadFragmentToTripSumFragment(trip))
     }
 
     private fun showCompanyDialog() {

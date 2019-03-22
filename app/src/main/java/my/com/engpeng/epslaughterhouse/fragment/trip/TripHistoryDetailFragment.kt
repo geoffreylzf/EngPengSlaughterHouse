@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_trip_history_detail.*
-import kotlinx.android.synthetic.main.list_item_slaughter_detail.view.*
+import kotlinx.android.synthetic.main.list_item_trip_detail.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,9 +91,7 @@ class TripHistoryDetailFragment : Fragment() {
             val tripTtl = appDb.tripDetailDao().getTtlByTripId(tripId)
             withContext(Dispatchers.Main) {
                 tv_ttl_weight.text = tripTtl.ttlWeight.format2Decimal()
-                tv_ttl_qty.text = tripTtl.ttlQty.toString()
                 tv_ttl_cage.text = tripTtl.ttlCage.toString()
-                tv_ttl_cover.text = tripTtl.ttlCover.toString()
             }
         }
 
@@ -134,17 +132,16 @@ class DetailDialogAdapter(private val detailList: List<TripDetail>)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         return DetailViewHolder(
                 LayoutInflater.from(parent.context)
-                        .inflate(R.layout.list_item_slaughter_detail, parent, false))
+                        .inflate(R.layout.list_item_trip_detail, parent, false))
     }
 
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
         detailList[position].let { detail ->
             holder.itemView.run {
                 li_tv_no.text = (itemCount - position).toString()
+                li_tv_house_code.text = detail.houseCode.toString()
                 li_tv_weight.text = detail.weight.format2Decimal()
-                li_tv_qty.text = detail.qty.toString()
                 li_tv_cage.text = detail.cage.toString()
-                li_tv_cover.text = detail.cover.toString()
 
                 if ((itemCount - position) % 2 == 0) {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryXLight))

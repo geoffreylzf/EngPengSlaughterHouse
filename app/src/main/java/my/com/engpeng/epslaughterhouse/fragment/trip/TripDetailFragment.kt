@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import com.google.android.material.radiobutton.MaterialRadioButton
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import kotlinx.coroutines.*
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterDetailAdapter
+import my.com.engpeng.epslaughterhouse.adapter.TempTripDetailAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
@@ -36,9 +36,10 @@ class TripDetailFragment : Fragment() {
 
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
+    private lateinit var houseStr: String
 
-    private val tempSlaughterDetail = TempTripDetail()
-    private val rvAdapter = TempSlaughterDetailAdapter(true)
+    private val tempTripDetail = TempTripDetail()
+    private val rvAdapter = TempTripDetailAdapter(true)
 
     private val bt = BluetoothSPP(context)
     private var btName = ""
@@ -53,6 +54,8 @@ class TripDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        houseStr = TripDetailFragmentArgs.fromBundle(arguments!!).houseStr
+        setupRb()
         setupView()
         setupRv()
     }
@@ -62,15 +65,23 @@ class TripDetailFragment : Fragment() {
         startWeighingBluetooth()
     }
 
-    private fun setupView() {
-        rb_cage_1.setOnClickListener { setupSpinnerCoverQty(1, 1) }
-        rb_cage_2.setOnClickListener { setupSpinnerCoverQty(2, 2) }
-        rb_cage_3.setOnClickListener { setupSpinnerCoverQty(3, 3) }
-        rb_cage_4.setOnClickListener { setupSpinnerCoverQty(4, 4) }
-        rb_cage_5.setOnClickListener { setupSpinnerCoverQty(5, 5) }
-        rb_cage_6.setOnClickListener { setupSpinnerCoverQty(6, 6) }
+    private fun setupRb() {
+        if (houseStr.isNotEmpty()) {
+            til_house_code.visibility = View.GONE
+            val houseList = houseStr.split(",").map { it.toInt() }
+            for (house in houseList) {
+                rg_house_code.addView(MaterialRadioButton(context).apply {
+                    id = house
+                    text = getString(R.string.house_desc, house)
+                })
+            }
+        } else {
+            tv_house_code.visibility = View.GONE
+            rg_house_code.visibility = View.GONE
+        }
+    }
 
-        setupSpinnerCoverQty(0, 0)
+    private fun setupView() {
 
         et_weight.requestFocusWithKeyboard(requireActivity())
 
@@ -173,54 +184,36 @@ class TripDetailFragment : Fragment() {
                 })
     }
 
-    private fun setupSpinnerCoverQty(qty: Int, default: Int?) {
-        sn_cover.run {
-            adapter = ArrayAdapter(requireContext(), R.layout.spinner_item, ArrayList<Int>().apply {
-                for (i in 0..qty) {
-                    add(i)
-                }
-            }).apply {
-                setDropDownViewResource(R.layout.spinner_dropdown_item)
-            }
-            default?.run {
-                setSelection(this)
-            }
-        }
-    }
-
     private fun save() {
-        tempSlaughterDetail.run {
+        tempTripDetail.run {
             weight = et_weight.text.toString().toDoubleOrNull()
-            qty = et_qty.text.toString().toIntOrNull()
+            cage = et_cage.text.toString().toIntOrNull()
 
-            cage = when (rg_cage.checkedRadioButtonId) {
-                R.id.rb_cage_1 -> 1
-                R.id.rb_cage_2 -> 2
-                R.id.rb_cage_3 -> 3
-                R.id.rb_cage_4 -> 4
-                R.id.rb_cage_5 -> 5
-                R.id.rb_cage_6 -> 6
-                else -> 0
+            houseCode = if (houseStr.isNotEmpty()) {
+                rg_house_code.checkedRadioButtonId
+            } else {
+                et_house_code.text.toString().toIntOrNull()
             }
-            cover = sn_cover.selectedItem.toString().toIntOrNull()
         }
 
         var message = ""
-        tempSlaughterDetail.run check@{
-            if (weight == null) {
+        tempTripDetail.run check@{
+            if (weight == 0.0 || weight == null) {
                 message = "Please enter weight"
                 return@check
             }
-            if (qty == null || qty == 0) {
-                message = "Please enter quantity"
+            if (cage == 0 || cage == null) {
+                message = "Please enter cage"
+                et_cage.requestFocus()
                 return@check
             }
-            if (cage == null || cage == 0) {
-                message = "Please select cage"
-                return@check
-            }
-            if (cover == null) {
-                message = "Please select cover"
+            if (houseCode == null || houseCode!! <= 0) {
+                message = if (houseStr.isEmpty()) {
+                    et_house_code.requestFocus()
+                    "Please enter house code"
+                }else{
+                    "Please select house code"
+                }
                 return@check
             }
         }
@@ -231,7 +224,7 @@ class TripDetailFragment : Fragment() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            appDb.tempTripDetailDao().insert(tempSlaughterDetail)
+            appDb.tempTripDetailDao().insert(tempTripDetail)
             withContext(Dispatchers.Main) {
                 activity?.vibrate()
                 et_weight.text?.clear()

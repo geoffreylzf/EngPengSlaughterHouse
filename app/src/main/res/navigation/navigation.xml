@@ -68,6 +68,9 @@
         <action
             android:id="@+id/action_menuFragment_to_uploadFragment"
             app:destination="@id/uploadFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_procHeadFragment"
+            app:destination="@id/operHeadFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripHeadFragment"
@@ -117,7 +120,11 @@
         android:id="@+id/tripDetailFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripDetailFragment"
         android:label="Trip Detail"
-        tools:layout="@layout/fragment_trip_detail" />
+        tools:layout="@layout/fragment_trip_detail" >
+        <argument
+            android:name="houseStr"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/tripConfFragment"
         android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripConfFragment"
@@ -184,4 +191,22 @@
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.UploadFragment"
         android:label="Upload"
         tools:layout="@layout/fragment_upload" />
+    <fragment
+        android:id="@+id/operHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHeadFragment"
+        android:label="Operation"
+        tools:layout="@layout/fragment_oper_head" >
+        <action
+            android:id="@+id/action_operHeadFragment_to_operSumFragment"
+            app:destination="@id/operSumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/operSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperSumFragment"
+        android:label="Operation Summary"
+        tools:layout="@layout/fragment_oper_sum" >
+        <argument
+            android:name="operation"
+            app:argType="my.com.engpeng.epslaughterhouse.model.Operation" />
+    </fragment>
 </navigation>

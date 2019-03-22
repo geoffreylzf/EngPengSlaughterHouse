@@ -44,15 +44,15 @@ class PrintUtils {
             return String.format("%0" + length + "d", house_code)
         }
 
-        private fun formatTripLiveBirdRow(num: String, weight: Double, qty: String, cover: Int): String {
-            return String.format(" %3s %7.02f  %4s  %1s ", num, weight, qty, if (cover == 0) " " else cover.toString())
+        private fun formatTripLiveBirdRow(num: String, weight: Double, cage: String, house: String): String {
+            return String.format(" %3s %7.02f  %4s %2s ", num, weight, cage, house)
         }
 
         private fun formatTripDeadBirdRow(num: String, weight: Double, qty: String): String {
             return String.format(" %3s %7.02f  %4s    ", num, weight, qty)
         }
 
-        private const val TRIP_LIVE_BIRD_HEADER = "  #   Weight   Qty  C "
+        private const val TRIP_LIVE_BIRD_HEADER = "  #   Weight  Cage #H "
         private const val TRIP_DEAD_BIRD_HEADER = "  #   Weight   Qty    "
 
         fun constructTripPrintout(context : Context, slaughterDp: TripDisplay, detailList: List<TripDetail>, mortalityList: List<TripMortality>): String {
@@ -65,6 +65,8 @@ class PrintUtils {
             s += formatLine("Document: ${slaughterDp.docType}-${slaughterDp.docNo}")
             s += formatLine("Grade: ${slaughterDp.type}")
             s += formatLine("Truck Code: ${slaughterDp.truckCode}")
+            s += formatLine("BTA Code: ${slaughterDp.catchBtaCode}")
+            s += formatLine("Total Qty: ${slaughterDp.ttlQty}")
             s += formatLine("")
 
             s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
@@ -77,30 +79,27 @@ class PrintUtils {
             val isLiveOdd = (detailList.size % 2) == 1
 
             var ttlLiveWeight = 0.00
-            var ttlLiveQty = 0
 
             for ((i, detail) in detailList.withIndex()) {
                 if (i < liveRowNum) {
 
                     val num = formatNumber(3, i + 1)
-                    val leftLine = halfLine(formatTripLiveBirdRow(num, detail.weight!!, detail.qty.toString(), detail.cover!!))
+                    val leftLine = halfLine(formatTripLiveBirdRow(num, detail.weight!!, detail.cage.toString(), detail.houseCode.toString()))
                     ttlLiveWeight += detail.weight!!
-                    ttlLiveQty += detail.qty!!
 
                     var rightLine = ""
                     if (i != (liveRowNum - 1) || !isLiveOdd) {
                         val i2 = i + liveRowNum
                         val num2 = formatNumber(3, i2 + 1)
-                        rightLine = halfLine(formatTripLiveBirdRow(num2, detailList[i2].weight!!, detailList[i2].qty.toString(), detailList[i2].cover!!))
+                        rightLine = halfLine(formatTripLiveBirdRow(num2, detailList[i2].weight!!, detailList[i2].cage.toString(), detail.houseCode.toString()))
                         ttlLiveWeight += detailList[i2].weight!!
-                        ttlLiveQty += detailList[i2].qty!!
                     }
                     s += formatLine("$leftLine|$rightLine")
                 }
             }
             s += formatLine(halfLine("") + "|" + halfLine(""))
 
-            s += formatLine(halfLine(String.format(" WGT: %.2fkg", ttlLiveWeight)) + "|" + halfLine(String.format(" QTY: %d", ttlLiveQty)))
+            s += formatLine(halfLine(String.format(" WGT: %.2fkg", ttlLiveWeight)))
             s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
 
             s += formatLine("")

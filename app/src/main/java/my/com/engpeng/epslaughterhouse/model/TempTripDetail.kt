@@ -1,22 +1,22 @@
 package my.com.engpeng.epslaughterhouse.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = TempTripDetail.TABLE_NAME)
 data class TempTripDetail(
-        @PrimaryKey var id: Long?,
+        @PrimaryKey(autoGenerate = true) var id: Long?,
         var weight: Double?,
-        var qty: Int?,
         var cage: Int?,
-        var cover: Int?
+        @SerializedName("house_code") @ColumnInfo(name = "house_code") var houseCode: Int?
 ) : BaseEntity() {
     constructor() : this(
             null,
-            null,
-            null,
-            null,
-            null
+            0.0,
+            0,
+            0
     )
 
     companion object {

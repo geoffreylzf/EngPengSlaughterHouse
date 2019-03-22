@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = TableLog.TABLE_NAME)
 data class TableLog(
         @PrimaryKey var model: String,
-        @ColumnInfo(name = "last_sync_date") var lastSyncDate: String,
-        var insert: Int,
-        var total: Int
+        @ColumnInfo(name = "last_sync_date") var lastSyncDate: String?,
+        var insert: Int?,
+        var total: Int?
 ) : BaseEntity() {
 
     companion object {

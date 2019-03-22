@@ -8,21 +8,12 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = TripDetail.TABLE_NAME)
 data class TripDetail(
-        @PrimaryKey var id: Long?,
+        @PrimaryKey(autoGenerate = true) var id: Long?,
         @SerializedName("trip_id") @ColumnInfo(name = "trip_id") var tripId: Long?,
         var weight: Double?,
-        var qty: Int?,
         var cage: Int?,
-        var cover: Int?
+        @SerializedName("house_code") @ColumnInfo(name = "house_code") var houseCode: Int?
 ) : BaseEntity() {
-    constructor() : this(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-    )
 
     companion object {
         const val TABLE_NAME = "trip_details"
@@ -31,7 +22,7 @@ data class TripDetail(
             val list: MutableList<TripDetail> = mutableListOf()
             for (temp in tempList) {
                 temp.run {
-                    list.add(TripDetail(null, tripId, weight, qty, cage, cover))
+                    list.add(TripDetail(null, tripId, weight, cage, houseCode))
                 }
             }
             return list

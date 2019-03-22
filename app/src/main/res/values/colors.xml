@@ -17,6 +17,7 @@
     <color name="colorDivider">#1e000000</color>
 
     <color name="colorBlueGrey700">#455A64</color>
+    <color name="colorGray300">#E0E0E0</color>
     <color name="colorRed50">#FFEBEE</color>
 
     <color name="colorTranslucent10">#1AFFFFFF</color>

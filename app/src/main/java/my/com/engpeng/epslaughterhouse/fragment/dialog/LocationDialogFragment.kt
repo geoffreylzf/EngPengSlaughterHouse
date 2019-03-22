@@ -46,31 +46,33 @@ class LocationDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_dialog_location, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch {
-            val locationList = appDb.locationDao().getAllByCompanyId(companyId!!)
-            withContext(Dispatchers.Main) {
-                if (locationList.isNotEmpty()) {
-                    rv.layoutManager = LinearLayoutManager(context)
-                    rv.adapter = LocationDialogAdapter(locationList, object : LocationDialogAdapter.Listener {
-                        override fun onClicked(locationId: Long) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                delay(200)
-                                withContext(Dispatchers.Main) {
-                                    listener.onSelected(locationId)
-                                    dismiss()
+            if(companyId != null){
+                val locationList = appDb.locationDao().getAllByCompanyId(companyId!!)
+                withContext(Dispatchers.Main) {
+                    if (locationList.isNotEmpty()) {
+                        rv.layoutManager = LinearLayoutManager(context)
+                        rv.adapter = LocationDialogAdapter(locationList, object : LocationDialogAdapter.Listener {
+                            override fun onClicked(locationId: Long) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    delay(200)
+                                    withContext(Dispatchers.Main) {
+                                        listener.onSelected(locationId)
+                                        dismiss()
+                                    }
                                 }
                             }
-                        }
-                    })
-                } else {
-                    tv_title.setText(R.string.dialog_title_no_location)
+                        })
+                    } else {
+                        tv_title.setText(R.string.dialog_title_no_location)
+                    }
                 }
             }
         }
     }
+
 }
 
 class LocationDialogAdapter(

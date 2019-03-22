@@ -5,10 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = TripMortality.TABLE_NAME)
-data class TripMortality(
+
+@Entity(tableName = OperationMortality.TABLE_NAME)
+data class OperationMortality(
         @PrimaryKey(autoGenerate = true) var id: Long?,
-        @SerializedName("trip_id") @ColumnInfo(name = "trip_id") var tripId: Long?,
+        @SerializedName("operation_id") @ColumnInfo(name = "operation_id") var operationId: Long?,
         var weight: Double?,
         var qty: Int?
 ) : BaseEntity() {
@@ -20,13 +21,13 @@ data class TripMortality(
     )
 
     companion object {
-        const val TABLE_NAME = "trip_mortalities"
+        const val TABLE_NAME = "operation_mortalities"
 
-        fun transformFromTempWithTripId(tripId: Long, tempList: List<TempTripMortality>): List<TripMortality> {
-            val list: MutableList<TripMortality> = mutableListOf()
+        fun transformFromTempWithOperationId(operationId: Long, tempList: List<TempOperationMortality>): List<OperationMortality> {
+            val list: MutableList<OperationMortality> = mutableListOf()
             for (temp in tempList) {
                 temp.run {
-                    list.add(TripMortality(null, tripId, weight, qty))
+                    list.add(OperationMortality(null, operationId, weight, qty))
                 }
             }
             return list
@@ -34,8 +35,8 @@ data class TripMortality(
     }
 
     override val tableName: String
-        get() = TripMortality.TABLE_NAME
+        get() = OperationMortality.TABLE_NAME
 
     override val displayName: String
-        get() = "Trip Mortality"
+        get() = "Operation Mortality"
 }

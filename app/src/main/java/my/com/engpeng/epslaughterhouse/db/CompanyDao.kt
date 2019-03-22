@@ -20,4 +20,7 @@ abstract class CompanyDao : BaseDao<Company>() {
     @Query("DELETE FROM companies")
     abstract suspend fun deleteAll()
 
+    @Query("SELECT COUNT(*) FROM companies")
+    abstract suspend fun getCount(): Int
+
 }

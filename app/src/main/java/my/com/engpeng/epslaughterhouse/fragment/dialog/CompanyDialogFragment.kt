@@ -44,9 +44,8 @@ class CompanyDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_dialog_company, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch {
             val companyList = appDb.companyDao().getAll()
 
@@ -70,6 +69,7 @@ class CompanyDialogFragment : DialogFragment() {
             }
         }
     }
+
 }
 
 class CompanyDialogAdapter(

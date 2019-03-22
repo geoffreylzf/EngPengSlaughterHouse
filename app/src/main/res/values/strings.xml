@@ -2,8 +2,10 @@
     <string name="app_name">EpSlaughterHouse</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="trip">Trip</string>
+    <string name="operation">Operation</string>
     <string name="company">Company</string>
     <string name="location">Location</string>
+    <string name="location_name">Location Name</string>
     <string name="document_date">Document Date</string>
     <string name="document_number">Document Number</string>
     <string name="document_type">Document Type</string>
@@ -16,7 +18,12 @@
     <string name="grade_b">Grade B</string>
     <string name="type">Type</string>
     <string name="start">Start</string>
+    <string name="remark">Remark</string>
     <string name="weight_kg">Weight(KG)</string>
+    <string name="house">House</string>
+    <string name="house_code">House Code</string>
+    <string name="wgt">Wgt</string>
+    <string name="qty">Qty</string>
     <string name="mortality_weight_kg">Mortality Weight(KG)</string>
     <string name="mortality_quantity">Mortality Quantity</string>
     <string name="quantity">Quantity</string>
@@ -68,6 +75,8 @@
     <string name="slaughter_today">Slaughter Today</string>
 
     <string name="SHORT_NUMBER">#</string>
+    <string name="SHORT_HOUSE">Hse</string>
+    <string name="SHORT_WEIGHT">Wgt</string>
     <string name="EMPTY_STRING">\u0020</string>
     <string name="DEFAULT_UPLOAD">0</string>
 
@@ -77,6 +86,7 @@
     <string name="login_error_desc">Login Error (%1$s)</string>
     <string name="error_desc">Error : %1$s</string>
     <string name="upload_log_desc">%1$d record(s) uploaded</string>
+    <string name="house_desc">House : %1$d</string>
 
     <string name="dialog_title_error">Error</string>
     <string name="dialog_title_success">Success</string>

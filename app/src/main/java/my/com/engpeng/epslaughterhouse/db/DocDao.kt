@@ -12,6 +12,9 @@ abstract class DocDao : BaseDao<Doc>() {
     abstract override fun getLiveCount(): LiveData<Int>
 
     @Query("SELECT * FROM docs")
+    abstract suspend fun getAll(): List<Doc>
+
+    @Query("SELECT * FROM docs")
     abstract fun getLiveAll(): LiveData<List<Doc>>
 
     @Query("DELETE FROM docs")

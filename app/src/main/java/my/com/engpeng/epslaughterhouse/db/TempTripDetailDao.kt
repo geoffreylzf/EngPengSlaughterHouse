@@ -24,9 +24,7 @@ abstract class TempTripDetailDao : BaseDao<TempTripDetail>() {
     @Query("""
         SELECT
             SUM(weight) AS ttlWeight,
-            SUM(qty) AS ttlQty,
-            SUM(cage) AS ttlCage,
-            SUM(cover) AS ttlCover
+            SUM(cage) AS ttlCage
         FROM temp_trip_details
         """)
     abstract fun getLiveTotal(): LiveData<TripDetailTtl>

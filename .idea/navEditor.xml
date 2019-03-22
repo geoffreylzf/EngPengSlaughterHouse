@@ -25,8 +25,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="574" />
+                            <option name="x" value="144" />
+                            <option name="y" value="563" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -46,8 +46,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="483" />
-                            <option name="y" value="405" />
+                            <option name="x" value="389" />
+                            <option name="y" value="414" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -58,6 +58,11 @@
                               </value>
                             </entry>
                             <entry key="action_menuFragment_to_loginFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_menuFragment_to_procHeadFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -77,13 +82,46 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="splashFragment">
+                  <entry key="operHeadFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="12" />
-                            <option name="y" value="710" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_operHeadFragment_to_operSumFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="operSumFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="splashFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-76" />
+                            <option name="y" value="685" />
                           </Point>
                         </option>
                         <option name="myPositions">

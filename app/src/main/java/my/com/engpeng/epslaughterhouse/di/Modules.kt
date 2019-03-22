@@ -2,6 +2,8 @@ package my.com.engpeng.epslaughterhouse.di
 
 import androidx.room.Room
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.fragment.main.MenuViewModel
+import my.com.engpeng.epslaughterhouse.fragment.operation.ProcHeadViewModel
 import my.com.engpeng.epslaughterhouse.fragment.trip.TripHeadViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.ext.koin.viewModel
@@ -16,6 +18,8 @@ val appModule = module {
 
 val viewModelModule = module {
     viewModel { TripHeadViewModel(get()) }
+    viewModel { MenuViewModel(get()) }
+    viewModel { ProcHeadViewModel() }
 }
 
 val modules = listOf(appModule, viewModelModule)

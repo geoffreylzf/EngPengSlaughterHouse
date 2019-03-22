@@ -227,26 +227,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/til_truck_code" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_catch_bta_code"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/et_catch_bta_code"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="36dp"
-        android:hint="@string/catch_bta_code"
+        android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:inputType="text"
+        android:textColor="@color/colorGray300"
+        app:layout_constraintBottom_toTopOf="@id/et_house_list"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/et_house_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:inputType="text"
+        android:textColor="@color/colorGray300"
+        app:layout_constraintBottom_toTopOf="@id/et_ttl_qty"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/et_ttl_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:inputType="text"
+        android:textColor="@color/colorGray300"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/gl_50"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_catch_bta_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:inputType="text"
-            android:text="@string/EMPTY_STRING" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_scan"

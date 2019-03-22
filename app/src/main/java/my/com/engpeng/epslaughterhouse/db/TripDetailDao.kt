@@ -18,9 +18,7 @@ abstract class TripDetailDao : BaseDao<TripDetail>() {
     @Query("""
         SELECT
             SUM(weight) AS ttlWeight,
-            SUM(qty) AS ttlQty,
-            SUM(cage) AS ttlCage,
-            SUM(cover) AS ttlCover
+            SUM(cage) AS ttlCage
         FROM trip_details
         WHERE trip_id = :id
         """)
