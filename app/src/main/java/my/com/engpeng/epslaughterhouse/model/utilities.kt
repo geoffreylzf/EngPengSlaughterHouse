@@ -7,7 +7,7 @@ data class Auth(
         val success: Boolean,
         val message: String)
 
-abstract class BaseEntity{
+abstract class BaseEntity {
     abstract val tableName: String
     abstract val displayName: String
 }
@@ -17,6 +17,10 @@ data class TripDetailTtl(
         val ttlCage: Int)
 
 data class TripMortalityTtl(
+        val ttlWeight: Double,
+        val ttlQty: Int)
+
+data class OperationMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
 
@@ -68,9 +72,11 @@ class ServerUrl {
 
 data class UploadBody(
         @SerializedName("unique_id") val uniqueId: String,
-        @SerializedName("trip") val tripList: List<Trip>
+        @SerializedName("trip") val tripList: List<Trip>,
+        @SerializedName("operation") val operationList: List<Operation>
 )
 
 data class UploadResult(
-        @SerializedName("trip_id_list")val tripIdList: List<Long>
+        @SerializedName("trip_id_list") val tripIdList: List<Long>,
+        @SerializedName("operation_id_list") val operationIdList: List<Long>
 )

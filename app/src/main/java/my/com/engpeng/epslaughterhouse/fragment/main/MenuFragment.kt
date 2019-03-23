@@ -33,7 +33,6 @@ import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.appVersion
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -61,7 +60,7 @@ class MenuFragment : Fragment() {
         super.onStart()
         CoroutineScope(Dispatchers.IO).launch {
             val count = appDb.companyDao().getCount()
-            if(count == 0){
+            if (count == 0) {
                 withContext(Dispatchers.Main) {
                     findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToHouseKeepingFragment())
                 }
@@ -99,7 +98,7 @@ class MenuFragment : Fragment() {
 
         btn_upload.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val count = appDb.tripDao().getCountByUpload(0)
+                val count = appDb.utilDao().getUnuploadCount()
                 withContext(Dispatchers.Main) {
                     if (count == 0) {
                         AlertDialogFragment.show(fragmentManager!!,

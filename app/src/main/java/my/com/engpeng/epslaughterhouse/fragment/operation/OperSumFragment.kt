@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,10 +31,7 @@ import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.Operation
 import my.com.engpeng.epslaughterhouse.model.OperationMortality
 import my.com.engpeng.epslaughterhouse.model.TempOperationMortality
-import my.com.engpeng.epslaughterhouse.util.BT_WT_PREFIX_KG
-import my.com.engpeng.epslaughterhouse.util.format2Decimal
-import my.com.engpeng.epslaughterhouse.util.requestFocusWithKeyboard
-import my.com.engpeng.epslaughterhouse.util.vibrate
+import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 
 class OperSumFragment : Fragment() {
@@ -41,6 +39,7 @@ class OperSumFragment : Fragment() {
     private lateinit var operation: Operation
 
     private val appDb: AppDb by inject()
+    private val printModule: PrintModule by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     private val rvAdapter = TempOperationMortalityAdapter()
@@ -268,12 +267,10 @@ class OperSumFragment : Fragment() {
 
                 appDb.tempOperationMortalityDao().deleteAll()
 
+                val printText = printModule.constructOperationPrintout(operationId)
                 withContext(Dispatchers.Main) {
-                    //TODO findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(tripId))
+                    findNavController().navigate(OperSumFragmentDirections.actionOperSumFragmentToPrintPreviewFragment(printText))
                 }
-
-
-
             } catch (e: Exception) {
                 AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.error_desc, e.message))
             }

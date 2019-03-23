@@ -75,20 +75,37 @@ class UploadService : Service() {
                     trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripId(trip.id!!)
                 }
 
+                val operList = appDb.operationDao().getAllByUpload(0)
+                for (oper in operList) {
+                    oper.operationMortalityList = appDb.operationMortalityDao().getAllByOperationId(oper.id!!)
+                }
+
                 val uploadResult = apiModule.provideApiService(isLocal)
-                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList))
+                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList, operList))
                         .await().result
 
-                for (id in uploadResult.tripIdList) {
-                    val trip = appDb.tripDao().getById(id)
-                    trip.isUpload = 1
-                    appDb.tripDao().insert(trip)
+                var successCount = 0
+
+                uploadResult.run {
+                    for (id in tripIdList) {
+                        val trip = appDb.tripDao().getById(id)
+                        trip.isUpload = 1
+                        appDb.tripDao().insert(trip)
+                    }
+
+                    for (id in operationIdList) {
+                        val oper = appDb.operationDao().getById(id)
+                        oper.isUpload = 1
+                        appDb.operationDao().insert(oper)
+                    }
+
+                    successCount = tripIdList.size + operationIdList.size
                 }
 
                 appDb.logDao().insert(Log(
                         LOG_TASK_UPLOAD,
                         Sdf.getCurrentDateTime(),
-                        getString(R.string.upload_log_desc, uploadResult.tripIdList.size)
+                        getString(R.string.upload_log_desc, successCount)
                 ))
 
                 withContext(Dispatchers.Main) {

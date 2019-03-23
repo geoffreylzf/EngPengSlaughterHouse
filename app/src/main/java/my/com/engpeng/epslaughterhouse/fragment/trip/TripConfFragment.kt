@@ -25,6 +25,7 @@ import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDetail
 import my.com.engpeng.epslaughterhouse.model.TripMortality
+import my.com.engpeng.epslaughterhouse.util.PrintModule
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
@@ -33,6 +34,7 @@ import org.koin.android.ext.android.inject
 class TripConfFragment : Fragment() {
 
     private val appDb: AppDb by inject()
+    private val printModule: PrintModule by inject()
     private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterMortalityAdapter()
 
@@ -178,8 +180,10 @@ class TripConfFragment : Fragment() {
                 appDb.tempTripDetailDao().deleteAll()
                 appDb.tempTripMortalityDao().deleteAll()
 
+                val printText = printModule.constructTripPrintout(tripId)
+
                 withContext(Dispatchers.Main) {
-                    findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToTripPrintFragment(tripId))
+                    findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToPrintPreviewFragment(printText))
                 }
 
             } catch (e: Exception) {

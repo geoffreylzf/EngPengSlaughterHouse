@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     private fun onPerformLogout() {
 
         CoroutineScope(Dispatchers.IO).launch {
-            val count = appDb.tripDao().getCountByUpload(0)
+            val count = appDb.utilDao().getUnuploadCount()
             withContext(Dispatchers.Main) {
                 if (count > 0) {
                     AlertDialogFragment.show(supportFragmentManager,

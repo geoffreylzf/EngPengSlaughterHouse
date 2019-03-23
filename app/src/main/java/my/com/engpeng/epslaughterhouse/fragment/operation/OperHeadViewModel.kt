@@ -3,7 +3,7 @@ package my.com.engpeng.epslaughterhouse.fragment.operation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ProcHeadViewModel()
+class OperHeadViewModel()
     : ViewModel() {
 
     val liveIsSelected = MutableLiveData<Boolean>()

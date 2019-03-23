@@ -21,7 +21,7 @@ open class Operation(@PrimaryKey(autoGenerate = true) var id: Long?,
                      var timestamp: String?
 ) : BaseEntity(), Parcelable {
 
-    @SerializedName("operation_mortality__list")
+    @SerializedName("operation_mortality_list")
     @Ignore
     @IgnoredOnParcel
     var operationMortalityList: List<OperationMortality>? = null

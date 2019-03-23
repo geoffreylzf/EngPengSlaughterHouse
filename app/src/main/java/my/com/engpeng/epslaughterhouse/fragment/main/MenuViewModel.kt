@@ -8,7 +8,7 @@ import my.com.engpeng.epslaughterhouse.util.Sdf
 class MenuViewModel(appDb: AppDb)
     : ViewModel() {
 
-    val liveUnuploadCount = appDb.tripDao().getLiveCountByUpload(0)
+    val liveUnuploadCount = appDb.utilDao().getLiveUnuploadCount()
     val liveLastUploadLog = appDb.logDao().getLiveLastLogByTask(LOG_TASK_UPLOAD)
     val liveTripCount = appDb.tripDao().getLiveCountByDate(Sdf.getCurrentDate())
     val liveDocList = appDb.docDao().getLiveAll()

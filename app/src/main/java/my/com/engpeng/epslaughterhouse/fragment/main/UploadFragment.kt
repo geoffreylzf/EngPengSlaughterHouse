@@ -43,7 +43,7 @@ class UploadFragment : Fragment() {
     private fun setupView(){
         (cl as ViewGroup).layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        appDb.tripDao().getLiveCountByUpload(0).observe(this, Observer {
+        appDb.utilDao().getLiveUnuploadCount().observe(this, Observer {
             count = it
             tv_count.text = it.toString()
             if (count == 0) {

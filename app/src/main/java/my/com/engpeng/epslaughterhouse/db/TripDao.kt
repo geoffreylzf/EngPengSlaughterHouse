@@ -45,21 +45,6 @@ abstract class TripDao : BaseDao<Trip>() {
 
     @Query("""
         SELECT
-        COUNT(*)
-        FROM trips t
-        WHERE is_upload = :upload""")
-    abstract suspend fun getCountByUpload(upload: Int): Int
-
-
-    @Query("""
-        SELECT
-        COUNT(*)
-        FROM trips t
-        WHERE is_upload = :upload""")
-    abstract fun getLiveCountByUpload(upload: Int): LiveData<Int>
-
-    @Query("""
-        SELECT
         *
         FROM trips t
         WHERE is_upload = :upload""")

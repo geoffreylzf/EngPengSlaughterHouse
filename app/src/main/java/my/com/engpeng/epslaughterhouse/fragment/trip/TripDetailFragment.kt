@@ -24,6 +24,7 @@ import my.com.engpeng.epslaughterhouse.model.Bluetooth
 import my.com.engpeng.epslaughterhouse.model.TempTripDetail
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 
 /**
@@ -37,6 +38,7 @@ class TripDetailFragment : Fragment() {
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
     private lateinit var houseStr: String
+    private val rbIdHouseMap = mutableMapOf<Int, Int>()
 
     private val tempTripDetail = TempTripDetail()
     private val rvAdapter = TempTripDetailAdapter(true)
@@ -71,7 +73,9 @@ class TripDetailFragment : Fragment() {
             val houseList = houseStr.split(",").map { it.toInt() }
             for (house in houseList) {
                 rg_house_code.addView(MaterialRadioButton(context).apply {
-                    id = house
+                    val newViewId = View.generateViewId()
+                    rbIdHouseMap[newViewId] = house
+                    id = newViewId
                     text = getString(R.string.house_desc, house)
                 })
             }
@@ -190,7 +194,7 @@ class TripDetailFragment : Fragment() {
             cage = et_cage.text.toString().toIntOrNull()
 
             houseCode = if (houseStr.isNotEmpty()) {
-                rg_house_code.checkedRadioButtonId
+                rbIdHouseMap[rg_house_code.checkedRadioButtonId]
             } else {
                 et_house_code.text.toString().toIntOrNull()
             }
@@ -211,7 +215,7 @@ class TripDetailFragment : Fragment() {
                 message = if (houseStr.isEmpty()) {
                     et_house_code.requestFocus()
                     "Please enter house code"
-                }else{
+                } else {
                     "Please select house code"
                 }
                 return@check

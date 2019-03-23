@@ -1,4 +1,4 @@
-package my.com.engpeng.epslaughterhouse.fragment.trip
+package my.com.engpeng.epslaughterhouse.fragment.main
 
 
 import android.os.Bundle
@@ -8,19 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import kotlinx.android.synthetic.main.fragment_trip_print.*
-import kotlinx.coroutines.*
+import kotlinx.android.synthetic.main.fragment_print_preview.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.util.PrintUtils
 import org.koin.android.ext.android.inject
 
-class TripPrintFragment : Fragment() {
+class PrintPreviewFragment : Fragment() {
 
-    private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
 
     private val bt = BluetoothSPP(context)
@@ -29,7 +29,7 @@ class TripPrintFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_trip_print, container, false)
+        return inflater.inflate(R.layout.fragment_print_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,17 +112,7 @@ class TripPrintFragment : Fragment() {
     }
 
     private fun constructPrint() {
-        val tripId = TripHistoryDetailFragmentArgs.fromBundle(arguments!!).slaughterId
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val slaughterDp = appDb.tripDao().getDpById(tripId)
-            val tripDetailList = appDb.tripDetailDao().getAllByTripId(tripId)
-            val tripMortalityList = appDb.tripMortalityDao().getAllByTripId(tripId)
-
-            withContext(Dispatchers.Main) {
-                tv_printout.text = PrintUtils.constructTripPrintout(context!!, slaughterDp, tripDetailList, tripMortalityList)
-            }
-        }
+        tv_printout.text = PrintPreviewFragmentArgs.fromBundle(arguments!!).printText
     }
 
     override fun onPause() {

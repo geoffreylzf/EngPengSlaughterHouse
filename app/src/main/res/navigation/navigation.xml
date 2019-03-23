@@ -135,12 +135,8 @@
             app:argType="my.com.engpeng.epslaughterhouse.model.Trip"
             app:nullable="true" />
         <action
-            android:id="@+id/action_tripConfFragment_to_tripPrintFragment"
-            app:destination="@id/tripPrintFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
+            android:id="@+id/action_tripConfFragment_to_printPreviewFragment"
+            app:destination="@id/printPreviewFragment"
             app:popUpTo="@+id/menuFragment" />
     </fragment>
     <fragment
@@ -170,21 +166,8 @@
             android:name="slaughterId"
             app:argType="long" />
         <action
-            android:id="@+id/action_tripHistoryDetailFragment_to_tripPrintFragment"
-            app:destination="@id/tripPrintFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/tripPrintFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripPrintFragment"
-        android:label="Print Preview"
-        tools:layout="@layout/fragment_trip_print">
-        <argument
-            android:name="slaughterId"
-            app:argType="long" />
+            android:id="@+id/action_tripHistoryDetailFragment_to_printPreviewFragment"
+            app:destination="@id/printPreviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/uploadFragment"
@@ -199,6 +182,9 @@
         <action
             android:id="@+id/action_operHeadFragment_to_operSumFragment"
             app:destination="@id/operSumFragment" />
+        <action
+            android:id="@+id/action_operHeadFragment_to_operHistoryFragment"
+            app:destination="@id/operHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/operSumFragment"
@@ -208,5 +194,39 @@
         <argument
             android:name="operation"
             app:argType="my.com.engpeng.epslaughterhouse.model.Operation" />
+        <action
+            android:id="@+id/action_operSumFragment_to_printPreviewFragment"
+            app:destination="@id/printPreviewFragment"
+            app:popUpTo="@+id/menuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/operHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHistoryFragment"
+        android:label="Operation History"
+        tools:layout="@layout/fragment_oper_history" >
+        <action
+            android:id="@+id/action_operHistoryFragment_to_operHistoryDetailFragment"
+            app:destination="@id/operHistoryDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/printPreviewFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.PrintPreviewFragment"
+        android:label="Print Preview"
+        tools:layout="@layout/fragment_print_preview" >
+        <argument
+            android:name="printText"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/operHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHistoryDetailFragment"
+        android:label="Operation History Detail"
+        tools:layout="@layout/fragment_oper_history_detail" >
+        <argument
+            android:name="operationId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_operHistoryDetailFragment_to_printPreviewFragment"
+            app:destination="@id/printPreviewFragment" />
     </fragment>
 </navigation>

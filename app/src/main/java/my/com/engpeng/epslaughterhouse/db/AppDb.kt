@@ -36,4 +36,5 @@ abstract class AppDb : RoomDatabase() {
     abstract fun tempOperationMortalityDao(): TempOperationMortalityDao
     abstract fun tableLogDao(): TableLogDao
     abstract fun logDao(): LogDao
+    abstract fun utilDao(): UtilDao
 }

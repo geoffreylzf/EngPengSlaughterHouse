@@ -5,6 +5,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import my.com.engpeng.epslaughterhouse.api.ApiService
 import my.com.engpeng.epslaughterhouse.model.ServerUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -27,7 +28,7 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
             }
             chain.proceed(request)
         }
-                //.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
                 .build()
 
 

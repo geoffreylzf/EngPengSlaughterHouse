@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="744" />
-                            <option name="y" value="282" />
+                            <option name="x" value="775" />
+                            <option name="y" value="615" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -93,7 +93,54 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_operHeadFragment_to_operHistoryFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_operHeadFragment_to_operSumFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="operHistoryDetailFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="492" />
+                            <option name="y" value="-320" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_operHistoryDetailFragment_to_printPreviewFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="operHistoryFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="180" />
+                            <option name="y" value="-201" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_operHistoryFragment_to_operHistoryDetailFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -108,8 +155,29 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="12" />
+                            <option name="x" value="347" />
+                            <option name="y" value="58" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_operSumFragment_to_printPreviewFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="printPreviewFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1529" />
+                            <option name="y" value="-317" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -152,7 +220,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_tripConfFragment_to_tripPrintFragment">
+                            <entry key="action_tripConfFragment_to_printPreviewFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -179,8 +247,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="744" />
-                            <option name="y" value="638" />
+                            <option name="x" value="763" />
+                            <option name="y" value="169" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -211,7 +279,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_tripHistoryDetailFragment_to_tripPrintFragment">
+                            <entry key="action_tripHistoryDetailFragment_to_printPreviewFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -238,18 +306,6 @@
                               </value>
                             </entry>
                           </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="tripPrintFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="1476" />
-                            <option name="y" value="681" />
-                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -285,8 +341,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="553" />
-                            <option name="y" value="-63" />
+                            <option name="x" value="545" />
+                            <option name="y" value="731" />
                           </Point>
                         </option>
                       </LayoutPositions>

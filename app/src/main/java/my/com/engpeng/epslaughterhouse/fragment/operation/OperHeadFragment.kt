@@ -2,9 +2,7 @@ package my.com.engpeng.epslaughterhouse.fragment.operation
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,12 +25,28 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class OperHeadFragment : Fragment() {
 
     private val appDb: AppDb by inject()
-    private val vm: ProcHeadViewModel by viewModel()
+    private val vm: OperHeadViewModel by viewModel()
     private var operation = Operation()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_oper_head, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.oper_head, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.mi_history -> {
+                findNavController().navigate(OperHeadFragmentDirections.actionOperHeadFragmentToOperHistoryFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
