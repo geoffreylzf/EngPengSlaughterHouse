@@ -10,7 +10,7 @@ abstract class UtilDao {
         SELECT SUM(count)
         FROM
         (SELECT COUNT(*) as count FROM trips WHERE is_upload = 0
-        UNION
+        UNION ALL
         SELECT COUNT(*) as count FROM operations WHERE is_upload = 0) A
         """)
     abstract fun getLiveUnuploadCount(): LiveData<Int>

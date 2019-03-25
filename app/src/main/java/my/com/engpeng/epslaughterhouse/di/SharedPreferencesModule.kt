@@ -14,6 +14,7 @@ private const val P_KEY_PRINTER_ADDRESS = "P_KEY_PRINTER_ADDRESS"
 private const val P_KEY_USERNAME = "P_KEY_USERNAME"
 private const val P_KEY_PASSWORD = "P_KEY_PASSWORD"
 private const val P_KEY_UNIQUE_ID = "P_KEY_UNIQUE_ID"
+private const val P_KEY_IS_LOCAL = "P_KEY_IS_LOCAL"
 
 private const val PREFERENCE_FILE_KEY = BuildConfig.APPLICATION_ID
 
@@ -108,5 +109,18 @@ class SharedPreferencesModule(context: Context) {
                     remove(P_KEY_USERNAME)
                     remove(P_KEY_PASSWORD)
                 }.apply()
+    }
+
+    fun saveIsLocal(b: Boolean) {
+        sharedPreferences
+                .edit()
+                .apply {
+                    putBoolean(P_KEY_IS_LOCAL, b)
+                }
+                .apply()
+    }
+
+    fun getIsLocal(): Boolean {
+        return sharedPreferences.getBoolean(P_KEY_IS_LOCAL, false)
     }
 }

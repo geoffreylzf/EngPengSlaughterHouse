@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import my.com.engpeng.epslaughterhouse.model.*
 
+const val DATABASE_NAME = "engpeng_sh.db"
+
 @Database(
         entities = [
             Company::class,

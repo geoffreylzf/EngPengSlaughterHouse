@@ -18,6 +18,8 @@ import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.PrintModule
+import my.com.engpeng.epslaughterhouse.di.WorkManagerModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
@@ -25,7 +27,6 @@ import my.com.engpeng.epslaughterhouse.model.TempTripMortality
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDetail
 import my.com.engpeng.epslaughterhouse.model.TripMortality
-import my.com.engpeng.epslaughterhouse.util.PrintModule
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
@@ -35,6 +36,8 @@ class TripConfFragment : Fragment() {
 
     private val appDb: AppDb by inject()
     private val printModule: PrintModule by inject()
+    private val wm: WorkManagerModule by inject()
+
     private lateinit var trip: Trip
     private var rvAdapter = TempSlaughterMortalityAdapter()
 
@@ -183,6 +186,7 @@ class TripConfFragment : Fragment() {
                 val printText = printModule.constructTripPrintout(tripId)
 
                 withContext(Dispatchers.Main) {
+                    wm.enqueueUpload(Trip.TABLE_NAME, tripId)
                     findNavController().navigate(TripConfFragmentDirections.actionTripConfFragmentToPrintPreviewFragment(printText))
                 }
 

@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_menuFragment_to_procHeadFragment"
             app:destination="@id/operHeadFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripHeadFragment"
@@ -229,4 +232,9 @@
             android:id="@+id/action_operHistoryDetailFragment_to_printPreviewFragment"
             app:destination="@id/printPreviewFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.main.SettingFragment"
+        android:label="Setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

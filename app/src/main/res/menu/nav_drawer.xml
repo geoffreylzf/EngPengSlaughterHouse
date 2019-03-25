@@ -18,9 +18,13 @@
             </group>
         </menu>
     </item>
-    <item android:title="@string/session">
+    <item android:title="@string/action">
         <menu>
             <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/mi_setting"
+                    android:icon="@drawable/ic_baseline_settings_20px"
+                    android:title="@string/setting" />
                 <item
                     android:id="@+id/mi_logout"
                     android:icon="@drawable/ic_baseline_exit_to_app_24px"

@@ -19,7 +19,7 @@ import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.model.OperationMortality
-import my.com.engpeng.epslaughterhouse.util.PrintModule
+import my.com.engpeng.epslaughterhouse.di.PrintModule
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 

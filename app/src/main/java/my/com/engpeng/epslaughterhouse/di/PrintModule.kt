@@ -1,7 +1,8 @@
-package my.com.engpeng.epslaughterhouse.util
+package my.com.engpeng.epslaughterhouse.di
 
 import android.content.Context
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.util.Sdf
 import java.util.*
 
 class PrintModule(val context: Context, private val appDb: AppDb) {

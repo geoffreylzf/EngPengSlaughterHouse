@@ -1,7 +1,13 @@
 package my.com.engpeng.epslaughterhouse.model
 
+import android.content.Context
+import android.provider.Settings.Global.getString
 import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
+import my.com.engpeng.epslaughterhouse.R
+import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.util.LOG_TASK_UPLOAD
+import my.com.engpeng.epslaughterhouse.util.Sdf
 
 data class Auth(
         val success: Boolean,
@@ -79,4 +85,27 @@ data class UploadBody(
 data class UploadResult(
         @SerializedName("trip_id_list") val tripIdList: List<Long>,
         @SerializedName("operation_id_list") val operationIdList: List<Long>
-)
+){
+    suspend fun updateStatus(context: Context, appDb: AppDb){
+
+        val successCount: Int = tripIdList.size + operationIdList.size
+        for (id in tripIdList) {
+            val trip = appDb.tripDao().getById(id)
+            trip.isUpload = 1
+            appDb.tripDao().insert(trip)
+        }
+
+        for (id in operationIdList) {
+            val oper = appDb.operationDao().getById(id)
+            oper.isUpload = 1
+            appDb.operationDao().insert(oper)
+        }
+
+        appDb.logDao().insert(Log(
+                LOG_TASK_UPLOAD,
+                Sdf.getCurrentDateTime(),
+                context.getString(R.string.upload_log_desc, successCount)
+        ))
+
+    }
+}

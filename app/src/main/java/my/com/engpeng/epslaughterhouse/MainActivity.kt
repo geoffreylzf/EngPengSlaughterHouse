@@ -69,6 +69,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.mi_upload -> {
                     findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToUploadFragment())
                 }
+                R.id.mi_setting -> {
+                    findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToSettingFragment())
+                }
             }
             true
         }

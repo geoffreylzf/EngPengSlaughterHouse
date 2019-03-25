@@ -23,7 +23,9 @@ import kotlinx.coroutines.withContext
 
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.PrintModule
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
+import my.com.engpeng.epslaughterhouse.di.WorkManagerModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
@@ -41,6 +43,7 @@ class OperSumFragment : Fragment() {
     private val appDb: AppDb by inject()
     private val printModule: PrintModule by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
+    private val wm: WorkManagerModule by inject()
 
     private val rvAdapter = TempOperationMortalityAdapter()
 
@@ -269,6 +272,7 @@ class OperSumFragment : Fragment() {
 
                 val printText = printModule.constructOperationPrintout(operationId)
                 withContext(Dispatchers.Main) {
+                    wm.enqueueUpload(Operation.TABLE_NAME, operationId)
                     findNavController().navigate(OperSumFragmentDirections.actionOperSumFragmentToPrintPreviewFragment(printText))
                 }
             } catch (e: Exception) {

@@ -19,7 +19,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
 import my.com.engpeng.epslaughterhouse.model.ScanData
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.util.I_KEY_SCAN_TEXT
-import my.com.engpeng.epslaughterhouse.util.SCAN_REQUEST_CODE
+import my.com.engpeng.epslaughterhouse.util.RC_SCAN
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.hideKeyboard
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -121,7 +121,7 @@ class TripHeadFragment : Fragment() {
 
         fab_scan.setOnClickListener {
             if (CameraPermission.check(requireActivity())) {
-                startActivityForResult(Intent(context, ScanActivity::class.java), SCAN_REQUEST_CODE)
+                startActivityForResult(Intent(context, ScanActivity::class.java), RC_SCAN)
             } else {
                 CameraPermission.request(requireActivity())
             }
@@ -146,7 +146,7 @@ class TripHeadFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == SCAN_REQUEST_CODE) {
+        if (requestCode == RC_SCAN) {
             if (resultCode == RESULT_OK) {
                 val scanText = data?.getStringExtra(I_KEY_SCAN_TEXT) ?: ""
                 if (scanText.isNotEmpty()) {

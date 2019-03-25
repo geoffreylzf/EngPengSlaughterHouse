@@ -259,7 +259,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@string/save"
+            android:text="@string/insert"
             app:icon="@drawable/ic_baseline_save_24px"
             app:iconGravity="textStart"
             app:iconPadding="8dp"

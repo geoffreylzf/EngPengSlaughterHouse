@@ -13,9 +13,10 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
-import my.com.engpeng.epslaughterhouse.model.Log
 import my.com.engpeng.epslaughterhouse.model.UploadBody
-import my.com.engpeng.epslaughterhouse.util.*
+import my.com.engpeng.epslaughterhouse.util.I_KEY_LOCAL
+import my.com.engpeng.epslaughterhouse.util.NOTIFICATION_CHANNEL_UPLOAD_ID
+import my.com.engpeng.epslaughterhouse.util.NOTIFICATION_UPLOAD_ID
 import org.koin.android.ext.android.inject
 
 class UploadService : Service() {
@@ -80,33 +81,11 @@ class UploadService : Service() {
                     oper.operationMortalityList = appDb.operationMortalityDao().getAllByOperationId(oper.id!!)
                 }
 
-                val uploadResult = apiModule.provideApiService(isLocal)
+                apiModule.provideApiService(isLocal)
                         .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList, operList))
-                        .await().result
-
-                var successCount = 0
-
-                uploadResult.run {
-                    for (id in tripIdList) {
-                        val trip = appDb.tripDao().getById(id)
-                        trip.isUpload = 1
-                        appDb.tripDao().insert(trip)
-                    }
-
-                    for (id in operationIdList) {
-                        val oper = appDb.operationDao().getById(id)
-                        oper.isUpload = 1
-                        appDb.operationDao().insert(oper)
-                    }
-
-                    successCount = tripIdList.size + operationIdList.size
-                }
-
-                appDb.logDao().insert(Log(
-                        LOG_TASK_UPLOAD,
-                        Sdf.getCurrentDateTime(),
-                        getString(R.string.upload_log_desc, successCount)
-                ))
+                        .await()
+                        .result
+                        .updateStatus(this@UploadService, appDb)
 
                 withContext(Dispatchers.Main) {
                     delay(200)
