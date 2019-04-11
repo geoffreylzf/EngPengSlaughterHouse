@@ -77,6 +77,10 @@
     <string name="last_history_log">Last History Log</string>
     <string name="document_list">Document List</string>
     <string name="slaughter_today">Slaughter Today</string>
+    <string name="network_printer_setting">Network Printer Setting</string>
+    <string name="printer_ip_example">Printer IP Address (Example: 192.168.100.100)</string>
+    <string name="printer_ip_port">Printer Port</string>
+    <string name="test_print">Test Printer</string>
 
     <string name="SHORT_NUMBER">#</string>
     <string name="SHORT_HOUSE">Hse</string>
@@ -118,7 +122,8 @@
     <string name="dialog_success_msg_retrieve">Retrieve complete.</string>
     <string name="dialog_success_msg_upload">Upload complete.</string>
     <string name="dialog_success_delete">Deleted…</string>
-    <string name="dialog_success_backup">Backup database complete, please find in gallery</string>
+    <string name="dialog_success_backup">Backup database complete, please find in gallery.</string>
+    <string name="dialog_success_save_network_printer">Network printer ip and port saved.</string>
 
     <string name="dialog_positive_button_text">OK</string>
     <string name="dialog_negative_button_text">Cancel</string>

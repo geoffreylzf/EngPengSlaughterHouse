@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import my.com.engpeng.epslaughterhouse.model.Trip
 import my.com.engpeng.epslaughterhouse.model.TripDisplay
-import my.com.engpeng.epslaughterhouse.model.TripInfo
+import my.com.engpeng.epslaughterhouse.model.SlaughterInfo
 
 
 @Dao
@@ -56,5 +56,5 @@ abstract class TripDao : BaseDao<Trip>() {
         SUM(CASE WHEN is_delete = 1 THEN 1 ELSE 0 END) AS delete_count
         FROM trips
         WHERE strftime('%Y-%m-%d', timestamp) = :date""")
-    abstract fun getLiveCountByDate(date: String): LiveData<TripInfo>
+    abstract fun getLiveCountByDate(date: String): LiveData<SlaughterInfo>
 }

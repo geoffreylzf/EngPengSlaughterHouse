@@ -34,7 +34,7 @@ data class Bluetooth(
         val name: String,
         val address: String)
 
-data class TripInfo(
+data class SlaughterInfo(
         @ColumnInfo(name = "confirm_count") var confirmCount: Int?,
         @ColumnInfo(name = "delete_count") var deleteCount: Int?
 )

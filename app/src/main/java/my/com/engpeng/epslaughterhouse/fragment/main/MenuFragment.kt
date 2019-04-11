@@ -33,6 +33,10 @@ import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.appVersion
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.io.IOException
+import java.io.PrintWriter
+import java.net.Socket
+import java.net.UnknownHostException
 
 /**
  * A simple [Fragment] subclass.
@@ -85,6 +89,11 @@ class MenuFragment : Fragment() {
             tv_trip_confirm.text = (it.confirmCount ?: 0).toString()
             tv_trip_delete.text = (it.deleteCount ?: 0).toString()
         })
+
+        vm.liveOperCount.observe(this, Observer {
+            tv_oper_confirm.text = (it.confirmCount ?: 0).toString()
+            tv_oper_delete.text = (it.deleteCount ?: 0).toString()
+        })
     }
 
     private fun setupListener() {
@@ -92,7 +101,7 @@ class MenuFragment : Fragment() {
             findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToTripHeadFragment())
         }
 
-        btn_process.setOnClickListener {
+        btn_oper.setOnClickListener {
             findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToProcHeadFragment())
         }
 

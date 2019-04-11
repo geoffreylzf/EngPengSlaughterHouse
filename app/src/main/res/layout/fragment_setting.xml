@@ -4,25 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
     tools:context=".fragment.main.SettingFragment">
-
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/cb_local"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/auto_update_is_local"
         android:layout_margin="16dp"
+        android:text="@string/auto_update_is_local"
+        app:layout_constraintBottom_toTopOf="@id/v_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/v_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_local" />
+
+    <TextView
+        android:id="@+id/tv_slaughter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/network_printer_setting"
+        android:textColor="@color/colorListItemSecondaryText"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/til_printer_ip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_divider" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.70" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_printer_ip"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/printer_ip_example"
+        app:layout_constraintEnd_toStartOf="@id/gl_75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_slaughter">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_printer_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_printer_port"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/printer_ip_port"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/gl_75"
+        app:layout_constraintTop_toBottomOf="@id/tv_slaughter">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_printer_port"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_print_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/save"
+        app:icon="@drawable/ic_baseline_save_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_printer_port" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_print_test"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/test_print"
+        app:icon="@drawable/ic_baseline_save_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="16dp"
+        app:layout_constraintEnd_toStartOf="@id/btn_print_save"
+        app:layout_constraintTop_toBottomOf="@id/til_printer_port" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_backup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/backup_database"
         android:layout_margin="32dp"
+        android:text="@string/backup_database"
         app:icon="@drawable/ic_baseline_file_copy_24px"
         app:iconGravity="textStart"
         app:iconPadding="16dp"

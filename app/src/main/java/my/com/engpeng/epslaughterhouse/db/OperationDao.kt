@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import my.com.engpeng.epslaughterhouse.model.Operation
+import my.com.engpeng.epslaughterhouse.model.SlaughterInfo
 
 @Dao
 abstract class OperationDao : BaseDao<Operation>() {
@@ -22,4 +23,12 @@ abstract class OperationDao : BaseDao<Operation>() {
         FROM operations
         WHERE is_upload = :upload""")
     abstract suspend fun getAllByUpload(upload: Int): List<Operation>
+
+    @Query("""
+        SELECT
+        SUM(CASE WHEN is_delete = 0 THEN 1 ELSE 0 END) AS confirm_count,
+        SUM(CASE WHEN is_delete = 1 THEN 1 ELSE 0 END) AS delete_count
+        FROM operations
+        WHERE strftime('%Y-%m-%d', timestamp) = :date""")
+    abstract fun getLiveCountByDate(date: String): LiveData<SlaughterInfo>
 }

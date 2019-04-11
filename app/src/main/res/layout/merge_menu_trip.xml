@@ -95,23 +95,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/trip"
-            app:layout_constraintBottom_toTopOf="@+id/iv_process"
+            app:layout_constraintBottom_toTopOf="@+id/iv_oper"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_trip_delete" />
 
         <ImageView
-            android:id="@+id/iv_process"
+            android:id="@+id/iv_oper"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_restaurant_24px"
-            app:layout_constraintBottom_toTopOf="@id/btn_process"
+            app:layout_constraintBottom_toTopOf="@id/btn_oper"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_trip" />
 
         <TextView
-            android:id="@+id/tv_process"
+            android:id="@+id/tv_oper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -120,12 +120,58 @@
             android:text="@string/operation"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_process"
-            app:layout_constraintStart_toEndOf="@id/iv_process"
-            app:layout_constraintTop_toTopOf="@id/iv_process" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_oper"
+            app:layout_constraintStart_toEndOf="@id/iv_oper"
+            app:layout_constraintTop_toTopOf="@id/iv_oper" />
+
+        <ImageView
+            android:id="@+id/iv_oper_confirm"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_done_24px"
+            app:layout_constraintBottom_toTopOf="@+id/iv_oper_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_oper" />
+
+        <TextView
+            android:id="@+id/tv_oper_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_oper_confirm"
+            app:layout_constraintStart_toEndOf="@id/iv_oper_confirm"
+            app:layout_constraintTop_toTopOf="@id/iv_oper_confirm" />
+
+        <ImageView
+            android:id="@+id/iv_oper_delete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_baseline_close_24px"
+            app:layout_constraintBottom_toTopOf="@+id/btn_oper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_oper_confirm" />
+
+        <TextView
+            android:id="@+id/tv_oper_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/colorListItemPrimaryText"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_oper_delete"
+            app:layout_constraintStart_toEndOf="@id/iv_oper_delete"
+            app:layout_constraintTop_toTopOf="@id/iv_oper_delete" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_process"
+            android:id="@+id/btn_oper"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -133,7 +179,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_process" />
+            app:layout_constraintTop_toBottomOf="@id/iv_oper" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
