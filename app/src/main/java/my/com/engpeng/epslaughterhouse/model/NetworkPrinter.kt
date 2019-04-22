@@ -1,5 +1,6 @@
 package my.com.engpeng.epslaughterhouse.model
 
+import my.com.engpeng.epslaughterhouse.util.BarcodeUtil
 import java.net.Socket
 
 
@@ -12,6 +13,8 @@ data class NetworkPrinter(
     fun testPrint() {
         val sock = Socket(ip, port)
         val oStream = sock.getOutputStream()
+        oStream.write(BarcodeUtil("ABCDEF").convertToQrByteArray())
+        oStream.write(BarcodeUtil("ABCDEF").convertToCode128ByteArray())
         oStream.write("This is came from Android\n\n\n\n\n".toByteArray())
         oStream.write("This is came from Android\n\n\n\n\n".toByteArray())
         oStream.write("This is came from Android\n\n\n\n\n".toByteArray())
