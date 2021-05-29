@@ -72,6 +72,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.mi_setting -> {
                     findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToSettingFragment())
                 }
+                R.id.mi_update_app_ver -> {
+                    findNavController(R.id.main_fm_navigation).navigate(MenuFragmentDirections.actionMenuFragmentToUpdateAppVerFragment())
+                }
             }
             true
         }

@@ -11,10 +11,16 @@
                     android:id="@+id/mi_upload"
                     android:icon="@drawable/ic_outline_cloud_upload_24px"
                     android:title="@string/upload" />
-                <!--<item
-                    android:id="@+id/mi_history"
-                    android:icon="@drawable/ic_baseline_history_24px"
-                    android:title="@string/history" />-->
+            </group>
+        </menu>
+    </item>
+    <item android:title="@string/update">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/mi_update_app_ver"
+                    android:icon="@drawable/ic_baseline_update_24px"
+                    android:title="@string/update_app_ver" />
             </group>
         </menu>
     </item>

@@ -48,6 +48,7 @@
     <string name="total_cover">Total Cover</string>
     <string name="total_cage">Total Cage</string>
     <string name="error">Error</string>
+    <string name="info">Info</string>
     <string name="success">Success</string>
     <string name="last_synchronize">Last Synchronize</string>
     <string name="name">Name</string>
@@ -66,6 +67,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="database">Database</string>
+    <string name="update">Update</string>
     <string name="session">Session</string>
     <string name="action">Action</string>
     <string name="logout">Logout</string>
@@ -74,6 +76,7 @@
     <string name="re_sync_all">Re-sync All</string>
     <string name="update_all">Update All</string>
     <string name="house_keeping">House Keeping</string>
+    <string name="update_app_ver">Update App Version</string>
     <string name="last_history_log">Last History Log</string>
     <string name="document_list">Document List</string>
     <string name="slaughter_today">Slaughter Today</string>

@@ -74,6 +74,9 @@
         <action
             android:id="@+id/action_menuFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_updateAppVerFragment"
+            app:destination="@id/updateAppVerFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripHeadFragment"
@@ -237,4 +240,9 @@
         android:name="my.com.engpeng.epslaughterhouse.fragment.main.SettingFragment"
         android:label="Setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/updateAppVerFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.UpdateAppVerFragment"
+        android:label="Update Application Version"
+        tools:layout="@layout/fragment_update_app_ver" />
 </navigation>

@@ -40,7 +40,7 @@ class UploadFragment : Fragment() {
         setupRv()
     }
 
-    private fun setupView(){
+    private fun setupView() {
         (cl as ViewGroup).layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         appDb.utilDao().getLiveUnuploadCount().observe(this, Observer {
@@ -52,7 +52,7 @@ class UploadFragment : Fragment() {
         })
     }
 
-    private fun setupListener(){
+    private fun setupListener() {
         btn_upload.setOnClickListener {
             if (count == 0) {
                 AlertDialogFragment.show(fragmentManager!!,
@@ -61,7 +61,7 @@ class UploadFragment : Fragment() {
             } else {
                 pb.visibility = View.VISIBLE
                 val intent = Intent(activity, UploadService::class.java).apply {
-                    putExtra(I_KEY_LOCAL, cb_local.isChecked())
+                    putExtra(I_KEY_LOCAL, cb_local.isChecked)
                 }
                 activity!!.stopService(intent)
                 activity!!.startService(intent)
@@ -69,7 +69,7 @@ class UploadFragment : Fragment() {
         }
     }
 
-    private fun setupRv(){
+    private fun setupRv() {
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = rvAdapter
         appDb.logDao().getLiveLogByTask(LOG_TASK_UPLOAD).observe(this, Observer {
@@ -78,7 +78,7 @@ class UploadFragment : Fragment() {
     }
 }
 
-class LogAdapter: RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
+class LogAdapter : RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
 
     private var logList: List<Log>? = null
 
@@ -89,7 +89,7 @@ class LogAdapter: RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: LogViewHolder, position: Int) {
-        logList!![position].let {log->
+        logList!![position].let { log ->
             holder.itemView.run {
                 li_tv_remark.text = log.remark
                 li_tv_datetime.text = log.datetime

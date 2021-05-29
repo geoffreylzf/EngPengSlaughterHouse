@@ -15,14 +15,9 @@ interface ApiService {
     @GET("index.php?r=apiMobileSlaughterHouse/getHouseKeeping&type=processDoc")
     fun getDocListAsync(@Query("date") date: String): Deferred<ApiResponse<List<Doc>>>
 
-    @FormUrlEncoded
     @Headers("No-Authentication: true")
-
-    @POST("index.php?r=apiMobileAuth/login")
-    fun loginAsync(
-            @Header("Authorization") credentials: String,
-            @Field("email") email: String?
-    ): Deferred<ApiResponse<Auth>>
+    @POST("index.php?r=apiMobileAuth/NonGoogleAccLogin")
+    fun loginAsync(@Header("Authorization") credentials: String): Deferred<ApiResponse<Auth>>
 
     //@FormUrlEncoded
     @POST("index.php?r=apiMobileSlaughterHouse/upload")
