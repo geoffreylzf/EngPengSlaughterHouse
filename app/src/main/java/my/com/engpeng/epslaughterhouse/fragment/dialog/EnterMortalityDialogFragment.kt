@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_dialog_mortality.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.TempTripMortality
+import my.com.engpeng.epslaughterhouse.model.TempShReceiveMortality
 import my.com.engpeng.epslaughterhouse.util.BT_WT_PREFIX_KG
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import my.com.engpeng.epslaughterhouse.util.requestFocusWithKeyboard
@@ -33,10 +33,10 @@ class EnterMortalityDialogFragment : DialogFragment() {
     }
 
     interface Listener {
-        fun onSubmit(tempTripMortality: TempTripMortality)
+        fun onSubmit(tempShReceiveMortality: TempShReceiveMortality)
     }
 
-    private val temp = TempTripMortality()
+    private val temp = TempShReceiveMortality()
     private lateinit var listener: Listener
 
     private val bt = BluetoothSPP(context)

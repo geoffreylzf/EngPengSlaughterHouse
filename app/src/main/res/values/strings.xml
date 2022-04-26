@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">EpSlaughterHouse</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="trip">Trip</string>
-    <string name="operation">Operation</string>
+    <string name="receive">Receive</string>
+    <string name="hang">Hang</string>
     <string name="company">Company</string>
     <string name="location">Location</string>
     <string name="location_name">Location Name</string>
@@ -101,7 +101,7 @@
 
     <string name="dialog_title_error">Error</string>
     <string name="dialog_title_success">Success</string>
-    <string name="dialog_title_delete_trip">Delete Trip?</string>
+    <string name="dialog_title_delete_receive">Delete Receive?</string>
     <string name="dialog_title_company">Please Select Company</string>
     <string name="dialog_title_bluetooth_device">Please Select Bluetooth Device</string>
     <string name="dialog_title_location">Please Select Location</string>
@@ -120,7 +120,7 @@
     <string name="dialog_error_msg_no_username">Please enter username.</string>
     <string name="dialog_error_msg_no_password">Please enter password.</string>
     <string name="dialog_error_msg_no_detail">Please enter detail.</string>
-    <string name="dialog_confirm_msg_delete_trip">Unable to undo after delete</string>
+    <string name="dialog_confirm_msg_delete_receive">Unable to undo after delete</string>
     <string name="dialog_confirm_msg_logout">Internet connection is required to login.</string>
     <string name="dialog_success_msg_retrieve">Retrieve complete.</string>
     <string name="dialog_success_msg_upload">Upload complete.</string>

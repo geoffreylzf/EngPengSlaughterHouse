@@ -98,7 +98,7 @@ class MenuFragment : Fragment() {
 
     private fun setupListener() {
         btn_trip.setOnClickListener {
-            findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToTripHeadFragment())
+            findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToReceHeadFragment())
         }
 
         btn_oper.setOnClickListener {

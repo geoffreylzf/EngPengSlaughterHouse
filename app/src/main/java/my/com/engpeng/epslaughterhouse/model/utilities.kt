@@ -1,7 +1,7 @@
 package my.com.engpeng.epslaughterhouse.model
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.provider.Settings.Global.getString
 import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 import my.com.engpeng.epslaughterhouse.R
@@ -18,15 +18,15 @@ abstract class BaseEntity {
     abstract val displayName: String
 }
 
-data class TripDetailTtl(
+data class ShReceiveDetailTtl(
         val ttlWeight: Double,
         val ttlCage: Int)
 
-data class TripMortalityTtl(
+data class ShReceiveMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
 
-data class OperationMortalityTtl(
+data class ShHangMortalityTtl(
         val ttlWeight: Double,
         val ttlQty: Int)
 
@@ -39,7 +39,8 @@ data class SlaughterInfo(
         @ColumnInfo(name = "delete_count") var deleteCount: Int?
 )
 
-class TripDisplay(
+@SuppressLint("ParcelCreator")
+class ShReceiveDisplay(
         id: Long?,
         companyId: Long?,
         locationId: Long?,
@@ -58,7 +59,7 @@ class TripDisplay(
         @ColumnInfo(name = "company_name") var companyName: String?,
         @ColumnInfo(name = "location_code") var locationCode: String?,
         @ColumnInfo(name = "location_name") var locationName: String
-) : Trip(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, ttlQty, printCount, isUpload, isDelete, timestamp)
+) : ShReceive(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, ttlQty, printCount, isUpload, isDelete, timestamp)
 
 class ServerUrl {
     companion object {
@@ -77,28 +78,28 @@ class ServerUrl {
 }
 
 data class UploadBody(
-        @SerializedName("unique_id") val uniqueId: String,
-        @SerializedName("trip") val tripList: List<Trip>,
-        @SerializedName("operation") val operationList: List<Operation>
+    @SerializedName("unique_id") val uniqueId: String,
+    @SerializedName("sh_receive") val shReceiveList: List<ShReceive>,
+    @SerializedName("sh_hang") val shHangList: List<ShHang>
 )
 
 data class UploadResult(
-        @SerializedName("trip_id_list") val tripIdList: List<Long>,
-        @SerializedName("operation_id_list") val operationIdList: List<Long>
+    @SerializedName("sh_receive_id_list") val receIdList: List<Long>,
+    @SerializedName("sh_hang_id_list") val hangIdList: List<Long>
 ){
     suspend fun updateStatus(context: Context, appDb: AppDb){
 
-        val successCount: Int = tripIdList.size + operationIdList.size
-        for (id in tripIdList) {
-            val trip = appDb.tripDao().getById(id)
-            trip.isUpload = 1
-            appDb.tripDao().insert(trip)
+        val successCount: Int = receIdList.size + hangIdList.size
+        for (id in receIdList) {
+            val rece = appDb.shReceiveDao().getById(id)
+            rece.isUpload = 1
+            appDb.shReceiveDao().insert(rece)
         }
 
-        for (id in operationIdList) {
-            val oper = appDb.operationDao().getById(id)
-            oper.isUpload = 1
-            appDb.operationDao().insert(oper)
+        for (id in hangIdList) {
+            val hang = appDb.shHangDao().getById(id)
+            hang.isUpload = 1
+            appDb.shHangDao().insert(hang)
         }
 
         appDb.logDao().insert(Log(

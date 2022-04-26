@@ -9,17 +9,17 @@ abstract class UtilDao {
     @Query("""
         SELECT SUM(count)
         FROM
-        (SELECT COUNT(*) as count FROM trips WHERE is_upload = 0
+        (SELECT COUNT(*) as count FROM sh_receives WHERE is_upload = 0
         UNION ALL
-        SELECT COUNT(*) as count FROM operations WHERE is_upload = 0) A
+        SELECT COUNT(*) as count FROM sh_hangs WHERE is_upload = 0) A
         """)
     abstract fun getLiveUnuploadCount(): LiveData<Int>
 
     @Query("""
         SELECT SUM(count)
         FROM
-        (SELECT COUNT(*) as count FROM trips WHERE is_upload = 0
+        (SELECT COUNT(*) as count FROM sh_receives WHERE is_upload = 0
         UNION
-        SELECT COUNT(*) as count FROM operations WHERE is_upload = 0) A""")
+        SELECT COUNT(*) as count FROM sh_hangs WHERE is_upload = 0) A""")
     abstract suspend fun getUnuploadCount(): Int
 }

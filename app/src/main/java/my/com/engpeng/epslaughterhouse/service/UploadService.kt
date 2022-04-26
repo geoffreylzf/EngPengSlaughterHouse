@@ -70,15 +70,15 @@ class UploadService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             delay(200)
             try {
-                val tripList = appDb.tripDao().getAllByUpload(0)
+                val tripList = appDb.shReceiveDao().getAllByUpload(0)
                 for (trip in tripList) {
-                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripId(trip.id!!)
-                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripId(trip.id!!)
+                    trip.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(trip.id!!)
+                    trip.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(trip.id!!)
                 }
 
-                val operList = appDb.operationDao().getAllByUpload(0)
+                val operList = appDb.shHangDao().getAllByUpload(0)
                 for (oper in operList) {
-                    oper.operationMortalityList = appDb.operationMortalityDao().getAllByOperationId(oper.id!!)
+                    oper.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(oper.id!!)
                 }
 
                 apiModule.provideApiService(isLocal)

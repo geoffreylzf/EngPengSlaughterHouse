@@ -13,10 +13,10 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         private const val PRINT_HALF_SEPERATOR = "----------------------"
         private const val LINE_CHAR_COUNT = 45
 
-        private const val TRIP_LIVE_BIRD_HEADER = "  #   Weight  Cage #H "
-        private const val TRIP_DEAD_BIRD_HEADER = "  #   Weight   Qty    "
+        private const val RECE_LIVE_BIRD_HEADER = "  #   Weight  Cage #H "
+        private const val RECE_DEAD_BIRD_HEADER = "  #   Weight   Qty    "
 
-        private const val OPERATION_HEADER = "  #   Weight   Qty    "
+        private const val HANG_HEADER = "  #   Weight   Qty    "
     }
 
     private fun formatLine(line: String): String {
@@ -49,38 +49,38 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         return String.format("%0" + length + "d", house_code)
     }
 
-    private fun formatTripLiveBirdRow(num: String, weight: Double, cage: String, house: String): String {
+    private fun formatReceLiveBirdRow(num: String, weight: Double, cage: String, house: String): String {
         return String.format(" %3s %7.02f  %4s %2s ", num, weight, cage, house)
     }
 
-    private fun formatTripDeadBirdRow(num: String, weight: Double, qty: String): String {
+    private fun formatReceDeadBirdRow(num: String, weight: Double, qty: String): String {
         return String.format(" %3s %7.02f  %4s    ", num, weight, qty)
     }
 
 
-    suspend fun constructTripPrintout(tripId: Long): String {
+    suspend fun constructReceivePrintout(receId: Long): String {
 
-        val tripDp = appDb.tripDao().getDpById(tripId)
-        val detailList = appDb.tripDetailDao().getAllByTripId(tripId)
-        val mortalityList = appDb.tripMortalityDao().getAllByTripId(tripId)
+        val receDp = appDb.shReceiveDao().getDpById(receId)
+        val detailList = appDb.shReceiveDetailDao().getAllByShReceiveId(receId)
+        val mortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(receId)
 
         var s = ""
 
         s += formatLine("")
-        s += formatLine(tripDp.companyName!!)
-        s += formatLine(tripDp.locationName)
-        s += formatLine("Date: ${tripDp.docDate}")
-        s += formatLine("Document: ${tripDp.docType}-${tripDp.docNo}")
-        s += formatLine("Grade: ${tripDp.type}")
-        s += formatLine("Truck Code: ${tripDp.truckCode}")
-        s += formatLine("BTA Code: ${tripDp.catchBtaCode}")
-        s += formatLine("Total Qty: ${tripDp.ttlQty ?: ""}")
+        s += formatLine(receDp.companyName!!)
+        s += formatLine(receDp.locationName)
+        s += formatLine("Date: ${receDp.docDate}")
+        s += formatLine("Document: ${receDp.docType}-${receDp.docNo}")
+        s += formatLine("Grade: ${receDp.type}")
+        s += formatLine("Truck Code: ${receDp.truckCode}")
+        s += formatLine("BTA Code: ${receDp.catchBtaCode}")
+        s += formatLine("Total Qty: ${receDp.ttlQty ?: ""}")
         s += formatLine("")
 
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
         s += formatLine(halfLine("      LIVE BIRD") + "|" + halfLine("      LIVE BIRD"))
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
-        s += formatLine(halfLine(TRIP_LIVE_BIRD_HEADER) + "|" + halfLine(TRIP_LIVE_BIRD_HEADER))
+        s += formatLine(halfLine(RECE_LIVE_BIRD_HEADER) + "|" + halfLine(RECE_LIVE_BIRD_HEADER))
 
 
         val liveRowNum = Math.ceil(detailList.size / 2.00).toInt()
@@ -92,14 +92,14 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < liveRowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatTripLiveBirdRow(num, detail.weight!!, detail.cage.toString(), detail.houseCode.toString()))
+                val leftLine = halfLine(formatReceLiveBirdRow(num, detail.weight!!, detail.cage.toString(), detail.houseNo.toString()))
                 ttlLiveWeight += detail.weight!!
 
                 var rightLine = ""
                 if (i != (liveRowNum - 1) || !isLiveOdd) {
                     val i2 = i + liveRowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatTripLiveBirdRow(num2, detailList[i2].weight!!, detailList[i2].cage.toString(), detail.houseCode.toString()))
+                    rightLine = halfLine(formatReceLiveBirdRow(num2, detailList[i2].weight!!, detailList[i2].cage.toString(), detail.houseNo.toString()))
                     ttlLiveWeight += detailList[i2].weight!!
                 }
                 s += formatLine("$leftLine|$rightLine")
@@ -114,7 +114,7 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
         s += formatLine(halfLine("      DEAD BIRD") + "|" + halfLine("      DEAD BIRD"))
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
-        s += formatLine(halfLine(TRIP_DEAD_BIRD_HEADER) + "|" + halfLine(TRIP_DEAD_BIRD_HEADER))
+        s += formatLine(halfLine(RECE_DEAD_BIRD_HEADER) + "|" + halfLine(RECE_DEAD_BIRD_HEADER))
 
         val deadRowNum = Math.ceil(mortalityList.size / 2.00).toInt()
         val isDeadOdd = (mortalityList.size % 2) == 1
@@ -127,7 +127,7 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < deadRowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatTripDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
+                val leftLine = halfLine(formatReceDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
                 ttlDeadWeight += mortality.weight!!
                 ttlDeadQty += mortality.qty!!
 
@@ -136,7 +136,7 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
                 if (i != (deadRowNum - 1) || !isDeadOdd) {
                     val i2 = i + deadRowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatTripDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
+                    rightLine = halfLine(formatReceDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
                     ttlDeadWeight += mortalityList[i2].weight!!
                     ttlDeadQty += mortalityList[i2].qty!!
                 }
@@ -153,10 +153,10 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         s += formatLine("Time: " + Sdf.formatTime(Calendar.getInstance().time))
 
         s += formatLine("Ver : " + context.packageManager.getPackageInfo(context.packageName, 0).versionName)
-        if (tripDp.isUpload == 1) {
+        if (receDp.isUpload == 1) {
             s += formatLine("Uploaded : Yes")
         }
-        if (tripDp.isDelete == 1) {
+        if (receDp.isDelete == 1) {
             s += formatLine("Deleted  : Yes")
         }
         s += formatLine("-")
@@ -168,22 +168,22 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         return s
     }
 
-    suspend fun constructOperationPrintout(operationId: Long): String {
+    suspend fun constructHangPrintout(hangId: Long): String {
 
-        val operation = appDb.operationDao().getById(operationId)
-        val mortalityList = appDb.operationMortalityDao().getAllByOperationId(operationId)
+        val hang = appDb.shHangDao().getById(hangId)
+        val mortalityList = appDb.shHangMortalityDao().getAllByShHangId(hangId)
 
         var s = ""
 
         s += formatLine("")
-        s += formatLine("SLAUGHTER HOUSE OPERATION MORTALITY")
-        s += formatLine("Document: ${operation.docNo}")
-        s += formatLine("Remark: ${operation.remark}")
-        s += formatLine("ID: ${operation.docId}")
+        s += formatLine("SLAUGHTER HOUSE HANGING MORTALITY")
+        s += formatLine("Document: ${hang.docNo}")
+        s += formatLine("Remark: ${hang.remark}")
+        s += formatLine("ID: ${hang.docId}")
 
         s += formatLine("")
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
-        s += formatLine(halfLine(OPERATION_HEADER) + "|" + halfLine(OPERATION_HEADER))
+        s += formatLine(halfLine(HANG_HEADER) + "|" + halfLine(HANG_HEADER))
 
         val rowNum = Math.ceil(mortalityList.size / 2.00).toInt()
         val isOdd = (mortalityList.size % 2) == 1
@@ -195,7 +195,7 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < rowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatTripDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
+                val leftLine = halfLine(formatReceDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
                 ttlWeight += mortality.weight!!
                 ttlQty += mortality.qty!!
 
@@ -204,7 +204,7 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
                 if (i != (rowNum - 1) || !isOdd) {
                     val i2 = i + rowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatTripDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
+                    rightLine = halfLine(formatReceDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
                     ttlWeight += mortalityList[i2].weight!!
                     ttlQty += mortalityList[i2].qty!!
                 }
@@ -222,10 +222,10 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         s += formatLine("Time: " + Sdf.formatTime(Calendar.getInstance().time))
 
         s += formatLine("Ver : " + context.packageManager.getPackageInfo(context.packageName, 0).versionName)
-        if (operation.isUpload == 1) {
+        if (hang.isUpload == 1) {
             s += formatLine("Uploaded : Yes")
         }
-        if (operation.isDelete == 1) {
+        if (hang.isDelete == 1) {
             s += formatLine("Deleted  : Yes")
         }
         s += formatLine("-")

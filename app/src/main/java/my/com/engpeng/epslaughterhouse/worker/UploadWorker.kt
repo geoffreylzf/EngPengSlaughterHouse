@@ -8,8 +8,8 @@ import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.di.ID
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.di.TABLE_NAME
-import my.com.engpeng.epslaughterhouse.model.Operation
-import my.com.engpeng.epslaughterhouse.model.Trip
+import my.com.engpeng.epslaughterhouse.model.ShHang
+import my.com.engpeng.epslaughterhouse.model.ShReceive
 import my.com.engpeng.epslaughterhouse.model.UploadBody
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -26,30 +26,30 @@ class UploadWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             val tableName = inputData.getString(TABLE_NAME)
             val id = inputData.getLong(ID, 0)
 
-            val tripList = mutableListOf<Trip>()
-            val operList = mutableListOf<Operation>()
+            val tripList = mutableListOf<ShReceive>()
+            val operList = mutableListOf<ShHang>()
 
             when (tableName) {
-                Trip.TABLE_NAME -> {
-                    val trip = appDb.tripDao().getById(id)
+                ShReceive.TABLE_NAME -> {
+                    val trip = appDb.shReceiveDao().getById(id)
 
                     if (trip.isUpload == 1) {
                         return Result.success()
                     }
 
-                    trip.tripDetailList = appDb.tripDetailDao().getAllByTripId(trip.id!!)
-                    trip.tripMortalityList = appDb.tripMortalityDao().getAllByTripId(trip.id!!)
+                    trip.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(trip.id!!)
+                    trip.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(trip.id!!)
 
                     tripList.add(trip)
                 }
-                Operation.TABLE_NAME -> {
-                    val oper = appDb.operationDao().getById(id)
+                ShHang.TABLE_NAME -> {
+                    val oper = appDb.shHangDao().getById(id)
 
                     if (oper.isUpload == 1) {
                         return Result.success()
                     }
 
-                    oper.operationMortalityList = appDb.operationMortalityDao().getAllByOperationId(oper.id!!)
+                    oper.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(oper.id!!)
                     operList.add(oper)
                 }
             }

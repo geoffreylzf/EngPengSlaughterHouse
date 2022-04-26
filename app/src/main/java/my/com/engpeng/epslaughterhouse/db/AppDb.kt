@@ -11,14 +11,14 @@ const val DATABASE_NAME = "engpeng_sh.db"
             Company::class,
             Location::class,
             Doc::class,
-            Trip::class,
-            TripDetail::class,
-            TripMortality::class,
-            TempTripDetail::class,
-            TempTripMortality::class,
-            TempOperationMortality::class,
-            Operation::class,
-            OperationMortality::class,
+            ShReceive::class,
+            ShReceiveDetail::class,
+            ShReceiveMortality::class,
+            TempShReceiveDetail::class,
+            TempShReceiveMortality::class,
+            TempShHangMortality::class,
+            ShHang::class,
+            ShHangMortality::class,
             TableLog::class,
             Log::class],
         version = 1,
@@ -28,14 +28,14 @@ abstract class AppDb : RoomDatabase() {
     abstract fun companyDao(): CompanyDao
     abstract fun locationDao(): LocationDao
     abstract fun docDao(): DocDao
-    abstract fun operationDao(): OperationDao
-    abstract fun operationMortalityDao(): OperationMortalityDao
-    abstract fun tripDao(): TripDao
-    abstract fun tripDetailDao(): TripDetailDao
-    abstract fun tripMortalityDao(): TripMortalityDao
-    abstract fun tempTripDetailDao(): TempTripDetailDao
-    abstract fun tempTripMortalityDao(): TempTripMortalityDao
-    abstract fun tempOperationMortalityDao(): TempOperationMortalityDao
+    abstract fun shHangDao(): ShHangDao
+    abstract fun shHangMortalityDao(): ShHangMortalityDao
+    abstract fun shReceiveDao(): ShReceiveDao
+    abstract fun shReceiveDetailDao(): ShReceiveDetailDao
+    abstract fun shReceiveMortalityDao(): ShReceiveMortalityDao
+    abstract fun tempShReceiveDetailDao(): TempShReceiveDetailDao
+    abstract fun tempShReceiveMortalityDao(): TempShReceiveMortalityDao
+    abstract fun tempShHangMortalityDao(): TempShHangMortalityDao
     abstract fun tableLogDao(): TableLogDao
     abstract fun logDao(): LogDao
     abstract fun utilDao(): UtilDao

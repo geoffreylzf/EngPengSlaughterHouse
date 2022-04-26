@@ -43,8 +43,8 @@
         android:label="Slaughter House Application"
         tools:layout="@layout/fragment_menu">
         <action
-            android:id="@+id/action_menuFragment_to_tripHeadFragment"
-            app:destination="@id/tripHeadFragment"
+            android:id="@+id/action_menuFragment_to_receHeadFragment"
+            app:destination="@id/receHeadFragment"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
@@ -70,7 +70,7 @@
             app:destination="@id/uploadFragment" />
         <action
             android:id="@+id/action_menuFragment_to_procHeadFragment"
-            app:destination="@id/operHeadFragment" />
+            app:destination="@id/hangHeadFragment" />
         <action
             android:id="@+id/action_menuFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
@@ -79,69 +79,69 @@
             app:destination="@id/updateAppVerFragment" />
     </fragment>
     <fragment
-        android:id="@+id/tripHeadFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHeadFragment"
-        android:label="New Trip"
-        tools:layout="@layout/fragment_trip_head">
+        android:id="@+id/receHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHeadFragment"
+        android:label="New Receive"
+        tools:layout="@layout/fragment_rece_head">
         <action
-            android:id="@+id/action_tripHeadFragment_to_tripSumFragment"
-            app:destination="@id/tripSumFragment"
+            android:id="@+id/action_receHeadFragment_to_receSumFragment"
+            app:destination="@id/receSumFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_tripHeadFragment_to_tripHistoryFragment"
-            app:destination="@id/tripHistoryFragment"
+            android:id="@+id/action_receHeadFragment_to_receHistoryFragment"
+            app:destination="@id/receHistoryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/tripSumFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripSumFragment"
-        android:label="Trip Summary"
-        tools:layout="@layout/fragment_trip_sum">
+        android:id="@+id/receSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceSumFragment"
+        android:label="Receive Summary"
+        tools:layout="@layout/fragment_rece_sum">
         <action
-            android:id="@+id/action_tripSumFragment_to_tripDetailFragment"
-            app:destination="@id/tripDetailFragment"
+            android:id="@+id/action_receSumFragment_to_receDetailFragment"
+            app:destination="@id/receDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_tripSumFragment_to_tripConfFragment"
-            app:destination="@id/tripConfFragment"
+            android:id="@+id/action_receSumFragment_to_receConfFragment"
+            app:destination="@id/receConfFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <argument
-            android:name="trip"
-            app:argType="my.com.engpeng.epslaughterhouse.model.Trip"
+            android:name="shReceive"
+            app:argType="my.com.engpeng.epslaughterhouse.model.ShReceive"
             app:nullable="true" />
     </fragment>
     <fragment
-        android:id="@+id/tripDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripDetailFragment"
-        android:label="Trip Detail"
-        tools:layout="@layout/fragment_trip_detail" >
+        android:id="@+id/receDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceDetailFragment"
+        android:label="Receive Detail"
+        tools:layout="@layout/fragment_rece_detail" >
         <argument
             android:name="houseStr"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/tripConfFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripConfFragment"
-        android:label="Trip Confirmation"
-        tools:layout="@layout/fragment_trip_conf">
+        android:id="@+id/receConfFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceConfFragment"
+        android:label="Receive Confirmation"
+        tools:layout="@layout/fragment_rece_conf">
         <argument
-            android:name="trip"
-            app:argType="my.com.engpeng.epslaughterhouse.model.Trip"
+            android:name="shReceive"
+            app:argType="my.com.engpeng.epslaughterhouse.model.ShReceive"
             app:nullable="true" />
         <action
-            android:id="@+id/action_tripConfFragment_to_printPreviewFragment"
+            android:id="@+id/action_receConfFragment_to_printPreviewFragment"
             app:destination="@id/printPreviewFragment"
             app:popUpTo="@+id/menuFragment" />
     </fragment>
@@ -151,28 +151,28 @@
         android:label="House Keeping"
         tools:layout="@layout/fragment_house_keeping" />
     <fragment
-        android:id="@+id/tripHistoryFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHistoryFragment"
-        android:label="Trip History"
-        tools:layout="@layout/fragment_trip_history">
+        android:id="@+id/receHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHistoryFragment"
+        android:label="Receive History"
+        tools:layout="@layout/fragment_rece_history">
         <action
-            android:id="@+id/action_tripHistoryFragment_to_tripHistoryDetailFragment"
-            app:destination="@id/tripHistoryDetailFragment"
+            android:id="@+id/action_receHistoryFragment_to_receHistoryDetailFragment"
+            app:destination="@id/receHistoryDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/tripHistoryDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.TripHistoryDetailFragment"
-        android:label="Trip History Detail"
-        tools:layout="@layout/fragment_trip_history_detail">
+        android:id="@+id/receHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHistoryDetailFragment"
+        android:label="Receive History Detail"
+        tools:layout="@layout/fragment_rece_history_detail">
         <argument
-            android:name="slaughterId"
+            android:name="shReceiveId"
             app:argType="long" />
         <action
-            android:id="@+id/action_tripHistoryDetailFragment_to_printPreviewFragment"
+            android:id="@+id/action_receHistoryDetailFragment_to_printPreviewFragment"
             app:destination="@id/printPreviewFragment" />
     </fragment>
     <fragment
@@ -181,38 +181,38 @@
         android:label="Upload"
         tools:layout="@layout/fragment_upload" />
     <fragment
-        android:id="@+id/operHeadFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHeadFragment"
-        android:label="Operation"
-        tools:layout="@layout/fragment_oper_head" >
+        android:id="@+id/hangHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHeadFragment"
+        android:label="Hang"
+        tools:layout="@layout/fragment_hang_head" >
         <action
-            android:id="@+id/action_operHeadFragment_to_operSumFragment"
-            app:destination="@id/operSumFragment" />
+            android:id="@+id/action_hangHeadFragment_to_hangSumFragment"
+            app:destination="@id/hangSumFragment" />
         <action
-            android:id="@+id/action_operHeadFragment_to_operHistoryFragment"
-            app:destination="@id/operHistoryFragment" />
+            android:id="@+id/action_hangHeadFragment_to_hangHistoryFragment"
+            app:destination="@id/hangHistoryFragment" />
     </fragment>
     <fragment
-        android:id="@+id/operSumFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperSumFragment"
-        android:label="Operation Summary"
-        tools:layout="@layout/fragment_oper_sum" >
+        android:id="@+id/hangSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangSumFragment"
+        android:label="Hang Summary"
+        tools:layout="@layout/fragment_hang_sum" >
         <argument
-            android:name="operation"
-            app:argType="my.com.engpeng.epslaughterhouse.model.Operation" />
+            android:name="shHang"
+            app:argType="my.com.engpeng.epslaughterhouse.model.ShHang" />
         <action
-            android:id="@+id/action_operSumFragment_to_printPreviewFragment"
+            android:id="@+id/action_hangSumFragment_to_printPreviewFragment"
             app:destination="@id/printPreviewFragment"
             app:popUpTo="@+id/menuFragment" />
     </fragment>
     <fragment
-        android:id="@+id/operHistoryFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHistoryFragment"
-        android:label="Operation History"
-        tools:layout="@layout/fragment_oper_history" >
+        android:id="@+id/hangHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHistoryFragment"
+        android:label="Hang History"
+        tools:layout="@layout/fragment_hang_history" >
         <action
-            android:id="@+id/action_operHistoryFragment_to_operHistoryDetailFragment"
-            app:destination="@id/operHistoryDetailFragment" />
+            android:id="@+id/action_hangHistoryFragment_to_hangHistoryDetailFragment"
+            app:destination="@id/hangHistoryDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/printPreviewFragment"
@@ -224,15 +224,15 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/operHistoryDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.OperHistoryDetailFragment"
-        android:label="Operation History Detail"
-        tools:layout="@layout/fragment_oper_history_detail" >
+        android:id="@+id/hangHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHistoryDetailFragment"
+        android:label="Hang History Detail"
+        tools:layout="@layout/fragment_hang_history_detail" >
         <argument
-            android:name="operationId"
+            android:name="hangId"
             app:argType="long" />
         <action
-            android:id="@+id/action_operHistoryDetailFragment_to_printPreviewFragment"
+            android:id="@+id/action_hangHistoryDetailFragment_to_printPreviewFragment"
             app:destination="@id/printPreviewFragment" />
     </fragment>
     <fragment
