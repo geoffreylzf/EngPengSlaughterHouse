@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.list_item_doc_s.view.*
 import kotlinx.android.synthetic.main.merge_menu_doc.*
 import kotlinx.android.synthetic.main.merge_menu_log.*
-import kotlinx.android.synthetic.main.merge_menu_trip.*
+import kotlinx.android.synthetic.main.merge_menu_receive.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,10 +33,6 @@ import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.appVersion
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.io.IOException
-import java.io.PrintWriter
-import java.net.Socket
-import java.net.UnknownHostException
 
 /**
  * A simple [Fragment] subclass.
@@ -85,23 +81,23 @@ class MenuFragment : Fragment() {
             }
         })
 
-        vm.liveTripCount.observe(this, Observer {
-            tv_trip_confirm.text = (it.confirmCount ?: 0).toString()
-            tv_trip_delete.text = (it.deleteCount ?: 0).toString()
+        vm.liveReceCount.observe(this, Observer {
+            tv_rece_confirm.text = (it.confirmCount ?: 0).toString()
+            tv_rece_delete.text = (it.deleteCount ?: 0).toString()
         })
 
-        vm.liveOperCount.observe(this, Observer {
-            tv_oper_confirm.text = (it.confirmCount ?: 0).toString()
-            tv_oper_delete.text = (it.deleteCount ?: 0).toString()
+        vm.liveHangCount.observe(this, Observer {
+            tv_hang_confirm.text = (it.confirmCount ?: 0).toString()
+            tv_hang_delete.text = (it.deleteCount ?: 0).toString()
         })
     }
 
     private fun setupListener() {
-        btn_trip.setOnClickListener {
+        btn_rece.setOnClickListener {
             findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToReceHeadFragment())
         }
 
-        btn_oper.setOnClickListener {
+        btn_hang.setOnClickListener {
             findNavController().navigate(MenuFragmentDirections.actionMenuFragmentToProcHeadFragment())
         }
 

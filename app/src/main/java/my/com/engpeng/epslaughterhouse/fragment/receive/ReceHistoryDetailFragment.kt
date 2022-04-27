@@ -1,4 +1,4 @@
-package my.com.engpeng.epslaughterhouse.fragment.operation
+package my.com.engpeng.epslaughterhouse.fragment.receive
 
 
 import android.os.Bundle
@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_hang_history_detail.*
-import kotlinx.android.synthetic.main.list_item_hang_mortality.view.*
+import kotlinx.android.synthetic.main.fragment_rece_history_detail.*
+import kotlinx.android.synthetic.main.list_item_rece_detail.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,23 +18,24 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
-import my.com.engpeng.epslaughterhouse.model.ShHangMortality
+import my.com.engpeng.epslaughterhouse.fragment.dialog.HistoryMortalityDialogFragment
+import my.com.engpeng.epslaughterhouse.model.ShReceiveDetail
 import my.com.engpeng.epslaughterhouse.di.PrintModule
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 
-class HangHistoryDetailFragment : Fragment() {
+class ReceHistoryDetailFragment : Fragment() {
 
     private val appDb: AppDb by inject()
     private val printModule: PrintModule by inject()
 
-    private var hangId: Long = 0
+    private var receId: Long = 0
     private var menu: Menu? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_hang_history_detail, container, false)
+        return inflater.inflate(R.layout.fragment_rece_history_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,9 +53,10 @@ class HangHistoryDetailFragment : Fragment() {
         return when (item.itemId) {
             R.id.mi_print -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val printText = printModule.constructHangPrintout(hangId)
+                    val printText = printModule.constructReceivePrintout(receId)
+
                     withContext(Dispatchers.Main) {
-                        findNavController().navigate(HangHistoryDetailFragmentDirections.actionHangHistoryDetailFragmentToPrintPreviewFragment(printText))
+                        findNavController().navigate(ReceHistoryDetailFragmentDirections.actionReceHistoryDetailFragmentToPrintPreviewFragment(printText))
                     }
                 }
                 true
@@ -68,34 +70,45 @@ class HangHistoryDetailFragment : Fragment() {
     }
 
     private fun setupView() {
-        hangId = HangHistoryDetailFragmentArgs.fromBundle(arguments!!).hangId
+        receId = ReceHistoryDetailFragmentArgs.fromBundle(arguments!!).shReceiveId
 
         CoroutineScope(Dispatchers.IO).launch {
-            val hang = appDb.shHangDao().getById(hangId)
-
+            val rece = appDb.shReceiveDao().getDpById(receId)
             withContext(Dispatchers.Main) {
-                hang.run {
-                    et_doc_no.setText(docNo)
-                    et_remark.setText(if (remark.isNullOrEmpty()) " " else remark)
-                    tv_doc_id.text = docId.toString()
+                rece.run {
+                    et_company.setText(companyName)
+                    et_location.setText(locationName)
+                    et_doc_date.setText(docDate)
+                    et_doc_no.setText("${docType}-${docNo}")
+                    et_type.setText(type)
+                    et_truck_code.setText(truckCode)
                     if (isUpload == 0 && isDelete == 0) {
                         menu?.findItem(R.id.mi_delete)?.isVisible = true
                     }
                 }
             }
 
-            val morList = appDb.shHangMortalityDao().getAllByShHangId(hangId)
+            val detail = appDb.shReceiveDetailDao().getAllByShReceiveId(receId)
             withContext(Dispatchers.Main) {
-                if (morList.isNotEmpty()) {
+                if (detail.isNotEmpty()) {
                     rv.layoutManager = LinearLayoutManager(context)
-                    rv.adapter = MorAdapter(morList)
+                    rv.adapter = DetailAdapter(detail)
                 }
             }
 
-            val tripTtl = appDb.shHangMortalityDao().getTtlByShHangId(hangId)
+            val receTtl = appDb.shReceiveDetailDao().getTtlByShReceiveId(receId)
             withContext(Dispatchers.Main) {
-                tv_ttl_weight.text = tripTtl.ttlWeight.format2Decimal()
-                tv_ttl_qty.text = tripTtl.ttlQty.toString()
+                tv_ttl_weight.text = receTtl.ttlWeight.format2Decimal()
+                tv_ttl_cage.text = receTtl.ttlCage.toString()
+            }
+        }
+
+        btn_mortality.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val mortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(receId)
+                withContext(Dispatchers.Main) {
+                    HistoryMortalityDialogFragment.show(fragmentManager!!, mortalityList)
+                }
             }
         }
     }
@@ -108,8 +121,8 @@ class HangHistoryDetailFragment : Fragment() {
             override fun onPositiveButtonClicked() {
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    val hang = appDb.shHangDao().getById(hangId)
-                    appDb.shHangDao().insert(hang.apply { isDelete = 1 })
+                    val rece = appDb.shReceiveDao().getById(receId)
+                    appDb.shReceiveDao().insert(rece.apply { isDelete = 1 })
                     withContext(Dispatchers.Main) {
                         AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
                     }
@@ -121,25 +134,22 @@ class HangHistoryDetailFragment : Fragment() {
     }
 }
 
-class MorAdapter(private val morList: List<ShHangMortality>)
-    : RecyclerView.Adapter<MorAdapter.MorViewHolder>() {
+class DetailAdapter(private val detailList: List<ShReceiveDetail>)
+    : RecyclerView.Adapter<DetailAdapter.DetailViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MorViewHolder {
-        return MorViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
+        return DetailViewHolder(
                 LayoutInflater.from(parent.context)
-                        .inflate(R.layout.list_item_hang_mortality, parent, false))
+                        .inflate(R.layout.list_item_rece_detail, parent, false))
     }
 
-    override fun getItemCount(): Int {
-        return morList.size
-    }
-
-    override fun onBindViewHolder(holder: MorViewHolder, position: Int) {
-        morList[position].let { mor ->
+    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
+        detailList[position].let { detail ->
             holder.itemView.run {
                 li_tv_no.text = (itemCount - position).toString()
-                li_tv_weight.text = mor.weight.format2Decimal()
-                li_tv_qty.text = mor.qty.toString()
+                li_tv_house_code.text = detail.houseNo.toString()
+                li_tv_weight.text = detail.weight.format2Decimal()
+                li_tv_cage.text = detail.cage.toString()
 
                 if ((itemCount - position) % 2 == 0) {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryXLight))
@@ -150,5 +160,9 @@ class MorAdapter(private val morList: List<ShHangMortality>)
         }
     }
 
-    class MorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    override fun getItemCount(): Int {
+        return detailList.size
+    }
+
+    class DetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

@@ -80,7 +80,7 @@
     </fragment>
     <fragment
         android:id="@+id/receHeadFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceHeadFragment"
         android:label="New Receive"
         tools:layout="@layout/fragment_rece_head">
         <action
@@ -100,7 +100,7 @@
     </fragment>
     <fragment
         android:id="@+id/receSumFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceSumFragment"
         android:label="Receive Summary"
         tools:layout="@layout/fragment_rece_sum">
         <action
@@ -124,7 +124,7 @@
     </fragment>
     <fragment
         android:id="@+id/receDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceDetailFragment"
         android:label="Receive Detail"
         tools:layout="@layout/fragment_rece_detail" >
         <argument
@@ -133,7 +133,7 @@
     </fragment>
     <fragment
         android:id="@+id/receConfFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceConfFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceConfFragment"
         android:label="Receive Confirmation"
         tools:layout="@layout/fragment_rece_conf">
         <argument
@@ -152,7 +152,7 @@
         tools:layout="@layout/fragment_house_keeping" />
     <fragment
         android:id="@+id/receHistoryFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceHistoryFragment"
         android:label="Receive History"
         tools:layout="@layout/fragment_rece_history">
         <action
@@ -165,7 +165,7 @@
     </fragment>
     <fragment
         android:id="@+id/receHistoryDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.trip.ReceHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.receive.ReceHistoryDetailFragment"
         android:label="Receive History Detail"
         tools:layout="@layout/fragment_rece_history_detail">
         <argument
@@ -182,7 +182,7 @@
         tools:layout="@layout/fragment_upload" />
     <fragment
         android:id="@+id/hangHeadFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHeadFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.hang.HangHeadFragment"
         android:label="Hang"
         tools:layout="@layout/fragment_hang_head" >
         <action
@@ -194,7 +194,7 @@
     </fragment>
     <fragment
         android:id="@+id/hangSumFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangSumFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.hang.HangSumFragment"
         android:label="Hang Summary"
         tools:layout="@layout/fragment_hang_sum" >
         <argument
@@ -207,7 +207,7 @@
     </fragment>
     <fragment
         android:id="@+id/hangHistoryFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHistoryFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.hang.HangHistoryFragment"
         android:label="Hang History"
         tools:layout="@layout/fragment_hang_history" >
         <action
@@ -225,7 +225,7 @@
     </fragment>
     <fragment
         android:id="@+id/hangHistoryDetailFragment"
-        android:name="my.com.engpeng.epslaughterhouse.fragment.operation.HangHistoryDetailFragment"
+        android:name="my.com.engpeng.epslaughterhouse.fragment.hang.HangHistoryDetailFragment"
         android:label="Hang History Detail"
         tools:layout="@layout/fragment_hang_history_detail" >
         <argument

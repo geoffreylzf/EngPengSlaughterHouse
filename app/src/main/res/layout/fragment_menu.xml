@@ -44,7 +44,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_trip"
+        android:id="@+id/cv_rece"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -54,7 +54,7 @@
         app:layout_constraintStart_toEndOf="@id/gl_50"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/merge_menu_trip" />
+        <include layout="@layout/merge_menu_receive" />
 
     </com.google.android.material.card.MaterialCardView>
 

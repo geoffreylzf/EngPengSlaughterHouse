@@ -10,8 +10,8 @@ class MenuViewModel(appDb: AppDb)
 
     val liveUnuploadCount = appDb.utilDao().getLiveUnuploadCount()
     val liveLastUploadLog = appDb.logDao().getLiveLastLogByTask(LOG_TASK_UPLOAD)
-    val liveTripCount = appDb.shReceiveDao().getLiveCountByDate(Sdf.getCurrentDate())
-    val liveOperCount = appDb.shHangDao().getLiveCountByDate(Sdf.getCurrentDate())
+    val liveReceCount = appDb.shReceiveDao().getLiveCountByDate(Sdf.getCurrentDate())
+    val liveHangCount = appDb.shHangDao().getLiveCountByDate(Sdf.getCurrentDate())
     val liveDocList = appDb.docDao().getLiveAll()
 
 }

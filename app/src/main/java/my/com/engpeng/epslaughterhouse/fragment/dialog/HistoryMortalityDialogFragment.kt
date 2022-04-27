@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_dialog_history_mortality.*
-import kotlinx.android.synthetic.main.list_item_trip_mortality.view.*
+import kotlinx.android.synthetic.main.list_item_rece_mortality.view.*
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.model.ShReceiveMortality
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
@@ -53,7 +53,7 @@ class HistoryMortalityDialogAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MortalityViewHolder {
         return MortalityViewHolder(
                 LayoutInflater.from(parent.context)
-                        .inflate(R.layout.list_item_trip_mortality, parent, false))
+                        .inflate(R.layout.list_item_rece_mortality, parent, false))
     }
 
     override fun onBindViewHolder(holder: MortalityViewHolder, position: Int) {

@@ -70,19 +70,19 @@ class UploadService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             delay(200)
             try {
-                val tripList = appDb.shReceiveDao().getAllByUpload(0)
-                for (trip in tripList) {
-                    trip.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(trip.id!!)
-                    trip.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(trip.id!!)
+                val receList = appDb.shReceiveDao().getAllByUpload(0)
+                for (rece in receList) {
+                    rece.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(rece.id!!)
+                    rece.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(rece.id!!)
                 }
 
-                val operList = appDb.shHangDao().getAllByUpload(0)
-                for (oper in operList) {
-                    oper.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(oper.id!!)
+                val hangList = appDb.shHangDao().getAllByUpload(0)
+                for (hang in hangList) {
+                    hang.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(hang.id!!)
                 }
 
                 apiModule.provideApiService(isLocal)
-                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), tripList, operList))
+                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), receList, hangList))
                         .await()
                         .result
                         .updateStatus(this@UploadService, appDb)

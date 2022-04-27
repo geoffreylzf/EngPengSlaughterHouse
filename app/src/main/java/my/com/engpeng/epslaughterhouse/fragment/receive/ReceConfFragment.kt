@@ -1,5 +1,4 @@
-package my.com.engpeng.epslaughterhouse.fragment.trip
-
+package my.com.engpeng.epslaughterhouse.fragment.receive
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,34 +10,45 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_rece_sum.*
+import kotlinx.android.synthetic.main.fragment_rece_conf.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.R
-import my.com.engpeng.epslaughterhouse.adapter.TempShReceiveDetailAdapter
+import my.com.engpeng.epslaughterhouse.adapter.TempSlaughterMortalityAdapter
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.PrintModule
+import my.com.engpeng.epslaughterhouse.di.WorkManagerModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
+import my.com.engpeng.epslaughterhouse.fragment.dialog.EnterMortalityDialogFragment
+import my.com.engpeng.epslaughterhouse.model.TempShReceiveMortality
 import my.com.engpeng.epslaughterhouse.model.ShReceive
+import my.com.engpeng.epslaughterhouse.model.ShReceiveDetail
+import my.com.engpeng.epslaughterhouse.model.ShReceiveMortality
 import my.com.engpeng.epslaughterhouse.util.Sdf
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 
-class ReceSumFragment : Fragment() {
+
+class ReceConfFragment : Fragment() {
 
     private val appDb: AppDb by inject()
+    private val printModule: PrintModule by inject()
+    private val wm: WorkManagerModule by inject()
 
     private lateinit var shReceive: ShReceive
-    private var rvAdapter = TempShReceiveDetailAdapter(false)
+    private var rvAdapter = TempSlaughterMortalityAdapter()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_rece_sum, container, false)
+
+        return inflater.inflate(R.layout.fragment_rece_conf, container, false)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,7 +57,7 @@ class ReceSumFragment : Fragment() {
     }
 
     private fun setupView() {
-        shReceive = ReceSumFragmentArgs.fromBundle(arguments!!).shReceive!!
+        shReceive = ReceConfFragmentArgs.fromBundle(arguments!!).shReceive!!
 
         shReceive.run {
             et_doc_date.setText(Sdf.formatDisplayFromSave(docDate!!))
@@ -65,6 +75,12 @@ class ReceSumFragment : Fragment() {
                 }
             }
         }
+
+        appDb.tempShReceiveDetailDao().getLiveTotal().observe(this,
+                Observer {
+                    et_ttl_weight.setText(it.ttlWeight.format2Decimal() + "Kg")
+                    et_ttl_cage.setText(it.ttlCage.toString())
+                })
 
         rv.run {
             layoutManager = LinearLayoutManager(context)
@@ -96,11 +112,9 @@ class ReceSumFragment : Fragment() {
                         "Weight: ${weight.format2Decimal()}Kg",
                         "DELETE", object : ConfirmDialogFragment.Listener {
                     override fun onPositiveButtonClicked() {
-
                         CoroutineScope(Dispatchers.IO).launch {
-                            appDb.tempShReceiveDetailDao().deleteById(tempId)
+                            appDb.tempShReceiveMortalityDao().deleteById(tempId)
                         }
-
                     }
 
                     override fun onNegativeButtonClicked() {
@@ -110,36 +124,75 @@ class ReceSumFragment : Fragment() {
             }
         }).attachToRecyclerView(rv)
 
-        fab_add.setOnClickListener{
-            findNavController().navigate(ReceSumFragmentDirections.actionReceSumFragmentToReceDetailFragment(shReceive.houseStr))
+        fab_add.setOnClickListener {
+            showMortalityDialog()
         }
 
-        btn_next.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val count = appDb.tempShReceiveDetailDao().getCount()
-                withContext(Dispatchers.Main) {
-                    if (count != 0) {
-                        findNavController().navigate(ReceSumFragmentDirections.actionReceSumFragmentToReceConfFragment(shReceive))
-                    } else {
-                        AlertDialogFragment.show(fragmentManager!!,
-                                getString(R.string.dialog_title_error),
-                                getString(R.string.dialog_error_msg_no_detail))
-                    }
+        btn_save.setOnClickListener {
+            ConfirmDialogFragment.show(fragmentManager!!,
+                    "Confirm this receive ?",
+                    "Edit is not allowed after save",
+                    "Confirm", object : ConfirmDialogFragment.Listener {
+                override fun onPositiveButtonClicked() {
+                    save()
                 }
-            }
+
+                override fun onNegativeButtonClicked() {}
+            })
         }
     }
 
     private fun setupRv() {
-        appDb.tempShReceiveDetailDao().getLiveAll().observe(this,
+        appDb.tempShReceiveMortalityDao().getLiveAll().observe(this,
                 Observer {
                     rvAdapter.setList(it)
                 })
 
-        appDb.tempShReceiveDetailDao().getLiveTotal().observe(this,
+        appDb.tempShReceiveMortalityDao().getLiveTotal().observe(this,
                 Observer {
                     tv_ttl_weight.text = it.ttlWeight.format2Decimal()
-                    tv_ttl_cage.text = it.ttlCage.toString()
+                    tv_ttl_qty.text = it.ttlQty.toString()
                 })
+    }
+
+    private fun showMortalityDialog() {
+        EnterMortalityDialogFragment
+                .show(fragmentManager!!, object : EnterMortalityDialogFragment.Listener {
+                    override fun onSubmit(tempShReceiveMortality: TempShReceiveMortality) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            appDb.tempShReceiveMortalityDao().insert(tempShReceiveMortality)
+                        }
+                    }
+                })
+    }
+
+    private fun save() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+
+                val recId = appDb.shReceiveDao().insert(shReceive)
+
+                val tempDetailList = appDb.tempShReceiveDetailDao().getAll()
+                val detailList = ShReceiveDetail.transformFromTempWithShReceiveId(recId, tempDetailList)
+                appDb.shReceiveDetailDao().insert(detailList)
+
+                val tempMortalityList = appDb.tempShReceiveMortalityDao().getAll()
+                val mortalityList = ShReceiveMortality.transformFromTempWithShReceiveId(recId, tempMortalityList)
+                appDb.shReceiveMortalityDao().insert(mortalityList)
+
+                appDb.tempShReceiveDetailDao().deleteAll()
+                appDb.tempShReceiveMortalityDao().deleteAll()
+
+                val printText = printModule.constructReceivePrintout(recId)
+
+                withContext(Dispatchers.Main) {
+                    wm.enqueueUpload(ShReceive.TABLE_NAME, recId)
+                    findNavController().navigate(ReceConfFragmentDirections.actionReceConfFragmentToPrintPreviewFragment(printText))
+                }
+
+            } catch (e: Exception) {
+                AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.error_desc, e.message))
+            }
+        }
     }
 }

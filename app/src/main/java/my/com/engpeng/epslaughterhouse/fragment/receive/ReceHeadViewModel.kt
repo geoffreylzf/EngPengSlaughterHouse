@@ -1,4 +1,4 @@
-package my.com.engpeng.epslaughterhouse.fragment.trip
+package my.com.engpeng.epslaughterhouse.fragment.receive
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

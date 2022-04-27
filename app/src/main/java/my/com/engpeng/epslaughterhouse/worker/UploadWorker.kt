@@ -26,36 +26,36 @@ class UploadWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             val tableName = inputData.getString(TABLE_NAME)
             val id = inputData.getLong(ID, 0)
 
-            val tripList = mutableListOf<ShReceive>()
-            val operList = mutableListOf<ShHang>()
+            val receList = mutableListOf<ShReceive>()
+            val hangList = mutableListOf<ShHang>()
 
             when (tableName) {
                 ShReceive.TABLE_NAME -> {
-                    val trip = appDb.shReceiveDao().getById(id)
+                    val rece = appDb.shReceiveDao().getById(id)
 
-                    if (trip.isUpload == 1) {
+                    if (rece.isUpload == 1) {
                         return Result.success()
                     }
 
-                    trip.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(trip.id!!)
-                    trip.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(trip.id!!)
+                    rece.shReceiveDetailList = appDb.shReceiveDetailDao().getAllByShReceiveId(rece.id!!)
+                    rece.shReceiveMortalityList = appDb.shReceiveMortalityDao().getAllByShReceiveId(rece.id!!)
 
-                    tripList.add(trip)
+                    receList.add(rece)
                 }
                 ShHang.TABLE_NAME -> {
-                    val oper = appDb.shHangDao().getById(id)
+                    val hang = appDb.shHangDao().getById(id)
 
-                    if (oper.isUpload == 1) {
+                    if (hang.isUpload == 1) {
                         return Result.success()
                     }
 
-                    oper.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(oper.id!!)
-                    operList.add(oper)
+                    hang.shHangMortalityList = appDb.shHangMortalityDao().getAllByShHangId(hang.id!!)
+                    hangList.add(hang)
                 }
             }
 
             apiModule.provideApiService(spm.getIsLocal())
-                    .uploadAsync(UploadBody(spm.getUniqueId(), tripList, operList))
+                    .uploadAsync(UploadBody(spm.getUniqueId(), receList, hangList))
                     .await()
                     .result
                     .updateStatus(context, appDb)

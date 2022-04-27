@@ -15,22 +15,22 @@
             android:text="@string/slaughter_today"
             android:textColor="@color/colorListItemSecondaryText"
             android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/iv_trip"
+            app:layout_constraintBottom_toTopOf="@+id/iv_rece"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/iv_trip"
+            android:id="@+id/iv_rece"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_local_shipping_24px"
-            app:layout_constraintBottom_toTopOf="@+id/iv_trip_confirm"
+            app:layout_constraintBottom_toTopOf="@+id/iv_rece_confirm"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_slaughter" />
 
         <TextView
-            android:id="@+id/tv_trip"
+            android:id="@+id/tv_rece"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -39,22 +39,22 @@
             android:text="@string/receive"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_trip"
-            app:layout_constraintStart_toEndOf="@id/iv_trip"
-            app:layout_constraintTop_toTopOf="@id/iv_trip" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_rece"
+            app:layout_constraintStart_toEndOf="@id/iv_rece"
+            app:layout_constraintTop_toTopOf="@id/iv_rece" />
 
         <ImageView
-            android:id="@+id/iv_trip_confirm"
+            android:id="@+id/iv_rece_confirm"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_done_24px"
-            app:layout_constraintBottom_toTopOf="@+id/iv_trip_delete"
+            app:layout_constraintBottom_toTopOf="@+id/iv_rece_delete"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_trip" />
+            app:layout_constraintTop_toBottomOf="@id/iv_rece" />
 
         <TextView
-            android:id="@+id/tv_trip_confirm"
+            android:id="@+id/tv_rece_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -62,22 +62,22 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_trip_confirm"
-            app:layout_constraintStart_toEndOf="@id/iv_trip_confirm"
-            app:layout_constraintTop_toTopOf="@id/iv_trip_confirm" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_rece_confirm"
+            app:layout_constraintStart_toEndOf="@id/iv_rece_confirm"
+            app:layout_constraintTop_toTopOf="@id/iv_rece_confirm" />
 
         <ImageView
-            android:id="@+id/iv_trip_delete"
+            android:id="@+id/iv_rece_delete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_close_24px"
-            app:layout_constraintBottom_toTopOf="@+id/btn_trip"
+            app:layout_constraintBottom_toTopOf="@+id/btn_rece"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_trip_confirm" />
+            app:layout_constraintTop_toBottomOf="@id/iv_rece_confirm" />
 
         <TextView
-            android:id="@+id/tv_trip_delete"
+            android:id="@+id/tv_rece_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -85,33 +85,33 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_trip_delete"
-            app:layout_constraintStart_toEndOf="@id/iv_trip_delete"
-            app:layout_constraintTop_toTopOf="@id/iv_trip_delete" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_rece_delete"
+            app:layout_constraintStart_toEndOf="@id/iv_rece_delete"
+            app:layout_constraintTop_toTopOf="@id/iv_rece_delete" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_trip"
+            android:id="@+id/btn_rece"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/receive"
-            app:layout_constraintBottom_toTopOf="@+id/iv_oper"
+            app:layout_constraintBottom_toTopOf="@+id/iv_hang"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_trip_delete" />
+            app:layout_constraintTop_toBottomOf="@id/iv_rece_delete" />
 
         <ImageView
-            android:id="@+id/iv_oper"
+            android:id="@+id/iv_hang"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_restaurant_24px"
-            app:layout_constraintBottom_toTopOf="@id/btn_oper"
+            app:layout_constraintBottom_toTopOf="@id/btn_hang"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_trip" />
+            app:layout_constraintTop_toBottomOf="@id/btn_rece" />
 
         <TextView
-            android:id="@+id/tv_oper"
+            android:id="@+id/tv_hang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -120,22 +120,22 @@
             android:text="@string/hang"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_oper"
-            app:layout_constraintStart_toEndOf="@id/iv_oper"
-            app:layout_constraintTop_toTopOf="@id/iv_oper" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_hang"
+            app:layout_constraintStart_toEndOf="@id/iv_hang"
+            app:layout_constraintTop_toTopOf="@id/iv_hang" />
 
         <ImageView
-            android:id="@+id/iv_oper_confirm"
+            android:id="@+id/iv_hang_confirm"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_done_24px"
-            app:layout_constraintBottom_toTopOf="@+id/iv_oper_delete"
+            app:layout_constraintBottom_toTopOf="@+id/iv_hang_delete"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_oper" />
+            app:layout_constraintTop_toBottomOf="@id/iv_hang" />
 
         <TextView
-            android:id="@+id/tv_oper_confirm"
+            android:id="@+id/tv_hang_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -143,22 +143,22 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_oper_confirm"
-            app:layout_constraintStart_toEndOf="@id/iv_oper_confirm"
-            app:layout_constraintTop_toTopOf="@id/iv_oper_confirm" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_hang_confirm"
+            app:layout_constraintStart_toEndOf="@id/iv_hang_confirm"
+            app:layout_constraintTop_toTopOf="@id/iv_hang_confirm" />
 
         <ImageView
-            android:id="@+id/iv_oper_delete"
+            android:id="@+id/iv_hang_delete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_baseline_close_24px"
-            app:layout_constraintBottom_toTopOf="@+id/btn_oper"
+            app:layout_constraintBottom_toTopOf="@+id/btn_hang"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_oper_confirm" />
+            app:layout_constraintTop_toBottomOf="@id/tv_hang_confirm" />
 
         <TextView
-            android:id="@+id/tv_oper_delete"
+            android:id="@+id/tv_hang_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -166,12 +166,12 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/colorListItemPrimaryText"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_oper_delete"
-            app:layout_constraintStart_toEndOf="@id/iv_oper_delete"
-            app:layout_constraintTop_toTopOf="@id/iv_oper_delete" />
+            app:layout_constraintBottom_toBottomOf="@id/iv_hang_delete"
+            app:layout_constraintStart_toEndOf="@id/iv_hang_delete"
+            app:layout_constraintTop_toTopOf="@id/iv_hang_delete" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_oper"
+            android:id="@+id/btn_hang"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -179,7 +179,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_oper" />
+            app:layout_constraintTop_toBottomOf="@id/iv_hang" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
