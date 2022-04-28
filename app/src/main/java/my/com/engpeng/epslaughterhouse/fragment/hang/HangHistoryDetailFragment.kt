@@ -20,6 +20,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.model.ShHangMortality
 import my.com.engpeng.epslaughterhouse.di.PrintModule
+import my.com.engpeng.epslaughterhouse.model.PrintData
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 
@@ -31,8 +32,10 @@ class HangHistoryDetailFragment : Fragment() {
     private var hangId: Long = 0
     private var menu: Menu? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_hang_history_detail, container, false)
     }
@@ -54,7 +57,11 @@ class HangHistoryDetailFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     val printText = printModule.constructHangPrintout(hangId)
                     withContext(Dispatchers.Main) {
-                        findNavController().navigate(HangHistoryDetailFragmentDirections.actionHangHistoryDetailFragmentToPrintPreviewFragment(printText))
+                        findNavController().navigate(
+                            HangHistoryDetailFragmentDirections.actionHangHistoryDetailFragmentToPrintPreviewFragment(
+                                PrintData(printText = printText)
+                            )
+                        )
                     }
                 }
                 true
@@ -102,32 +109,37 @@ class HangHistoryDetailFragment : Fragment() {
 
     private fun delete() {
         ConfirmDialogFragment.show(fragmentManager!!,
-                getString(R.string.dialog_title_delete_receive),
-                getString(R.string.dialog_confirm_msg_delete_receive),
-                getString(R.string.delete), object : ConfirmDialogFragment.Listener {
-            override fun onPositiveButtonClicked() {
+            getString(R.string.dialog_title_delete_receive),
+            getString(R.string.dialog_confirm_msg_delete_receive),
+            getString(R.string.delete), object : ConfirmDialogFragment.Listener {
+                override fun onPositiveButtonClicked() {
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val hang = appDb.shHangDao().getById(hangId)
-                    appDb.shHangDao().insert(hang.apply { isDelete = 1 })
-                    withContext(Dispatchers.Main) {
-                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val hang = appDb.shHangDao().getById(hangId)
+                        appDb.shHangDao().insert(hang.apply { isDelete = 1 })
+                        withContext(Dispatchers.Main) {
+                            AlertDialogFragment.show(
+                                fragmentManager!!,
+                                getString(R.string.success),
+                                getString(R.string.dialog_success_delete)
+                            )
+                        }
                     }
                 }
-            }
 
-            override fun onNegativeButtonClicked() {}
-        })
+                override fun onNegativeButtonClicked() {}
+            })
     }
 }
 
-class MorAdapter(private val morList: List<ShHangMortality>)
-    : RecyclerView.Adapter<MorAdapter.MorViewHolder>() {
+class MorAdapter(private val morList: List<ShHangMortality>) :
+    RecyclerView.Adapter<MorAdapter.MorViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MorViewHolder {
         return MorViewHolder(
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.list_item_hang_mortality, parent, false))
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_item_hang_mortality, parent, false)
+        )
     }
 
     override fun getItemCount(): Int {

@@ -25,14 +25,12 @@ class TempShReceiveDetailAdapter(private val isShort: Boolean)
         tempList!![position].let { temp ->
             holder.itemView.run {
                 li_tv_no.text = (itemCount - position).toString()
-                li_tv_house_code.text = temp.houseNo.toString()
                 li_tv_weight.text = temp.weight.format2Decimal()
                 li_tv_cage.text = temp.cage.toString()
                 tag = Pair(temp.id, temp.weight)
 
-                if (isShort) {
-                    li_tv_cage.visibility = View.GONE
-                }
+                li_tv_house_code.text = temp.houseNo.toString()
+                li_tv_house_code.visibility = View.GONE
 
                 if ((itemCount - position) % 2 == 0) {
                     setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryXLight))

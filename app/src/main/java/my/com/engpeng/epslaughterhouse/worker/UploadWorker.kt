@@ -55,7 +55,7 @@ class UploadWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             }
 
             apiModule.provideApiService(spm.getIsLocal())
-                    .uploadAsync(UploadBody(spm.getUniqueId(), receList, hangList))
+                    .uploadAsync(UploadBody(receList, hangList))
                     .await()
                     .result
                     .updateStatus(context, appDb)

@@ -220,8 +220,8 @@
         android:label="Print Preview"
         tools:layout="@layout/fragment_print_preview" >
         <argument
-            android:name="printText"
-            app:argType="string" />
+            android:name="printData"
+            app:argType="my.com.engpeng.epslaughterhouse.model.PrintData" />
     </fragment>
     <fragment
         android:id="@+id/hangHistoryDetailFragment"

@@ -31,7 +31,9 @@ class ReceDetailFragment : Fragment() {
     private val appDb: AppDb by inject()
     private val sharedPreferencesModule: SharedPreferencesModule by inject()
     private lateinit var houseStr: String
-    private val rbIdHouseMap = mutableMapOf<Int, Int>()
+
+    //Comment out because no need enter house no
+    //private val rbIdHouseMap = mutableMapOf<Int, Int>()
 
     private val tempReceDetail = TempShReceiveDetail()
     private val rvAdapter = TempShReceiveDetailAdapter(true)
@@ -61,6 +63,12 @@ class ReceDetailFragment : Fragment() {
     }
 
     private fun setupRb() {
+        til_house_code.visibility = View.GONE
+        tv_house_code.visibility = View.GONE
+        rg_house_code.visibility = View.GONE
+
+        /*
+        Comment out because no need enter house no
         if (houseStr.isNotEmpty()) {
             til_house_code.visibility = View.GONE
             val houseList = houseStr.split(",").map { it.toInt() }
@@ -75,7 +83,7 @@ class ReceDetailFragment : Fragment() {
         } else {
             tv_house_code.visibility = View.GONE
             rg_house_code.visibility = View.GONE
-        }
+        }*/
     }
 
     private fun setupView() {
@@ -185,12 +193,15 @@ class ReceDetailFragment : Fragment() {
         tempReceDetail.run {
             weight = et_weight.text.toString().toDoubleOrNull()
             cage = et_cage.text.toString().toIntOrNull()
-
+            houseNo = 0
+            /*
+            Comment out because no need enter house no
             houseNo = if (houseStr.isNotEmpty()) {
                 rbIdHouseMap[rg_house_code.checkedRadioButtonId]
             } else {
                 et_house_code.text.toString().toIntOrNull()
             }
+            */
         }
 
         var message = ""
@@ -204,6 +215,8 @@ class ReceDetailFragment : Fragment() {
                 et_cage.requestFocus()
                 return@check
             }
+            /*
+            Comment out because no need enter house no
             if (houseNo == null || houseNo!! <= 0) {
                 message = if (houseStr.isEmpty()) {
                     et_house_code.requestFocus()
@@ -212,7 +225,7 @@ class ReceDetailFragment : Fragment() {
                     "Please select house code"
                 }
                 return@check
-            }
+            }*/
         }
 
         if (message.isNotEmpty()) {

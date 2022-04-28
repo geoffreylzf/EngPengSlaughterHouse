@@ -23,31 +23,37 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
             var request = chain.request()
             if (request.header("No-Authentication") == null) {
                 request = request.newBuilder()
-                        .header("Authorization", sharedPreferencesModule.getUser().credentials)
-                        .build()
+                    .header("Authorization", sharedPreferencesModule.getUser().credentials)
+                    .build()
             }
             chain.proceed(request)
-        }
-                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-                .build()
-
-
+        }.addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }).build()
 
         apiLocalService = Retrofit.Builder()
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
-                .baseUrl(ServerUrl.getLocal())
-                .client(client)
-                .build()
-                .create(ApiService::class.java)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().serializeNulls().create()
+                )
+            )
+            .baseUrl(ServerUrl.getLocal())
+            .client(client)
+            .build()
+            .create(ApiService::class.java)
 
         apiGlobalService = Retrofit.Builder()
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
-                .baseUrl(ServerUrl.getGlobal())
-                .client(client)
-                .build()
-                .create(ApiService::class.java)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().serializeNulls().create()
+                )
+            )
+            .baseUrl(ServerUrl.getGlobal())
+            .client(client)
+            .build()
+            .create(ApiService::class.java)
     }
 
     fun provideApiService(isLocal: Boolean): ApiService {
@@ -56,5 +62,4 @@ class ApiModule(private val sharedPreferencesModule: SharedPreferencesModule) {
             false -> apiGlobalService
         }
     }
-
 }

@@ -12,28 +12,32 @@ import my.com.engpeng.epslaughterhouse.util.Sdf
 
 @Parcelize
 @Entity(tableName = ShHang.TABLE_NAME)
-open class ShHang(@PrimaryKey(autoGenerate = true) var id: Long?,
-                  @SerializedName("doc_id") @ColumnInfo(name = "doc_id") var docId: Long?,
-                  @SerializedName("doc_no") @ColumnInfo(name = "doc_no") var docNo: String?,
-                  var remark: String?,
-                  @SerializedName("is_upload") @ColumnInfo(name = "is_upload") var isUpload: Int?,
-                  @SerializedName("is_delete") @ColumnInfo(name = "is_delete") var isDelete: Int?,
-                  var timestamp: String?
+open class ShHang(
+    @PrimaryKey(autoGenerate = true) var id: Long?,
+    @SerializedName("sh_receive_uuid") @ColumnInfo(name = "sh_receive_uuid") var shReceiveUuid: String?,
+    @SerializedName("doc_id") @ColumnInfo(name = "doc_id") var docId: Long?,
+    @SerializedName("doc_no") @ColumnInfo(name = "doc_no") var docNo: String?,
+    var remark: String?,
+    @SerializedName("is_upload") @ColumnInfo(name = "is_upload") var isUpload: Int?,
+    @SerializedName("is_delete") @ColumnInfo(name = "is_delete") var isDelete: Int?,
+    var timestamp: String?
 ) : BaseEntity(), Parcelable {
 
-    @SerializedName("sh_hang_mortality_list")
+    @SerializedName("mortalities")
     @Ignore
     @IgnoredOnParcel
     var shHangMortalityList: List<ShHangMortality>? = null
 
     constructor() : this(
-            null,
-            null,
-            "",
-            "",
-            0,
-            0,
-            Sdf.getCurrentDateTime())
+        null,
+        null,
+        null,
+        "",
+        "",
+        0,
+        0,
+        Sdf.getCurrentDateTime()
+    )
 
     companion object {
         const val TABLE_NAME = "sh_hangs"

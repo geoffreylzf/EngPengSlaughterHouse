@@ -82,7 +82,7 @@ class UploadService : Service() {
                 }
 
                 apiModule.provideApiService(isLocal)
-                        .uploadAsync(UploadBody(sharedPreferencesModule.getUniqueId(), receList, hangList))
+                        .uploadAsync(UploadBody(receList, hangList))
                         .await()
                         .result
                         .updateStatus(this@UploadService, appDb)

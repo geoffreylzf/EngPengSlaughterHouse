@@ -176,6 +176,8 @@ class ReceHeadFragment : Fragment() {
                         et_catch_bta_code.setText(scanData.catchBtaCode)
                         et_house_list.setText(scanData.houseStr)
                         et_ttl_qty.setText(scanData.ttlQty.toString())
+                        et_ttl_cage.setText(scanData.ttlCageQty.toString())
+                        et_ttl_cover.setText(scanData.ttlCoverQty.toString())
                         vm.setIsQrScan(true)
 
                     } catch (e: Exception) {
@@ -216,33 +218,35 @@ class ReceHeadFragment : Fragment() {
             catchBtaCode = et_catch_bta_code.text.toString().trim()
             houseStr = et_house_list.text.toString().trim()
             ttlQty = et_ttl_qty.text.toString().toIntOrNull()
+            ttlCageQty = et_ttl_cage.text.toString().toIntOrNull()
+            ttlCoverQty = et_ttl_cover.text.toString().toIntOrNull()
         }
 
         var message = ""
-        rece.run check@{
+        rece.run {
             if (companyId == null) {
                 message = "Please select company"
-                return@check
+                return
             }
             if (locationId == null) {
                 message = "Please select location"
-                return@check
+                return
             }
             if (docNo == null || docNo!!.isEmpty()) {
                 message = "Please enter document number"
-                return@check
+                return
             }
             if (docType == null || docType!!.isEmpty()) {
                 message = "Please select document type"
-                return@check
+                return
             }
             if (type == null || type!!.isEmpty()) {
                 message = "Please select type"
-                return@check
+                return
             }
             if (truckCode == null || truckCode!!.isEmpty()) {
                 message = "Please enter truck code"
-                return@check
+                return
             }
         }
 

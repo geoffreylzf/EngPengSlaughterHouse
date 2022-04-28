@@ -29,10 +29,7 @@ import my.com.engpeng.epslaughterhouse.di.WorkManagerModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
-import my.com.engpeng.epslaughterhouse.model.Bluetooth
-import my.com.engpeng.epslaughterhouse.model.ShHang
-import my.com.engpeng.epslaughterhouse.model.ShHangMortality
-import my.com.engpeng.epslaughterhouse.model.TempShHangMortality
+import my.com.engpeng.epslaughterhouse.model.*
 import my.com.engpeng.epslaughterhouse.util.*
 import org.koin.android.ext.android.inject
 
@@ -272,8 +269,10 @@ class HangSumFragment : Fragment() {
 
                 val printText = printModule.constructHangPrintout(hangId)
                 withContext(Dispatchers.Main) {
-                    wm.enqueueUpload(ShHang.TABLE_NAME, hangId)
-                    findNavController().navigate(HangSumFragmentDirections.actionHangSumFragmentToPrintPreviewFragment(printText))
+                    //wm.enqueueUpload(ShHang.TABLE_NAME, hangId)
+                    findNavController().navigate(HangSumFragmentDirections.actionHangSumFragmentToPrintPreviewFragment(
+                        PrintData(printText = printText)
+                    ))
                 }
             } catch (e: Exception) {
                 AlertDialogFragment.show(fragmentManager!!, getString(R.string.dialog_title_error), getString(R.string.error_desc, e.message))

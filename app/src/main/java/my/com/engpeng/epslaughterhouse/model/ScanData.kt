@@ -16,6 +16,8 @@ class ScanData() {
     var catchBtaCode: String? = null
     var houseStr: String? = null
     var ttlQty: Int? = null
+    var ttlCageQty: Int? = null
+    var ttlCoverQty: Int? = null
 
     constructor(scan: String) : this() {
         val arr = scan.split("|")
@@ -31,6 +33,8 @@ class ScanData() {
             catchBtaCode = arr[8]
             houseStr = arr[9]
             ttlQty = arr[10].toInt()
+            ttlCageQty = arr[11].toIntOrNull() ?: 0
+            ttlCoverQty = arr[12].toIntOrNull() ?: 0
         } else {
             throw Exception("Invalid Qr Code")
         }

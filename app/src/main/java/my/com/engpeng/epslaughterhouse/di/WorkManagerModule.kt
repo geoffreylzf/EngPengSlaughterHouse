@@ -14,7 +14,6 @@ class WorkManagerModule {
             .build()
 
     fun enqueueUpload(tableName: String, id: Long) {
-
         val data = workDataOf(TABLE_NAME to tableName, ID to id)
 
         instance.enqueue(OneTimeWorkRequestBuilder<UploadWorker>()

@@ -13,10 +13,12 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         private const val PRINT_HALF_SEPERATOR = "----------------------"
         private const val LINE_CHAR_COUNT = 45
 
-        private const val RECE_LIVE_BIRD_HEADER = "  #   Weight  Cage #H "
-        private const val RECE_DEAD_BIRD_HEADER = "  #   Weight   Qty    "
+        private const val RECE_LIVE_BIRD_HEADER = "  #    Weight  Cage   "
+        private const val RECE_DEAD_BIRD_HEADER = "  #    Weight   Qty   "
 
         private const val HANG_HEADER = "  #   Weight   Qty    "
+        private const val CAGE_WGT = 7.6
+        private const val COVER_WGT = 0.4
     }
 
     private fun formatLine(line: String): String {
@@ -42,19 +44,32 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
     }
 
     private fun halfLine(halfLine: String): String {
-        return String.format("%-22s", if (halfLine.length > 22) halfLine.substring(0, 22) else halfLine)
+        return String.format(
+            "%-22s",
+            if (halfLine.length > 22) halfLine.substring(0, 22) else halfLine
+        )
     }
 
     private fun formatNumber(length: Int, house_code: Int): String {
         return String.format("%0" + length + "d", house_code)
     }
 
-    private fun formatReceLiveBirdRow(num: String, weight: Double, cage: String, house: String): String {
-        return String.format(" %3s %7.02f  %4s %2s ", num, weight, cage, house)
+    private fun formatReceLiveBirdRow(num: String, weight: Double, cage: String): String {
+        return String.format(" %3s %8.02f  %4s   ", num, weight, cage)
     }
 
     private fun formatReceDeadBirdRow(num: String, weight: Double, qty: String): String {
-        return String.format(" %3s %7.02f  %4s    ", num, weight, qty)
+        return String.format(" %3s %8.02f  %4s   ", num, weight, qty)
+    }
+
+    suspend fun constructReceiveQrText(receId: Long): String {
+        val receDp = appDb.shReceiveDao().getDpById(receId)
+        var s = "v1"
+
+        s += "|" + receDp.uuid
+        s += "|" + receDp.docNo
+
+        return s
     }
 
 
@@ -67,14 +82,18 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         var s = ""
 
         s += formatLine("")
+        s += formatLine("Slaughter House (Kilang Potong) Receipt")
         s += formatLine(receDp.companyName!!)
         s += formatLine(receDp.locationName)
-        s += formatLine("Date: ${receDp.docDate}")
-        s += formatLine("Document: ${receDp.docType}-${receDp.docNo}")
-        s += formatLine("Grade: ${receDp.type}")
-        s += formatLine("Truck Code: ${receDp.truckCode}")
-        s += formatLine("BTA Code: ${receDp.catchBtaCode}")
-        s += formatLine("Total Qty: ${receDp.ttlQty ?: ""}")
+        s += formatLine("Date : ${receDp.docDate}")
+        s += formatLine("Document : ${receDp.docType}-${receDp.docNo}")
+        s += formatLine("Grade : ${receDp.type}")
+        s += formatLine("Truck Code : ${receDp.truckCode}")
+        s += formatLine("BTA Code : ${receDp.catchBtaCode}")
+        s += formatLine("Total Farm Bird Qty  : ${receDp.ttlQty ?: ""}")
+        s += formatLine("Total Farm Cage Qty  : ${receDp.ttlCageQty ?: ""}")
+        s += formatLine("Total Farm Cover Qty : ${receDp.ttlCoverQty ?: ""}")
+        s += formatLine("UUID : ${receDp.uuid ?: ""}")
         s += formatLine("")
 
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
@@ -92,14 +111,21 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < liveRowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatReceLiveBirdRow(num, detail.weight!!, detail.cage.toString(), detail.houseNo.toString()))
+                val leftLine =
+                    halfLine(formatReceLiveBirdRow(num, detail.weight!!, detail.cage.toString()))
                 ttlLiveWeight += detail.weight!!
 
                 var rightLine = ""
                 if (i != (liveRowNum - 1) || !isLiveOdd) {
                     val i2 = i + liveRowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatReceLiveBirdRow(num2, detailList[i2].weight!!, detailList[i2].cage.toString(), detail.houseNo.toString()))
+                    rightLine = halfLine(
+                        formatReceLiveBirdRow(
+                            num2,
+                            detailList[i2].weight!!,
+                            detailList[i2].cage.toString()
+                        )
+                    )
                     ttlLiveWeight += detailList[i2].weight!!
                 }
                 s += formatLine("$leftLine|$rightLine")
@@ -127,7 +153,13 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < deadRowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatReceDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
+                val leftLine = halfLine(
+                    formatReceDeadBirdRow(
+                        num,
+                        mortality.weight!!,
+                        mortality.qty.toString()
+                    )
+                )
                 ttlDeadWeight += mortality.weight!!
                 ttlDeadQty += mortality.qty!!
 
@@ -136,7 +168,13 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
                 if (i != (deadRowNum - 1) || !isDeadOdd) {
                     val i2 = i + deadRowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatReceDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
+                    rightLine = halfLine(
+                        formatReceDeadBirdRow(
+                            num2,
+                            mortalityList[i2].weight!!,
+                            mortalityList[i2].qty.toString()
+                        )
+                    )
                     ttlDeadWeight += mortalityList[i2].weight!!
                     ttlDeadQty += mortalityList[i2].qty!!
                 }
@@ -145,14 +183,30 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         }
         s += formatLine(halfLine("") + "|" + halfLine(""))
 
-        s += formatLine(halfLine(String.format(" WGT: %.2fkg", ttlDeadWeight)) + "|" + halfLine(String.format(" QTY: %d", ttlDeadQty)))
+        s += formatLine(
+            halfLine(String.format(" WGT: %.2fkg", ttlDeadWeight)) + "|" + halfLine(
+                String.format(" QTY: %d", ttlDeadQty)
+            )
+        )
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
-        s += formatLine("")
 
+
+        val avgWgt = ((ttlLiveWeight + ttlDeadWeight)
+                - ((receDp.ttlCageQty ?: 0) * CAGE_WGT)
+                - ((receDp.ttlCoverQty ?: 0) * COVER_WGT)) / (receDp.ttlQty ?: 1)
+
+        s += formatLine(String.format("AVERAGE WEIGHT : %.2fkg", avgWgt))
+
+        s += formatLine("")
         s += formatLine("Date: " + Sdf.formatDisplay(Calendar.getInstance().time))
         s += formatLine("Time: " + Sdf.formatTime(Calendar.getInstance().time))
 
-        s += formatLine("Ver : " + context.packageManager.getPackageInfo(context.packageName, 0).versionName)
+        s += formatLine(
+            "Ver : " + context.packageManager.getPackageInfo(
+                context.packageName,
+                0
+            ).versionName
+        )
         if (receDp.isUpload == 1) {
             s += formatLine("Uploaded : Yes")
         }
@@ -195,7 +249,13 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
             if (i < rowNum) {
 
                 val num = formatNumber(3, i + 1)
-                val leftLine = halfLine(formatReceDeadBirdRow(num, mortality.weight!!, mortality.qty.toString()))
+                val leftLine = halfLine(
+                    formatReceDeadBirdRow(
+                        num,
+                        mortality.weight!!,
+                        mortality.qty.toString()
+                    )
+                )
                 ttlWeight += mortality.weight!!
                 ttlQty += mortality.qty!!
 
@@ -204,7 +264,13 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
                 if (i != (rowNum - 1) || !isOdd) {
                     val i2 = i + rowNum
                     val num2 = formatNumber(3, i2 + 1)
-                    rightLine = halfLine(formatReceDeadBirdRow(num2, mortalityList[i2].weight!!, mortalityList[i2].qty.toString()))
+                    rightLine = halfLine(
+                        formatReceDeadBirdRow(
+                            num2,
+                            mortalityList[i2].weight!!,
+                            mortalityList[i2].qty.toString()
+                        )
+                    )
                     ttlWeight += mortalityList[i2].weight!!
                     ttlQty += mortalityList[i2].qty!!
                 }
@@ -214,14 +280,26 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
 
         s += formatLine(halfLine("") + "|" + halfLine(""))
 
-        s += formatLine(halfLine(String.format(" WGT: %.2fkg", ttlWeight)) + "|" + halfLine(String.format(" QTY: %d", ttlQty)))
+        s += formatLine(
+            halfLine(
+                String.format(
+                    " WGT: %.2fkg",
+                    ttlWeight
+                )
+            ) + "|" + halfLine(String.format(" QTY: %d", ttlQty))
+        )
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
         s += formatLine("")
 
         s += formatLine("Date: " + Sdf.formatDisplay(Calendar.getInstance().time))
         s += formatLine("Time: " + Sdf.formatTime(Calendar.getInstance().time))
 
-        s += formatLine("Ver : " + context.packageManager.getPackageInfo(context.packageName, 0).versionName)
+        s += formatLine(
+            "Ver : " + context.packageManager.getPackageInfo(
+                context.packageName,
+                0
+            ).versionName
+        )
         if (hang.isUpload == 1) {
             s += formatLine("Uploaded : Yes")
         }

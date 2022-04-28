@@ -44,6 +44,9 @@
     <string name="cancel">Cancel</string>
     <string name="cancel2">Cancel (Balik)</string>
     <string name="total_weight">Total Weight</string>
+    <string name="total_farm_qty">Total Farm Qty</string>
+    <string name="total_farm_cover">Total Farm Cover</string>
+    <string name="total_farm_cage">Total Farm Cage</string>
     <string name="total_quantity">Total Quantity</string>
     <string name="total_cover">Total Cover</string>
     <string name="total_cage">Total Cage</string>

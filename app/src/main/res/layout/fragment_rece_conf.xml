@@ -168,7 +168,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
-            android:hint="@string/total_quantity"
+            android:hint="@string/total_farm_qty"
             app:layout_constraintEnd_toStartOf="@id/gl_50"
             app:layout_constraintStart_toEndOf="@id/gl_25"
             app:layout_constraintTop_toBottomOf="@id/til_type">
@@ -188,7 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
-            android:hint="@string/total_cover"
+            android:hint="@string/total_farm_cage"
             app:layout_constraintEnd_toStartOf="@id/gl_75"
             app:layout_constraintStart_toEndOf="@id/gl_50"
             app:layout_constraintTop_toBottomOf="@id/til_type">
@@ -207,7 +207,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:hint="Total Cage"
+            android:hint="@string/total_farm_cover"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gl_75"
             app:layout_constraintTop_toBottomOf="@id/til_type">

@@ -17,6 +17,7 @@ import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.di.SharedPreferencesModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.BluetoothDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Bluetooth
+import my.com.engpeng.epslaughterhouse.util.BarcodeUtil
 import org.koin.android.ext.android.inject
 
 class PrintPreviewFragment : Fragment() {
@@ -27,32 +28,49 @@ class PrintPreviewFragment : Fragment() {
     private var btName = ""
     private var btAddress = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var qrText: String? = null
+    private var printText: String? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_print_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        constructPrint()
+
+        val printData = PrintPreviewFragmentArgs.fromBundle(arguments!!).printData
+        printText = printData.printText
+        qrText = printData.qrText
+
+        tv_printout.text = printText
 
         btn_bt.setOnClickListener {
             BluetoothDialogFragment.show(fragmentManager!!,
-                    bt.pairedDeviceName.toList(),
-                    bt.pairedDeviceAddress.toList(),
-                    object : BluetoothDialogFragment.Listener {
-                        override fun onSelect(bluetooth: Bluetooth) {
-                            sharedPreferencesModule.savePrinterBluetooth(bluetooth)
-                            startPrinterBluetooth()
-                        }
-                    })
+                bt.pairedDeviceName.toList(),
+                bt.pairedDeviceAddress.toList(),
+                object : BluetoothDialogFragment.Listener {
+                    override fun onSelect(bluetooth: Bluetooth) {
+                        sharedPreferencesModule.savePrinterBluetooth(bluetooth)
+                        startPrinterBluetooth()
+                    }
+                })
         }
 
         btn_bt_refresh.setOnClickListener {
             startPrinterBluetooth()
         }
 
-        btn_bt_start.setOnClickListener { bt.send(tv_printout.text.toString(), true) }
+        btn_bt_start.setOnClickListener {
+            qrText?.run {
+                bt.send(BarcodeUtil(this).convertToQrByteArray(), true)
+            }
+            printText?.run {
+                bt.send(printText, true)
+            }
+        }
     }
 
     private fun startPrinterBluetooth() {
@@ -109,10 +127,6 @@ class PrintPreviewFragment : Fragment() {
                 bt.connect(btAddress)
             }
         }
-    }
-
-    private fun constructPrint() {
-        tv_printout.text = PrintPreviewFragmentArgs.fromBundle(arguments!!).printText
     }
 
     override fun onPause() {

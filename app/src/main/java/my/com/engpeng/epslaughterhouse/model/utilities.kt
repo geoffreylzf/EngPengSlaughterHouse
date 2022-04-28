@@ -10,8 +10,9 @@ import my.com.engpeng.epslaughterhouse.util.LOG_TASK_UPLOAD
 import my.com.engpeng.epslaughterhouse.util.Sdf
 
 data class Auth(
-        val success: Boolean,
-        val message: String)
+    val success: Boolean,
+    val message: String
+)
 
 abstract class BaseEntity {
     abstract val tableName: String
@@ -19,47 +20,59 @@ abstract class BaseEntity {
 }
 
 data class ShReceiveDetailTtl(
-        val ttlWeight: Double,
-        val ttlCage: Int)
+    val ttlWeight: Double,
+    val ttlCage: Int
+)
 
 data class ShReceiveMortalityTtl(
-        val ttlWeight: Double,
-        val ttlQty: Int)
+    val ttlWeight: Double,
+    val ttlQty: Int
+)
 
 data class ShHangMortalityTtl(
-        val ttlWeight: Double,
-        val ttlQty: Int)
+    val ttlWeight: Double,
+    val ttlQty: Int
+)
 
 data class Bluetooth(
-        val name: String,
-        val address: String)
+    val name: String,
+    val address: String
+)
 
 data class SlaughterInfo(
-        @ColumnInfo(name = "confirm_count") var confirmCount: Int?,
-        @ColumnInfo(name = "delete_count") var deleteCount: Int?
+    @ColumnInfo(name = "confirm_count") var confirmCount: Int?,
+    @ColumnInfo(name = "delete_count") var deleteCount: Int?
 )
 
 @SuppressLint("ParcelCreator")
 class ShReceiveDisplay(
-        id: Long?,
-        companyId: Long?,
-        locationId: Long?,
-        docDate: String?,
-        docNo: String?,
-        docType: String?,
-        type: String?,
-        truckCode: String?,
-        catchBtaCode: String?,
-        ttlQty: Int?,
-        printCount: Int?,
-        isUpload: Int?,
-        isDelete: Int?,
-        timestamp: String?,
-        @ColumnInfo(name = "company_code") var companyCode: String?,
-        @ColumnInfo(name = "company_name") var companyName: String?,
-        @ColumnInfo(name = "location_code") var locationCode: String?,
-        @ColumnInfo(name = "location_name") var locationName: String
-) : ShReceive(id, companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode, ttlQty, printCount, isUpload, isDelete, timestamp)
+    id: Long?,
+    uuid: String?,
+    companyId: Long?,
+    locationId: Long?,
+    docDate: String?,
+    docNo: String?,
+    docType: String?,
+    type: String?,
+    truckCode: String?,
+    catchBtaCode: String?,
+    ttlQty: Int?,
+    ttlCageQty: Int?,
+    ttlCoverQty: Int?,
+    isUpload: Int?,
+    isDelete: Int?,
+    timestamp: String?,
+    @ColumnInfo(name = "company_code") var companyCode: String?,
+    @ColumnInfo(name = "company_name") var companyName: String?,
+    @ColumnInfo(name = "location_code") var locationCode: String?,
+    @ColumnInfo(name = "location_name") var locationName: String
+) : ShReceive(
+    id,
+    uuid,
+    companyId, locationId, docDate, docNo, docType, type, truckCode, catchBtaCode,
+    ttlQty, ttlCageQty, ttlCoverQty,
+    isUpload, isDelete, timestamp
+)
 
 class ServerUrl {
     companion object {
@@ -78,7 +91,6 @@ class ServerUrl {
 }
 
 data class UploadBody(
-    @SerializedName("unique_id") val uniqueId: String,
     @SerializedName("sh_receive") val shReceiveList: List<ShReceive>,
     @SerializedName("sh_hang") val shHangList: List<ShHang>
 )
@@ -86,8 +98,8 @@ data class UploadBody(
 data class UploadResult(
     @SerializedName("sh_receive_id_list") val receIdList: List<Long>,
     @SerializedName("sh_hang_id_list") val hangIdList: List<Long>
-){
-    suspend fun updateStatus(context: Context, appDb: AppDb){
+) {
+    suspend fun updateStatus(context: Context, appDb: AppDb) {
 
         val successCount: Int = receIdList.size + hangIdList.size
         for (id in receIdList) {
@@ -102,11 +114,13 @@ data class UploadResult(
             appDb.shHangDao().insert(hang)
         }
 
-        appDb.logDao().insert(Log(
+        appDb.logDao().insert(
+            Log(
                 LOG_TASK_UPLOAD,
                 Sdf.getCurrentDateTime(),
                 context.getString(R.string.upload_log_desc, successCount)
-        ))
+            )
+        )
 
     }
 }

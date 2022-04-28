@@ -228,6 +228,29 @@
         app:layout_constraintTop_toBottomOf="@id/til_truck_code" />
 
     <EditText
+        android:id="@+id/et_ttl_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:inputType="text"
+        android:textColor="@color/colorGray300"
+        app:layout_constraintTop_toTopOf="@id/et_ttl_cage"
+        app:layout_constraintBottom_toBottomOf="@id/et_ttl_cage"
+        app:layout_constraintStart_toEndOf="@id/et_ttl_cage" />
+
+    <EditText
+        android:id="@+id/et_ttl_cage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:enabled="false"
+        android:inputType="text"
+        android:textColor="@color/colorGray300"
+        app:layout_constraintBottom_toTopOf="@id/et_catch_bta_code"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
         android:id="@+id/et_catch_bta_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

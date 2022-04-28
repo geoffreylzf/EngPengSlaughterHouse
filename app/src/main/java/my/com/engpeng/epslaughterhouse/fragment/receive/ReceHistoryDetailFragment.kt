@@ -21,6 +21,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.ConfirmDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.HistoryMortalityDialogFragment
 import my.com.engpeng.epslaughterhouse.model.ShReceiveDetail
 import my.com.engpeng.epslaughterhouse.di.PrintModule
+import my.com.engpeng.epslaughterhouse.model.PrintData
 import my.com.engpeng.epslaughterhouse.util.format2Decimal
 import org.koin.android.ext.android.inject
 
@@ -32,8 +33,10 @@ class ReceHistoryDetailFragment : Fragment() {
     private var receId: Long = 0
     private var menu: Menu? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_rece_history_detail, container, false)
     }
@@ -53,10 +56,18 @@ class ReceHistoryDetailFragment : Fragment() {
         return when (item.itemId) {
             R.id.mi_print -> {
                 CoroutineScope(Dispatchers.IO).launch {
+                    val qrText = printModule.constructReceiveQrText(receId)
                     val printText = printModule.constructReceivePrintout(receId)
 
                     withContext(Dispatchers.Main) {
-                        findNavController().navigate(ReceHistoryDetailFragmentDirections.actionReceHistoryDetailFragmentToPrintPreviewFragment(printText))
+                        findNavController().navigate(
+                            ReceHistoryDetailFragmentDirections.actionReceHistoryDetailFragmentToPrintPreviewFragment(
+                                PrintData(
+                                    qrText,
+                                    printText
+                                )
+                            )
+                        )
                     }
                 }
                 true
@@ -115,32 +126,37 @@ class ReceHistoryDetailFragment : Fragment() {
 
     private fun delete() {
         ConfirmDialogFragment.show(fragmentManager!!,
-                getString(R.string.dialog_title_delete_receive),
-                getString(R.string.dialog_confirm_msg_delete_receive),
-                getString(R.string.delete), object : ConfirmDialogFragment.Listener {
-            override fun onPositiveButtonClicked() {
+            getString(R.string.dialog_title_delete_receive),
+            getString(R.string.dialog_confirm_msg_delete_receive),
+            getString(R.string.delete), object : ConfirmDialogFragment.Listener {
+                override fun onPositiveButtonClicked() {
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val rece = appDb.shReceiveDao().getById(receId)
-                    appDb.shReceiveDao().insert(rece.apply { isDelete = 1 })
-                    withContext(Dispatchers.Main) {
-                        AlertDialogFragment.show(fragmentManager!!, getString(R.string.success), getString(R.string.dialog_success_delete))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val rece = appDb.shReceiveDao().getById(receId)
+                        appDb.shReceiveDao().insert(rece.apply { isDelete = 1 })
+                        withContext(Dispatchers.Main) {
+                            AlertDialogFragment.show(
+                                fragmentManager!!,
+                                getString(R.string.success),
+                                getString(R.string.dialog_success_delete)
+                            )
+                        }
                     }
                 }
-            }
 
-            override fun onNegativeButtonClicked() {}
-        })
+                override fun onNegativeButtonClicked() {}
+            })
     }
 }
 
-class DetailAdapter(private val detailList: List<ShReceiveDetail>)
-    : RecyclerView.Adapter<DetailAdapter.DetailViewHolder>() {
+class DetailAdapter(private val detailList: List<ShReceiveDetail>) :
+    RecyclerView.Adapter<DetailAdapter.DetailViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         return DetailViewHolder(
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.list_item_rece_detail, parent, false))
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_item_rece_detail, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
