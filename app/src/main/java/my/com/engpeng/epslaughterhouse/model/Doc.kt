@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = Doc.TABLE_NAME)
 data class Doc(
-        @PrimaryKey var id: Long?,
-        @SerializedName("doc_no") @ColumnInfo(name = "doc_no") var docNo: String?,
-        @SerializedName("doc_date") @ColumnInfo(name = "doc_date") var docDate: String?,
-        @SerializedName("location_code") @ColumnInfo(name = "location_code") var locationCode: String?,
-        @SerializedName("location_name") @ColumnInfo(name = "location_name") var locationName: String?
+    @PrimaryKey var id: Long?,
+    @SerializedName("doc_no") @ColumnInfo(name = "doc_no") var docNo: String?,
+    @SerializedName("doc_date") @ColumnInfo(name = "doc_date") var docDate: String?,
+    @SerializedName("person_supplier_company_code") @ColumnInfo(name = "person_supplier_company_code") var personSupplierCompanyCode: String?,
+    @SerializedName("person_supplier_company_name") @ColumnInfo(name = "person_supplier_company_name") var personSupplierCompanyName: String?
 ) : BaseEntity() {
 
     companion object {

@@ -153,7 +153,7 @@ class DocAdapter : RecyclerView.Adapter<DocAdapter.DocViewHolder>() {
         docList!![position].let { doc ->
             holder.itemView.run {
                 li_tv_doc_no.text = doc.docNo
-                li_tv_location_code.text = doc.locationName
+                li_tv_location_code.text = doc.personSupplierCompanyName
             }
         }
     }

@@ -3,7 +3,7 @@ package my.com.engpeng.epslaughterhouse.model
 
 private const val VERSION_1 = "v1"
 
-class ScanData() {
+class ScanReceiveData() {
 
     var version: String? = null
     var companyId: Long? = null

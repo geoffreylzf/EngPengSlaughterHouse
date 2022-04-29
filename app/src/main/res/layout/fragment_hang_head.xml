@@ -61,19 +61,19 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_loc_name"
+            android:id="@+id/til_sup_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:hint="@string/location_name"
+            android:hint="@string/supplier_name"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_doc_no">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_loc_name"
+                android:id="@+id/et_sup_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
@@ -90,7 +90,7 @@
             android:hint="@string/remark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_loc_name">
+            app:layout_constraintTop_toBottomOf="@id/til_sup_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_remark"
@@ -127,13 +127,39 @@
             app:layout_constraintBottom_toBottomOf="@id/fab_refresh"
             app:layout_constraintTop_toTopOf="@id/fab_refresh" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            app:backgroundTint="@color/colorAccent"
+            app:fabCustomSize="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_baseline_settings_overscan_24px"
+            app:tint="@color/colorWhite" />
+
         <TextView
             android:id="@+id/tv_doc_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorGray300"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/et_uuid"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/et_uuid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:enabled="false"
+            android:inputType="text"
+            android:textColor="@color/colorGray300"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

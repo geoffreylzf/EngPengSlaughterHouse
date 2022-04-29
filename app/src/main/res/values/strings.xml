@@ -5,6 +5,7 @@
     <string name="hang">Hang</string>
     <string name="company">Company</string>
     <string name="location">Location</string>
+    <string name="supplier_name">Supplier Name</string>
     <string name="location_name">Location Name</string>
     <string name="document_date">Document Date</string>
     <string name="document_number">Document Number</string>

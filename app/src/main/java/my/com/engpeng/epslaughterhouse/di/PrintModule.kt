@@ -72,7 +72,6 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         return s
     }
 
-
     suspend fun constructReceivePrintout(receId: Long): String {
 
         val receDp = appDb.shReceiveDao().getDpById(receId)
@@ -83,7 +82,6 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
 
         s += formatLine("")
         s += formatLine("Slaughter House (Kilang Potong) Receipt")
-        s += formatLine(receDp.companyName!!)
         s += formatLine(receDp.locationName)
         s += formatLine("Date : ${receDp.docDate}")
         s += formatLine("Document : ${receDp.docType}-${receDp.docNo}")
@@ -231,9 +229,10 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
 
         s += formatLine("")
         s += formatLine("SLAUGHTER HOUSE HANGING MORTALITY")
-        s += formatLine("Document: ${hang.docNo}")
-        s += formatLine("Remark: ${hang.remark}")
-        s += formatLine("ID: ${hang.docId}")
+        s += formatLine("Document : ${hang.docNo}")
+        s += formatLine("Remark : ${hang.remark}")
+        s += formatLine("ID : ${hang.docId ?: ""}")
+        s += formatLine("Rec. UUID : ${hang.shReceiveUuid ?: ""}")
 
         s += formatLine("")
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))

@@ -16,7 +16,7 @@ import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.CompanyDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.DatePickerDialogFragment
 import my.com.engpeng.epslaughterhouse.fragment.dialog.LocationDialogFragment
-import my.com.engpeng.epslaughterhouse.model.ScanData
+import my.com.engpeng.epslaughterhouse.model.ScanReceiveData
 import my.com.engpeng.epslaughterhouse.model.ShReceive
 import my.com.engpeng.epslaughterhouse.util.I_KEY_SCAN_TEXT
 import my.com.engpeng.epslaughterhouse.util.RC_SCAN
@@ -154,7 +154,7 @@ class ReceHeadFragment : Fragment() {
                 if (scanText.isNotEmpty()) {
                     try {
 
-                        val scanData = ScanData(scanText)
+                        val scanData = ScanReceiveData(scanText)
 
                         vm.loadCompany(scanData.companyId!!)
                         vm.loadLocation(scanData.locationId!!)
