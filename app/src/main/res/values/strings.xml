@@ -65,6 +65,7 @@
     <string name="delete">Delete</string>
     <string name="upload">Upload</string>
     <string name="retrieve_doc">Retrieve Document</string>
+    <string name="retrieve_location">Retrieve Location</string>
     <string name="mortality">Mortality</string>
     <string name="print">Print</string>
     <string name="username">Username</string>
@@ -127,6 +128,7 @@
     <string name="dialog_confirm_msg_delete_receive">Unable to undo after delete</string>
     <string name="dialog_confirm_msg_logout">Internet connection is required to login.</string>
     <string name="dialog_success_msg_retrieve">Retrieve complete.</string>
+    <string name="dialog_success_msg_retrieve_location">Retrieve location complete.</string>
     <string name="dialog_success_msg_upload">Upload complete.</string>
     <string name="dialog_success_delete">Deleted…</string>
     <string name="dialog_success_backup">Backup database complete, please find in gallery.</string>

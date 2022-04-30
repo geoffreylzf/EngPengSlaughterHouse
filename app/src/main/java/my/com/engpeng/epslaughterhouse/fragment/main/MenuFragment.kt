@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_menu.*
+import kotlinx.android.synthetic.main.fragment_menu.cb_local
 import kotlinx.android.synthetic.main.list_item_doc_s.view.*
 import kotlinx.android.synthetic.main.merge_menu_doc.*
 import kotlinx.android.synthetic.main.merge_menu_log.*
@@ -23,8 +24,11 @@ import kotlinx.coroutines.withContext
 import my.com.engpeng.epslaughterhouse.MainActivity
 import my.com.engpeng.epslaughterhouse.R
 import my.com.engpeng.epslaughterhouse.db.AppDb
+import my.com.engpeng.epslaughterhouse.di.ApiModule
 import my.com.engpeng.epslaughterhouse.fragment.dialog.AlertDialogFragment
 import my.com.engpeng.epslaughterhouse.model.Doc
+import my.com.engpeng.epslaughterhouse.model.Location
+import my.com.engpeng.epslaughterhouse.model.TableLog
 import my.com.engpeng.epslaughterhouse.service.GetDocService
 import my.com.engpeng.epslaughterhouse.service.UploadService
 import my.com.engpeng.epslaughterhouse.util.I_KEY_DATE
@@ -41,6 +45,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class MenuFragment : Fragment() {
 
     private val appDb: AppDb by inject()
+    private val apiModule: ApiModule by inject()
     private val vm: MenuViewModel by viewModel()
     private var rvAdapter = DocAdapter()
 
@@ -128,6 +133,10 @@ class MenuFragment : Fragment() {
             activity!!.stopService(intent)
             activity!!.startService(intent)
         }
+
+        btn_retrieve_location.setOnClickListener {
+            this.retrieveLocation()
+        }
     }
 
     private fun setupRv() {
@@ -136,6 +145,32 @@ class MenuFragment : Fragment() {
         vm.liveDocList.observe(this, Observer {
             rvAdapter.setList(it)
         })
+    }
+
+    private fun retrieveLocation() {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val api = apiModule.provideApiService(cb_local.isChecked)
+
+                val locationList = api.getLocationListAsync().await().result
+                appDb.locationDao().deleteAll()
+                appDb.locationDao().insert(locationList)
+                appDb.tableLogDao().insert(TableLog(Location.TABLE_NAME, Sdf.getCurrentDateTime(), locationList.size, locationList.size))
+
+                withContext(Dispatchers.Main) {
+                    AlertDialogFragment.show(fragmentManager!!,
+                        getString(R.string.dialog_title_success),
+                        getString(R.string.dialog_success_msg_retrieve_location))
+
+                }
+            } catch (e: Exception) {
+                AlertDialogFragment.show(fragmentManager!!,
+                    getString(R.string.dialog_title_error),
+                    getString(R.string.error_desc, e.message))
+            }
+
+        }
     }
 }
 
