@@ -188,11 +188,13 @@ class PrintModule(val context: Context, private val appDb: AppDb) {
         )
         s += formatLine(halfLine(PRINT_HALF_SEPERATOR) + "|" + halfLine(PRINT_HALF_SEPERATOR))
 
-
-        val avgWgt = ((ttlLiveWeight + ttlDeadWeight)
+        val ttlNetWgt = ((ttlLiveWeight + ttlDeadWeight)
                 - ((receDp.ttlCageQty ?: 0) * CAGE_WGT)
-                - ((receDp.ttlCoverQty ?: 0) * COVER_WGT)) / (receDp.ttlQty ?: 1)
+                - ((receDp.ttlCoverQty ?: 0) * COVER_WGT))
 
+        val avgWgt = ttlNetWgt / (receDp.ttlQty ?: 1)
+
+        s += formatLine(String.format("NET WEIGHT : %.2fkg", ttlNetWgt))
         s += formatLine(String.format("AVERAGE WEIGHT : %.2fkg", avgWgt))
 
         s += formatLine("")
