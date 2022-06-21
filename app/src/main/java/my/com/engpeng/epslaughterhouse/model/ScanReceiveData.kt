@@ -33,8 +33,8 @@ class ScanReceiveData() {
             catchBtaCode = arr[8]
             houseStr = arr[9]
             ttlQty = arr[10].toInt()
-            ttlCageQty = arr[11].toIntOrNull() ?: 0
-            ttlCoverQty = arr[12].toIntOrNull() ?: 0
+            ttlCageQty = arr.getOrNull(11)?.toIntOrNull() ?: 0
+            ttlCoverQty = arr.getOrNull(12)?.toIntOrNull() ?: 0
         } else {
             throw Exception("Invalid Qr Code")
         }
